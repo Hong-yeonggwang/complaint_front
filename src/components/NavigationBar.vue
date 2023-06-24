@@ -1,7 +1,7 @@
 <template>
-<<<<<<< HEAD
   <v-card>
     <v-layout>
+      
       <v-navigation-drawer
         v-model="drawer"
         :rail="rail"
@@ -30,52 +30,30 @@
           <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-main style="height: 250px"></v-main>
+      <v-main style="height: 250px">
+      <mainHeader></mainHeader>
+    </v-main>
     </v-layout>
   </v-card>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-=======
-  <NavigationBar>
-  </NavigationBar>
-  <div class="w-4 h-4 bg-black"></div>
-</template>
-
-<script>
-import NavigationBar from './components/NavigationBar.vue'
->>>>>>> 568f1cd673e4b56648c5577888db6d418c371f46
-
+import mainHeader from './mainHeader.vue';
 export default {
-  // name: 'App',
+  name: 'NavigationBar',
   components: {
-<<<<<<< HEAD
-    // HelloWorld
-  },
-
-  data () {
-      return {
-        drawer: true,
-        rail: true,
-      }
-    }
-}
-</script>
-
-<style>
-/* #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
-</style>
-=======
-    NavigationBar,
+    mainHeader,
   },  
+  data () {
+    return {
+      drawer: true,
+      items: [
+        { title: 'Home', icon: 'mdi-home-city' },
+        { title: 'My Account', icon: 'mdi-account' },
+        { title: 'Users', icon: 'mdi-account-group-outline' },
+      ],
+      rail: true,
+    }
+  },
 }
 </script>
->>>>>>> 568f1cd673e4b56648c5577888db6d418c371f46
