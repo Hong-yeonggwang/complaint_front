@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import userPage from '../components/Maintest.vue'
-import mainHeader from '../components/mainHeader.vue'
+// import mainHeader from '../components/mainHeader.vue'
 
 
 const routes = [
@@ -12,7 +12,27 @@ const routes = [
   {
     path: "/",
     name: "main",
-    component: mainHeader
+    component: userPage
+  },
+  {
+    path: "/user",
+    name: "userPage",
+    component: userPage
+  },
+  {
+    path: "/purchase",
+    name: "purchasePage",
+    component: userPage
+  },
+  {
+    path: "/chat",
+    name: "chatPage",
+    component: userPage
+  },
+  {
+    path: "/cscenter",
+    name: "csCenterPage",
+    component: userPage
   },
 ];
 

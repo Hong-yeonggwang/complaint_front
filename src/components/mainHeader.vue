@@ -2,7 +2,7 @@
   <v-card>
     <v-tabs
       v-model="tab"
-      bg-color="primary"
+      bg-color="black"
     >
       <v-tab value="one">Item One</v-tab>
       <v-tab value="two">Item Two</v-tab>
@@ -11,15 +11,15 @@
 
     <v-card-text>
       <v-window v-model="tab">
-        <v-window-item value="one">
-          One
+        <v-window-item class="w-20" value="one">
+          one
         </v-window-item>
 
-        <v-window-item value="two">
+        <v-window-item class="w-20" value="two">
           Two
         </v-window-item>
 
-        <v-window-item value="three">
+        <v-window-item class="w-20" value="three">
           Three
         </v-window-item>
       </v-window>
