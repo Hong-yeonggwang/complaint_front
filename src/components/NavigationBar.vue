@@ -9,8 +9,8 @@
         @click="rail = false"
       >
         <v-list-item
-          prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-          title="John Leider"
+          v-bind:prepend-avatar="userFacePath"
+          title="사용자"
           nav
         >
           <template v-slot:append>
@@ -25,19 +25,15 @@
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
-          <router-link :to="{name: 'home'}">
-            <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
+          <router-link v-for="(item,index) in items" :key="index" :to="{name: item.value}">
+            <v-list-item v-bind:prepend-icon="item.icon" v-bind:title="item.title" v-bind:value="item.value"></v-list-item>
           </router-link>
-          <router-link :to="{name: 'test'}">
-            <v-list-item prepend-icon="mdi-account" title="My Account" value="account"></v-list-item>
-          </router-link>
-          <router-link :to="{name: 'buy'}">
-            <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
-          </router-link>
+
+
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 250px">
-      <router-view></router-view>
+        <router-view></router-view>
     </v-main>
     </v-layout>
   </v-card>
@@ -50,11 +46,12 @@ export default {
   },  
   data () {
     return {
+      userFacePath:require(`@/assets/user.png`),
       drawer: true,
       items: [
-        { title: 'Home', icon: 'mdi-home-city' },
-        { title: 'My Account', icon: 'mdi-account' },
-        { title: 'Users', icon: 'mdi-account-group-outline' },
+        { title: '구매', icon: 'mdi-ticket', value:'purchasePage' },
+        { title: '채팅', icon: 'mdi-chat', value:'chatPage' },
+        { title: '고객센터', icon: 'mdi-face-agent', value:'csCenterPage' },
       ],
       rail: true,
     }
