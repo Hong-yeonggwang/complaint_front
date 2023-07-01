@@ -25,12 +25,15 @@
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
+          <router-link :to="{name: 'home'}">
+            <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
+          </router-link>
           <router-link :to="{name: 'test'}">
-          <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
-        </router-link>
-
-          <v-list-item prepend-icon="mdi-account" title="My Account" value="account"></v-list-item>
-          <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
+            <v-list-item prepend-icon="mdi-account" title="My Account" value="account"></v-list-item>
+          </router-link>
+          <router-link :to="{name: 'buy'}">
+            <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
+          </router-link>
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 250px">

@@ -1,18 +1,29 @@
 import { createWebHistory, createRouter } from "vue-router";
-import userPage from '../components/Maintest.vue'
 import mainHeader from '../components/mainHeader.vue'
+import userPage from '../components/Maintest.vue'
+import buyPage from '../components/Buy.vue'
 
 
 const routes = [
+  {
+    path: "/",
+    name: "main",
+    component: mainHeader
+  },
+  {
+    path: "/home",
+    name: "home",
+    component: mainHeader
+  },
   {
     path: "/test",
     name: "test",
     component: userPage
   },
   {
-    path: "/",
-    name: "main",
-    component: mainHeader
+    path: "/buy",
+    name: "buy",
+    component: buyPage
   },
 ];
 
