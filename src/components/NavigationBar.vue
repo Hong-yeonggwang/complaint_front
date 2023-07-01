@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="h-full">
     <v-layout>
       
       <v-navigation-drawer
@@ -7,6 +7,7 @@
         :rail="rail"
         permanent
         @click="rail = false"
+        style="position:absolute;"
       >
         <v-list-item
           v-bind:prepend-avatar="userFacePath"

@@ -20,7 +20,6 @@
   </v-card>
 
   
-  <div class="w-16 h-16 bg-black"></div>
 </template>
 
 <script>
