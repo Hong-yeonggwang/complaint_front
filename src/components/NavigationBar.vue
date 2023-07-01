@@ -12,6 +12,7 @@
           v-bind:prepend-avatar="userFacePath"
           title="사용자"
           nav
+          @click="toMypage()"
         >
           <template v-slot:append>
             <v-btn
@@ -56,5 +57,15 @@ export default {
       rail: true,
     }
   },
+  methods:{
+    toMypage(){
+      if(this.rail == false){
+        console.log('this.')
+        this.$router.push({ name: 'userPage'});
+        this.rail = false
+      }
+        
+    },
+  } 
 }
 </script>

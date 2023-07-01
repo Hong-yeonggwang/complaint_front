@@ -1,4 +1,5 @@
 <template>
+  <!-- 메뉴바  -->
   <v-card>
     <v-tabs
       v-model="tab"
@@ -17,13 +18,16 @@
       </v-window>
     </v-card-text>
   </v-card>
+
+  
+  <div class="w-16 h-16 bg-black"></div>
 </template>
 
 <script>
 export default {
-  name: 'mainHeader',
+  name: 'MyPage',
   components: {
-  },  
+    },  
   data () {
     return {
       tab: null,
