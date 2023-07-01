@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import MyPage from '../components/MyPage.vue'
 import chatPage from '../components/Chat.vue'
 import CscenterPage from '../components/CscenterPage.vue'
-import PurchasePage from '../components/Purchase.vue'
+import BuyPage from '../components/Buy.vue'
 
 
 
@@ -23,9 +23,9 @@ const routes = [
     component: MyPage
   },
   {
-    path: "/purchase",
-    name: "purchasePage",
-    component: PurchasePage
+    path: "/buy",
+    name: "buyPage",
+    component: BuyPage
   },
   {
     path: "/chat",
