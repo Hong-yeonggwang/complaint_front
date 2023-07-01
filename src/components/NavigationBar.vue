@@ -34,7 +34,7 @@
 
         </v-list>
       </v-navigation-drawer>
-      <v-main style="height: 250px">
+      <v-main style="">
         <router-view></router-view>
     </v-main>
     </v-layout>
@@ -51,7 +51,7 @@ export default {
       userFacePath:require(`@/assets/user.png`),
       drawer: true,
       items: [
-        { title: '구매', icon: 'mdi-ticket', value:'purchasePage' },
+        { title: '구매', icon: 'mdi-ticket', value:'buyPage' },
         { title: '채팅', icon: 'mdi-chat', value:'chatPage' },
         { title: '고객센터', icon: 'mdi-face-agent', value:'csCenterPage' },
       ],
