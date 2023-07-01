@@ -4,16 +4,6 @@ import MyPage from '../components/MyPage.vue'
 
 const routes = [
   {
-    path: "/",
-    name: "main",
-    component: mainHeader
-  },
-  {
-    path: "/home",
-    name: "home",
-    component: mainHeader
-  },
-  {
     path: "/test",
     name: "test",
     component: MyPage
