@@ -31,10 +31,6 @@ export default {
   data () {
     return {
       tab: null,
-      parchaseMenu:[
-        {title:'승차권', value:'bus',info:'승차권을 구매합니다'},
-        {title:'식당', value:'meal',info:'식권을 구매합니다'},
-      ],
       myMenu:[
         {title:'내정보', value:'myInfo',info:'정보를 확인합니다'},
         {title:'QR지갑', value:'QRwallet',info:'구매한 QR쿠폰을 확인합니다'},
