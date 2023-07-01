@@ -1,5 +1,9 @@
 import { createWebHistory, createRouter } from "vue-router";
 import MyPage from '../components/MyPage.vue'
+import chatPage from '../components/Chat.vue'
+import CscenterPage from '../components/CscenterPage.vue'
+import PurchasePage from '../components/Purchase.vue'
+
 
 
 const routes = [
@@ -21,17 +25,17 @@ const routes = [
   {
     path: "/purchase",
     name: "purchasePage",
-    component: MyPage
+    component: PurchasePage
   },
   {
     path: "/chat",
     name: "chatPage",
-    component: MyPage
+    component: chatPage
   },
   {
     path: "/cscenter",
     name: "csCenterPage",
-    component: MyPage
+    component: CscenterPage
   },
 ];
 
