@@ -33,7 +33,6 @@
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 250px">
-        <mainHeader></mainHeader>
         <router-view></router-view>
     </v-main>
     </v-layout>
@@ -41,11 +40,9 @@
 </template>
 
 <script>
-import mainHeader from './mainHeader.vue'
 export default {
   name: 'NavigationBar',
   components: {
-    mainHeader,
   },  
   data () {
     return {

@@ -3,25 +3,17 @@
     <v-tabs
       v-model="tab"
       bg-color="black"
+      classs="overflow-scroll"
     >
-      <v-tab value="one">Item One</v-tab>
-      <v-tab value="two">Item Two</v-tab>
-      <v-tab value="three">Item Three</v-tab>
+      <v-tab v-for="(menu,index) in  myMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
     </v-tabs>
 
     <v-card-text>
       <v-window v-model="tab">
-        <v-window-item class="w-20" value="one">
-          one
+        <v-window-item v-for="(menu,index) in myMenu" :key="index" class="h-12 flex items-center" v-bind:value="menu.value">
+          {{ menu.info }}
         </v-window-item>
 
-        <v-window-item class="w-20" value="two">
-          Two
-        </v-window-item>
-
-        <v-window-item class="w-20" value="three">
-          Three
-        </v-window-item>
       </v-window>
     </v-card-text>
   </v-card>
@@ -35,6 +27,16 @@ export default {
   data () {
     return {
       tab: null,
+      parchaseMenu:[
+        {title:'승차권', value:'bus',info:'승차권을 구매합니다'},
+        {title:'식당', value:'meal',info:'식권을 구매합니다'},
+      ],
+      myMenu:[
+        {title:'내정보', value:'myInfo',info:'정보를 확인합니다'},
+        {title:'QR지갑', value:'QRwallet',info:'구매한 QR쿠폰을 확인합니다'},
+        {title:'정보수정', value:'updateInfo',info:'정보를 업데이트합니다.'},
+        {title:'쿠폰등록', value:'coupon',info:'쿠폰을 등록합니다'},
+      ]
     }
   },
 }
