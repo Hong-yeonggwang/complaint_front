@@ -61,7 +61,6 @@ export default {
   methods:{
     toMypage(){
       if(this.rail == false){
-        console.log('this.')
         this.$router.push({ name: 'userPage'});
         this.rail = false
       }

@@ -6,7 +6,7 @@
       bg-color="black"
       classs="overflow-scroll"
     >
-      <v-tab @click="test()" v-for="(menu,index) in  myMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
+      <v-tab @click="componentTest()" v-for="(menu,index) in  myMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
     </v-tabs>
 
     <v-card-text>
@@ -24,8 +24,8 @@
       <div class="mt-4 py-6 w-56 m-auto bg-slate-100 rounded-full">
         <svg-icon type="mdi" :path="face_path" class="m-auto" width="120" height="120"></svg-icon>
         <div class="text-center w-44 m-auto">
-          <div>이름:사용자</div>
-          <div>닉네임:사용용이</div>
+          <div>이름:홍영광</div>
+          <div>닉네임:관리자용이</div>
         </div>
       </div>
       <div class="w-10/12 m-auto bg-slate-100 rounded-xl p-3 mt-4 ">
@@ -171,6 +171,7 @@
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiAccount,mdiBookshelf, mdiCake, mdiPhone } from '@mdi/js';
+import NavigationBar from './NavigationBar.vue';
 
 export default {
   name: 'MyPage',
@@ -209,6 +210,10 @@ export default {
   methods:{
     test(){
       console.log(this.tab)
+    },
+    componentTest(){
+      NavigationBar.drawer = true
+      console.log(NavigationBar.drawer);
     },
 
   },
