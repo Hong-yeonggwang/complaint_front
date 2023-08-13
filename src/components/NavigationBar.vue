@@ -34,7 +34,7 @@
 
         </v-list>
       </v-navigation-drawer>
-      <v-main style="">
+      <v-main style="box-sizing: content-box;">
         <router-view></router-view>
     </v-main>
     </v-layout>

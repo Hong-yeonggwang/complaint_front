@@ -3,6 +3,11 @@ import MyPage from '../components/MyPage.vue'
 import chatPage from '../components/Chat.vue'
 import CscenterPage from '../components/CscenterPage.vue'
 import BuyPage from '../components/Buy.vue'
+import UserLogin from '../components/UserLogin.vue'
+import UserJoin from '../components/UserJoin.vue'
+import FindPassword from '../components/FindPassword.vue'
+import FindId from '../components/FindId.vue'
+
 
 
 
@@ -36,6 +41,26 @@ const routes = [
     path: "/cscenter",
     name: "csCenterPage",
     component: CscenterPage
+  },
+  {
+    path:"/login",
+    name:"UserLogin",
+    component: UserLogin
+  },
+  {
+    path:"/join",
+    name:"UserJoin",
+    component: UserJoin
+  },
+  {
+    path:"/findid",
+    name:"FindId",
+    component: FindId
+  },
+  {
+    path:"/findpassword",
+    name:"FindPassword",
+    component: FindPassword
   },
 ];
 
