@@ -21,89 +21,51 @@
       <!-- 버스 -->
       <div v-if="this.tab == 'bus'">
         <div class="">
-          <v-select label="버스 출발지 - 가격" v-model="selectedOption" :options="options" :items="busList">
-          </v-select>
+          <v-select label="버스 출발지 - 가격" v-model="selectedOption" :items="busList"></v-select>
 
-          <!-- 새로운 <div> 엘리먼트 추가 -->
-          <div v-for="(item, index) in addedDivs" :key="index">
+          <!-- 새로운 Bus <div> 엘리먼트 추가 -->
+          <div v-for="(item, index) in addedBusDivs" :key="index">
             <div>{{ item.title }}</div>
             <div>
               <div class="float-left w-fit">
                 <v-btn density="compact" icon="mdi-minus" @click="minusCount(index)"></v-btn>
               </div>
               <div class="float-left">
-                <input type="number" class="border-solid border-2 border-black mx-3 w-36" v-model="item.count" >
+                <input type="number" class="border-solid border-2 border-black mx-2 w-28" v-model="item.count">
               </div>
               <div class="float-left w-fit">
                 <v-btn density="compact" icon="mdi-plus" @click="plusCount(index)"></v-btn>
               </div>
-              <div class="clear-both"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- <div>
-          <div class="text-center float-left w-1/2">
-            출발지
-          </div>
-          <div class="text-center float-left w-1/2">
-            가격
-          </div>
-        </div>
-        <div v-for="(item, index) in bus" :key="index">
-          <div class="mt-4">
-            <div>
-              <div class="text-center float-left w-1/2">
-                {{ item.title }}
-              </div>
-              <div class="text-center float-left w-1/2">
-                {{ item.value }}
-              </div>
-            </div>
-            <div>
-              <div class="float-left w-fit">
-                <v-btn density="compact" icon="mdi-minus" @click="minusBus(index)"></v-btn>
-              </div>
-              <div class="float-left">
-                <input type="number" class="border-solid border-2 border-black mx-3 w-36" v-model="item.count">
-              </div>
-              <div class="float-left w-fit">
-                <v-btn density="compact" icon="mdi-plus" @click="plusBus(index)"></v-btn>
+              <div class="float-left w-fit ml-3">
+                <v-btn density="compact" icon="mdi-delete-forever" @click="deleteDiv(index)"></v-btn>
+                <!-- <button @click="deleteItem(index)">삭제</button> -->
               </div>
               <div class="clear-both"></div>
             </div>
           </div>
-        </div> -->
+        </div>
       </div>
       <!-- 식당 -->
       <div v-if="this.tab == 'meal'">
-        <div>
-          <div class="text-center float-left w-1/2">
-            식당
-          </div>
-          <div class="text-center float-left w-1/2">
-            가격
-          </div>
-        </div>
-        <div v-for="(item, index) in meal" :key="index">
-          <div class="mt-4">
-            <div>
-              <div class="text-center float-left w-1/2">
-                {{ item.title }}
-              </div>
-              <div class="text-center float-left w-1/2">
-                {{ item.value }}
-              </div>
-            </div>
+        <div class="">
+          <v-select label="식당 - 가격" v-model="selectedOption" :items="mealList"></v-select>
+
+          <!-- 새로운 Meal <div> 엘리먼트 추가 -->
+          <div v-for="(item, index) in addedMealDivs" :key="index">
+            <div>{{ item.title }}</div>
             <div>
               <div class="float-left w-fit">
-                <v-btn density="compact" icon="mdi-minus" @click="minusBus(index)"></v-btn>
+                <v-btn density="compact" icon="mdi-minus" @click="minusCount(index)"></v-btn>
               </div>
               <div class="float-left">
-                <input type="number" class="border-solid border-2 border-black mx-3 w-36" v-model="item.count">
+                <input type="number" class="border-solid border-2 border-black mx-2 w-28" v-model="item.count">
               </div>
               <div class="float-left w-fit">
-                <v-btn density="compact" icon="mdi-plus" @click="plusBus(index)"></v-btn>
+                <v-btn density="compact" icon="mdi-plus" @click="plusCount(index)"></v-btn>
+              </div>
+              <div class="float-left w-fit ml-3">
+                <v-btn density="compact" icon="mdi-delete-forever" @click="deleteDiv(index)"></v-btn>
+                <!-- <button @click="deleteItem(index)">삭제</button> -->
               </div>
               <div class="clear-both"></div>
             </div>
@@ -111,18 +73,17 @@
         </div>
       </div>
 
-
       <div class="mt-6">
-        <div class="float-left">
-          <div>총 상품 금액</div>
+        <div class="float-left  mr-2">
+          <div class="font-bold w-fit">총 상품 금액</div>
         </div>
-        <div class="float-left">
-          <div class="float-left">총 수량</div>
-          <div class="float-left"></div>
+        <div class="float-left w-fit mr-2" style="color:#999999">
+          <div class="float-left mr-1">총 수량</div>
+          <div class="float-left">{{ calculateTotalQuantity }}</div>
           <div class="float-left">장</div>
         </div>
-        <div class="float-right">
-          <div class="float-left"></div>
+        <div class="float-left">
+          <div class="float-left" id="totalPrice">{{ calculateTotalPrice }}</div>
           <div class="float-left">원</div>
         </div>
         <div class="clear-both"></div>
@@ -151,58 +112,13 @@ export default {
       ],
 
       selectedOption: null, // v-select에서 선택한 옵션을 저장할 데이터
-      addedDivs: [], // 새로 추가된 <div> 엘리먼트를 저장할 데이터
+      addedBusDivs: [/* option: , count: , value: */], // 새로 추가된 Bus <div> 엘리먼트를 저장할 데이터
+      addedMealDivs: [], // 새로 추가된 Meal <div> 엘리먼트를 저장할 데이터
+      addedBusOptions: [/* option */], // 이미 추가된 Bus 옵션을 저장할 데이터
+      addedMealOptions: [], // 이미 추가된 Meal 옵션을 저장할 데이터
 
-      bus: [
-        {
-          title: 'bus #1',
-          value: 1000,
-          count: 0
-        },
-        {
-          title: 'bus #2',
-          value: 1500,
-          count: 0
-        },
-        {
-          title: 'bus #3',
-          value: 2000,
-          count: 0
-        },
-      ],
-      meal: [
-        {
-          title: '인성관 #A',
-          value: 4000,
-          count: 0
-        },
-        {
-          title: '인성관 #B',
-          value: 4000,
-          count: 0
-        },
-        {
-          title: '환과대 #A',
-          value: 4500,
-          count: 0
-        },
-        {
-          title: '환과대 #B',
-          value: 4500,
-          count: 0
-        },
-        {
-          title: '생활관 #A',
-          value: 3500,
-          count: 0
-        },
-        {
-          title: '생활관 #B',
-          value: 3500,
-          count: 0
-        },
-      ],
       busList: ['bus #1 - 1000', 'bus #2 - 1500', 'bus #3 - 2000', 'bus #4 - 2500'],
+      mealList: ['인성관 #A - 4000', '인성관 #B - 4000', '환과대 #A - 4500', '환과대 #B - 4500', '생활관 #A - 3500', '생활관 #B - 3500'],
     }
   },
   computed: {
@@ -213,6 +129,31 @@ export default {
         { value: 'option2', label: 'Option 2' },
         // ...
       ];
+    },
+    calculateTotalQuantity() {
+      // 추가된 div의 수량을 합산하는 computed 속성
+      let totalQuantity = 0;
+
+      if (this.tab === 'bus') {
+        totalQuantity = this.addedBusDivs.reduce((sum, item) => sum + item.count, 0);
+      } else if (this.tab === 'meal') {
+        totalQuantity = this.addedMealDivs.reduce((sum, item) => sum + item.count, 0);
+      }
+
+      return totalQuantity;
+    },
+    calculateTotalPrice() {
+    // 총 가격을 계산하는 computed 속성 (단순 예시)
+      let totalPrice = 0;
+
+      if (this.tab === 'bus') {
+        totalPrice = this.addedBusDivs.reduce((sum, item) => sum + (item.count * item.value), 0);
+      }
+      else if (this.tab === 'meal') {
+        totalPrice = this.addedMealDivs.reduce((sum, item) => sum + (item.count * item.value), 0);
+      }
+
+      return totalPrice;
     }
   },
   watch: {
@@ -222,47 +163,70 @@ export default {
   },
   methods: {
     plusCount(key) {
-      this.addedDivs[key].count += 1;
+      if (this.tab == "bus") {
+        this.addedBusDivs[key].count += 1;
+      }
+      if (this.tab == "meal") {
+        this.addedMealDivs[key].count += 1;
+      }
     },
     minusCount(key) {
-      if (this.addedDivs[key].count > 0) {
-        this.addedDivs[key].count -= 1;
+      if (this.tab == "bus") {
+        if (this.addedBusDivs[key].count > 1) {
+          this.addedBusDivs[key].count -= 1;
+        }
+        else {
+          alert("1개 이하로는 구매하실 수 없습니다.")
+        }
+      }
+      if (this.tab == "meal") {
+        if (this.addedMealDivs[key].count > 1) {
+          this.addedMealDivs[key].count -= 1;
+        }
+        else {
+          alert("1개 이하로는 구매하실 수 없습니다.")
+        }
       }
     },
-    plusMeal(key) {
-      this.meal[key].count += 1;
-    },
-    minusMeal(key) {
-      if (this.bus[key].count > 0) {
-        this.bus[key].count -= 1;
+    addNewDiv() {
+      // 새로운 <div> 엘리먼트 추가하는 로직
+      if (this.tab == "bus") {
+        if (this.selectedOption && !this.addedBusOptions.includes(this.selectedOption)) {
+          this.addedBusDivs.push({ title: this.selectedOption, count: 1, value: this.selectedOption.substring(this.selectedOption.length - 4) }); // 데이터에 선택한 옵션 추가
+          this.addedBusOptions.push(this.selectedOption); // 추가한 옵션 기록
+          this.selectedOption = null; // 선택 초기화
+        }
+        else if (this.addedBusOptions.includes(this.selectedOption)) {
+          alert("이미 선택한 옵션입니다.")
+        }
       }
+
+      if (this.tab == "meal") {
+        if (this.selectedOption && !this.addedMealOptions.includes(this.selectedOption)) {
+          this.addedMealDivs.push({ title: this.selectedOption, count: 1, value: this.selectedOption.substring(this.selectedOption.length - 4) }); // 데이터에 선택한 옵션 추가
+          this.addedMealOptions.push(this.selectedOption); // 추가한 옵션 기록
+          this.selectedOption = null; // 선택 초기화
+        }
+        else if (this.addedMealOptions.includes(this.selectedOption)) {
+          alert("이미 선택한 옵션입니다.")
+        }
+      }
+    },
+    deleteDiv(key) {
+      if (this.tab == "bus") {
+        this.addedBusOptions.splice(key, 1)
+        this.addedBusDivs.splice(key, 1)
+      }
+      if (this.tab == "meal") {
+        this.addedMealOptions.splice(key, 1)
+        this.addedMealDivs.splice(key, 1)
+      }
+
     },
     submitForm() {
       console.log("submitForm");
     },
-    addNewDiv() {
-      console.log('asd')
-      // 새로운 <div> 엘리먼트 추가하는 로직
-      if (this.selectedOption) {
-        this.addedDivs.push({title:this.selectedOption, count:0}); // 데이터에 선택한 옵션 추가
-        this.selectedOption = null; // 선택 초기화
-      }
-    }
   },
-  // fetchTitle(event) {
-  //   (`<div>` + event + `</div><div>
-  //             <div class="float-left w-fit">
-  //               <v-btn density="compact" icon="mdi-minus" @click="minusBus(index)"></v-btn>
-  //             </div>
-  //             <div class="float-left">
-  //               <input type="number" class="border-solid border-2 border-black mx-3 w-36" v-model="item.count">
-  //             </div>
-  //             <div class="float-left w-fit">
-  //               <v-btn density="compact" icon="mdi-plus" @click="plusBus(index)"></v-btn>
-  //             </div>
-  //             <div class="clear-both"></div>
-  //           </div>`).appendTo($("#selected"))
-  // },
 }
 
 </script>
