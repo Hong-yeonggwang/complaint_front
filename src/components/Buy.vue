@@ -16,7 +16,7 @@
     </v-card-text>
   </v-card>
 
-  <form v-on:submit="submitForm" action="" class="w-full">
+  <form v-on:submit="submitForm" action="./pay" class="w-full">
     <div class="py-6 w-56 m-auto">
       <!-- 버스 -->
       <div v-if="this.tab == 'bus'">
@@ -38,7 +38,6 @@
               </div>
               <div class="float-left w-fit ml-3">
                 <v-btn density="compact" icon="mdi-delete-forever" @click="deleteDiv(index)"></v-btn>
-                <!-- <button @click="deleteItem(index)">삭제</button> -->
               </div>
               <div class="clear-both"></div>
             </div>
@@ -65,7 +64,6 @@
               </div>
               <div class="float-left w-fit ml-3">
                 <v-btn density="compact" icon="mdi-delete-forever" @click="deleteDiv(index)"></v-btn>
-                <!-- <button @click="deleteItem(index)">삭제</button> -->
               </div>
               <div class="clear-both"></div>
             </div>
@@ -89,15 +87,17 @@
         <div class="clear-both"></div>
       </div>
 
-      <v-btn class="me-4 mt-4" type="submit">
-        구매하기
+      <!-- type="submit" -->
+      <v-btn class="me-4 mt-4" @click="openMobileApp">
+        결제하기
       </v-btn>
     </div>
   </form>
 </template>
 
 <script>
-// import $ from 'jquery';
+let IMP = window.IMP; // 생략 가능
+IMP.init("imp80446112");
 
 export default {
   name: 'buyPage',
@@ -143,7 +143,7 @@ export default {
       return totalQuantity;
     },
     calculateTotalPrice() {
-    // 총 가격을 계산하는 computed 속성 (단순 예시)
+      // 총 가격을 계산하는 computed 속성 (단순 예시)
       let totalPrice = 0;
 
       if (this.tab === 'bus') {
@@ -226,7 +226,28 @@ export default {
     submitForm() {
       console.log("submitForm");
     },
-  },
-}
+    openMobileApp() {
+                    // 'yourapp://'
+    const appScheme = 'https://play.google.com/store/apps/details?id=kr.ac.yongin.smartcampus.app&hl=ko-KR'; // 모바일 앱의 URI 스킴을 여기에 입력하세요
+                      // 'https://itunes.apple.com/app/yourapp'         
+    const appStoreUrl = 'https://apps.apple.com/kr/app/%ED%97%A4%EC%9D%B4%EC%98%81-%EC%BA%A0%ED%8D%BC%EC%8A%A4-%EB%8C%80%ED%95%99%EC%83%9D%ED%99%9C-%ED%95%84%EC%88%98-%ED%86%B5%ED%95%A9-%EC%95%B1/id1605688685'; // iOS 앱 스토어 링크
+                      // 'https://play.google.com/store/apps/details?id=com.yourapp'; // Android 앱 스토어 링크
+    const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.shinhan.heyoung&hl=ko-KR'
 
+    // 모바일 앱을 열기 위한 시도
+    window.location.href = appScheme;
+
+    // 일부 모바일 브라우저에서 모바일 앱을 열지 못하는 경우
+    // 사용자를 앱 스토어로 리디렉션
+    setTimeout(() => {
+      window.location.href = appStoreUrl; // iOS의 경우, playStoreUrl 대신 appStoreUrl 사용
+    }, 200);
+
+    // 사용자를 Google Play 스토어로 리디렉션 (Android만 해당)
+    setTimeout(() => {
+      window.location.href = playStoreUrl;
+    }, 200);
+  },
+  }
+}
 </script>

@@ -7,9 +7,8 @@ import UserLogin from '../components/UserLogin.vue'
 import UserJoin from '../components/UserJoin.vue'
 import FindPassword from '../components/FindPassword.vue'
 import FindId from '../components/FindId.vue'
-
-
-
+import PayPage from '../components/Pay.vue'
+import CompletePage from '../components/Complete.vue'
 
 const routes = [
   {
@@ -61,6 +60,16 @@ const routes = [
     path:"/findpassword",
     name:"FindPassword",
     component: FindPassword
+  },
+  {
+    path:"/pay",
+    name:"payPage",
+    component: PayPage
+  },
+  {
+    path:"/complete",
+    name:"completePage",
+    component: CompletePage
   },
 ];
 
