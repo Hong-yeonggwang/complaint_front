@@ -1,7 +1,7 @@
 <template>
   <!-- 메뉴바  -->
   <v-card>
-    <v-tabs v-model="tab" bg-color="black" classs="overflow-scroll">
+    <v-tabs v-model="tab" bg-color="black">
       <v-tab v-for="(menu, index) in  buyMenu" :key="index" v-bind:value="menu.value">{{ menu.title }}</v-tab>
     </v-tabs>
 
@@ -11,7 +11,6 @@
           v-bind:value="menu.value">
           {{ menu.info }}
         </v-window-item>
-
       </v-window>
     </v-card-text>
   </v-card>
@@ -122,14 +121,14 @@ export default {
     }
   },
   computed: {
-    options() {
-      // v-select에 표시할 옵션 리스트 반환
-      return [
-        { value: 'option1', label: 'Option 1' },
-        { value: 'option2', label: 'Option 2' },
-        // ...
-      ];
-    },
+    // options() {
+    //   // v-select에 표시할 옵션 리스트 반환
+    //   return [
+    //     { value: 'option1', label: 'Option 1' },
+    //     { value: 'option2', label: 'Option 2' },
+    //     // ...
+    //   ];
+    // },
     calculateTotalQuantity() {
       // 추가된 div의 수량을 합산하는 computed 속성
       let totalQuantity = 0;
@@ -238,7 +237,7 @@ export default {
     window.location.href = appScheme;
 
     // 일부 모바일 브라우저에서 모바일 앱을 열지 못하는 경우
-    // 사용자를 앱 스토어로 리디렉션
+    // 사용자를 앱 스토어로 리디렉션 (IOS만 해당)
     setTimeout(() => {
       window.location.href = appStoreUrl; // iOS의 경우, playStoreUrl 대신 appStoreUrl 사용
     }, 200);
