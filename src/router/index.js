@@ -8,9 +8,8 @@ import UserLogin from '../components/UserLogin.vue'
 import UserJoin from '../components/UserJoin.vue'
 import FindPassword from '../components/FindPassword.vue'
 import FindId from '../components/FindId.vue'
-
-
-
+import PayPage from '../components/Pay.vue'
+import CompletePage from '../components/Complete.vue'
 
 const routes = [
   {
@@ -81,7 +80,6 @@ const routes = [
     name:"FindPassword",
     component: FindPassword
   },
-  
 ];
 
 const router = createRouter({
