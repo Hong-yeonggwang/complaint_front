@@ -18,7 +18,7 @@
 
   <form v-on:submit="submitForm" action="" class="w-full">
     <div class="py-6 w-56 m-auto">
-      <!-- 버스 -->
+      <!-- 버스 --> 
       <div v-if="this.tab == 'bus'">
         <div class="">
           <v-select label="버스 출발지 - 가격" v-model="selectedOption" :options="options" :items="busList">

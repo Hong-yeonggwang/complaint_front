@@ -55,46 +55,56 @@
   </div>
 
   <div v-if="this.tab == 'QRwallet'" class="overflow-scroll">
+
     <div class="w-10/12 m-auto bg-slate-50 rounded-xl border-slate-950 border my-4 overflow-scroll h-48">
      <div class="px-4 py-4">
-        <div class="text-xl">승차권</div>
+        <div class="text-xl border-b">승차권</div>
 
-        <div class="m-auto">
-
+        <div class="m-auto" v-for="(tiket, index) in  qrcodeData.bus" :key="index">
           <div class="my-4 border border-slate-500 rounded-xl">
             <div class="text-center px-2 py-2 flex items-center justify-between">
               <div>
-                <div class="ml-2 my-1.5">상세:강남행</div>
+                <div class="ml-2 my-1.5">상세:{{tiket.content}}</div>
               </div>
               <div>
-                <div class=" bg-black rounded-xl text-center ml-3 px-2 py-1 ">QRCode보기</div>
+                <div class="bg-black rounded-xl text-center ml-3 px-2 py-1"  @click = "openQrcode(index,'bus')" v-bind:value="tiket.vlaue">QRCode보기</div>
+                <div class="absolute top-0 left-0 h-full w-full qrbackground " :class="{'active': tiket.display}" >
+                  <div class="qrcodeClose" @click = "closeQrcode(index,'bus')">닫기</div>
+                  <qrcode-vue class="relative m-auto top-1/4" v-bind:value="tiket.vlaue" :size="300" level="H" />
+                </div>
+
               </div>
             </div>
           </div>
-
         </div>
+
      </div>
     </div>
 
 
     <div class="w-10/12 m-auto bg-slate-50 rounded-xl border-slate-950 border my-4 overflow-scroll h-48">
      <div class="px-4 py-4">
-        <div class="text-xl">식권</div>
+        <div class="text-xl border-b">식권</div>
 
-        <div class="m-auto">
-
+        <div class="m-auto" v-for="(tiket, index) in  qrcodeData.restaurant" :key="index">
           <div class="my-4 border border-slate-500 rounded-xl">
             <div class="text-center px-2 py-2 flex items-center justify-between">
               <div>
-                <div class="ml-2 my-1.5">상세:강남행</div>
+                <div class="ml-2 my-1.5">상세:{{ tiket.content }}</div>
               </div>
               <div>
-                <div class=" bg-black rounded-xl text-center ml-3 px-2 py-1 ">QRCode보기</div>
+                <div class="bg-black rounded-xl text-center ml-3 px-2 py-1"  @click = "openQrcode(index,'a')" v-bind:value="tiket.vlaue">QRCode보기</div>
+                <div class="absolute top-0 left-0 h-full w-full qrbackground " :class="{'active': tiket.display}" >
+                  <div class="qrcodeClose" @click = "closeQrcode(index,'a')">닫기</div>
+                  <qrcode-vue class="relative m-auto top-1/4" v-bind:value="tiket.vlaue" :size="300" level="H" />
+                </div>
+
               </div>
             </div>
           </div>
-
         </div>
+
+
      </div>
     </div>
 
@@ -172,11 +182,17 @@
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiAccount,mdiBookshelf, mdiCake, mdiPhone } from '@mdi/js';
 import NavigationBar from './NavigationBar.vue';
+import UserService from '../Service/UserService';
+
+
+// qrcode
+import QrcodeVue from 'qrcode.vue'
 
 export default {
   name: 'MyPage',
   components: {
-    SvgIcon
+    SvgIcon,
+    QrcodeVue
     },  
   data () {
     return {
@@ -202,21 +218,80 @@ export default {
 
           return 'You must enter a first name.'
         },
-      ]
+      ],
+
+      //qrcode
+      qrcodeData:{
+        bus:[
+          {
+            content:"강남!행",
+            vlaue:"11d4ddc357e0822968dbfd226b6e1c2aac018d076a54da4f65e1dc8180684ac3",
+            display: false
+          },
+          {
+            content:"인천행",
+            vlaue:"ㅁㄴㅇㅁㄴㅇㄴㅁ",
+            display: false
+          },
+        ],
+        restaurant: []
+      }
+
     }
   },
   created(){
+    UserService.testGetData("hello").then(
+      (res)=>{
+        console.log(res);
+      },
+      (error)=>{
+        console.log(error);
+      }
+    )
   },
   methods:{
-    test(){
-      console.log(this.tab)
-    },
     componentTest(){
       NavigationBar.drawer = true
       console.log(NavigationBar.drawer);
     },
+    openQrcode(index , flag){
+      if(flag === "bus"){
+        this.qrcodeData.bus[index].display = true;
+      }
+      else{
+        this.qrcodeData.restaurant[index].display = true;
+      }
+    },
+    closeQrcode(index , flag){
+      if(flag === "bus"){
+        this.qrcodeData.bus[index].display = false;
+      }
+      else{
+        this.qrcodeData.restaurant[index].display = false;
+      }
+    }
 
   },
 }
 
 </script>
+<style>
+.qrbackground{
+  background-color : rgb(128,128,128,0.9);
+  display: none;
+}
+.qrbackground.active{
+  background-color : rgb(128,128,128,0.9);
+  display: block;
+}
+.qrcodeClose{
+  position: relative;
+  margin:auto;
+  top:15%;
+  width:300px;
+  height:25px;
+  text-align: center;
+  background-color: black;
+  color:white;
+}
+</style>

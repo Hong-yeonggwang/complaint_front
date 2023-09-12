@@ -16,8 +16,8 @@ export default {
         drawer: true,
         rail: true,
       }
-    }
-}
+    },
+  }
 </script>
 
 <style>

@@ -3,15 +3,15 @@
     로그인
   </div>
 
-  <form @submit.prevent="submitForm()">
+  <form @submit.prevent="submitForm"> 
     <div class="mb-2 m-auto w-fit flex items-center pb-2 border-b">
       <div class="w-fit float-left">
         <div class="mb-2">
-          <input name="id" type="text" maxlength="10" class="border rounded float-left pl-1" placeholder="아이디">  
+          <input v-model="formData.id" type="text" maxlength="10" class="border rounded float-left pl-1" placeholder="아이디">  
           <div class="clear-both"></div>
         </div>
         <div class="">
-            <input name="password" type="password" maxlength="10" class="border rounded float-left pl-1" placeholder="비밀번호">  
+            <input v-model="formData.password" type="password" maxlength="10" class="border rounded float-left pl-1" placeholder="비밀번호">  
           <div class="clear-both"></div>
         </div>
       </div>
@@ -25,9 +25,9 @@
   </form>
     
   <div class="text-sm w-fit m-auto">
-    <div class="float-left mr-2">회원가입</div>
-    <div class="float-left mr-2">아이디 찾기</div>
-    <div class="float-left mr-2">비밀번호 찾기</div>
+    <div class="float-left mr-2" @click = "this.join">회원가입</div>
+    <div class="float-left mr-2" @click = "this.findId">아이디 찾기</div>
+    <div class="float-left mr-2" @click = "this.findPwd">비밀번호 찾기</div>
     <div class="clear-both"></div>
   </div>
 </template>
@@ -35,6 +35,7 @@
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiLogin } from '@mdi/js';
+// import UserService from '../Service/UserService';
 
 export default {
   name: 'UserLogin',
@@ -44,19 +45,32 @@ export default {
   data () {
     return {
       login_path: mdiLogin,
+      formData: {
+        id: '',
+        password: '',
+      },
     }
   },
   methods:{
-    submitForm() {
-      // 여기에서 폼 제출 관련 작업을 처리합니다.
-      console.log('폼이 제출되었습니다.');
-      console.log('사용자 이름:', this.username);
-      console.log('비밀번호:', this.password);
-
-      // 폼 제출 후 데이터 초기화
-      this.username = '';
-      this.password = '';
-    }
+    submitForm(){
+      this.$store.dispatch("auth/login", this.formData).then(
+        () => {
+          this.$router.push("/");
+        },
+        (error) => {
+          console.log(error)
+        }
+      );
+    },
+    findPwd(){
+      this.$router.push("/findpassword");
+    },
+    findId(){
+      this.$router.push("/findid");
+    },
+    join(){
+      this.$router.push("/join");
+    },
   } 
 }
 </script>

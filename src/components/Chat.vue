@@ -1,26 +1,107 @@
 <template>
-  <!-- 메뉴바  -->
-  <v-card>
-    <v-tabs
-      v-model="tab"
-      bg-color="black"
-      classs="overflow-scroll"
-    >
-      <v-tab v-for="(menu,index) in  chaMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
-    </v-tabs>
+  <div class="border rounded-2xl m-4 ">
+    <div class="mx-4 mt-6 pb-2 border-b-2">
+      <div class="text-2xl">실시간 채팅</div>
+      <div>채팅을 통해 배달 같이 주문할 친구를 구해요~</div>
+    </div>
+  <div class="overflow-scroll" style="height:34rem;">
+    <div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div>
 
-    <v-card-text>
-      <v-window v-model="tab">
-        <v-window-item v-for="(menu,index) in chaMenu" :key="index" class="h-12 flex items-center" v-bind:value="menu.value">
-          {{ menu.info }}
-        </v-window-item>
+    <div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div><div class="my-2 mx-4 border rounded-lg">
+      <div class="px-2 py-3 mx-2">
+        <div class="float-left">방이름:</div>
+        <div class="clear-both"></div>
+        <div class="float-left">방장:ooo</div>
+        <div class="float-right">접속인원: 1/9</div>
+        <div class="clear-both"></div>
+      </div>
+    </div>
+  </div>
+    
 
-      </v-window>
-    </v-card-text>
-  </v-card>
-
+    
+  </div>
   
-  <div class="w-16 h-16 bg-black"></div>
 </template>
 
 <script>
@@ -30,11 +111,6 @@ export default {
     },  
   data () {
     return {
-      tab: null,
-      chaMenu:[
-        {title:'방', value:'1',info:'방1 정보'},
-        {title:'방', value:'2',info:'방2 정보'},
-      ],
       
     }
   },
