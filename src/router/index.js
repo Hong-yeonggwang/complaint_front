@@ -80,6 +80,16 @@ const routes = [
     name:"FindPassword",
     component: FindPassword
   },
+  {
+    path:"/pay",
+    name:"payPage",
+    component: PayPage
+  },
+  {
+    path:"/complete",
+    name:"completePage",
+    component: CompletePage
+  },
 ];
 
 const router = createRouter({
