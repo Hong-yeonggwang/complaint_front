@@ -95,9 +95,6 @@
 </template>
 
 <script>
-let IMP = window.IMP; // 생략 가능
-IMP.init("imp80446112");
-
 export default {
   name: 'buyPage',
   components: {

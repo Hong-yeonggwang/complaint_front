@@ -4,7 +4,7 @@
     <v-tabs
       v-model="tab"
       bg-color="black"
-      class="overflow-scroll"
+      class="overflow-x-auto"
     >
       <v-tab @click="componentTest()" v-for="(menu,index) in  myMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
     </v-tabs>
