@@ -51,7 +51,7 @@ export default {
   },
   data() {
     return {
-      // isModalOpen: false,
+      isModalOpen: false, // 기존의 isModalOpen을 openModal로 변경
       myInfo: { name: '정도훈', 학번: '201727040', 학과: '컴퓨터과학과' },
       chatRooms: [
         { id: 1, name: '방1', owner: 'user1', users: 1, maxUsers: 9 },
@@ -79,7 +79,7 @@ export default {
       // createChatRoom 함수 내용 구현
       // confirm();
       // this.isModalOpen = true;
-      this.$refs.inputPromptModal.openModal();
+      this.isModalOpen = true;
     },
     leftMouseListener() {
       this.toggleOnOff(0);
@@ -111,7 +111,7 @@ export default {
 
 <style>
 /* 모달 스타일 */
-.modal {
+/* .modal {
   position: fixed;
   z-index: 1;
   left: 0;
@@ -142,7 +142,7 @@ export default {
   color: black;
   text-decoration: none;
   cursor: pointer;
-}
+} */
 
 /* 마우스 메뉴 */
 .context-menus {

@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" v-if="isModalOpen">
+  <div class="modal" v-if="isModalOpen == true">
     <div class="modal-content">
       <span class="close" @click="closeModal">&times;</span>
       <h2>팝업 창</h2>
