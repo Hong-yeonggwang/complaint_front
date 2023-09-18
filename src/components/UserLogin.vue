@@ -7,11 +7,11 @@
     <div class="mb-2 m-auto w-fit flex items-center pb-2 border-b">
       <div class="w-fit float-left">
         <div class="mb-2">
-          <input v-model="formData.id" type="text" maxlength="10" class="border rounded float-left pl-1" placeholder="아이디">  
+          <input v-model="formData.id" type="text" maxlength="13" class="border rounded float-left pl-1" placeholder="아이디">  
           <div class="clear-both"></div>
         </div>
         <div class="">
-            <input v-model="formData.password" type="password" maxlength="10" class="border rounded float-left pl-1" placeholder="비밀번호">  
+            <input v-model="formData.password" type="password" maxlength="13" class="border rounded float-left pl-1" placeholder="비밀번호">  
           <div class="clear-both"></div>
         </div>
       </div>
