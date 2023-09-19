@@ -10,6 +10,7 @@ import FindPassword from '../components/FindPassword.vue'
 import FindId from '../components/FindId.vue'
 import PayPage from '../components/Pay.vue'
 import CompletePage from '../components/Complete.vue'
+import UserService from "@/Service/UserService";
 
 const routes = [
   {
@@ -64,8 +65,9 @@ const routes = [
     path:"/login",
     name:"UserLogin",
     component: UserLogin,
-    beforeEnter: (to, from, next) => {
-      if (!localStorage.getItem("user")) {
+    beforeEnter: async (to, from, next) => {
+      const auth = await UserService.getAuth();
+      if (!auth) {
         next(); // 이동 허용
       } else {
         next('/'); // 메인 페이지로 이동
@@ -76,8 +78,9 @@ const routes = [
     path:"/join",
     name:"UserJoin",
     component: UserJoin,
-    beforeEnter: (to, from, next) => {
-      if (!localStorage.getItem("user")) {
+    beforeEnter: async (to, from, next) => {
+      const auth = await UserService.getAuth();
+      if (!auth) {
         next(); // 이동 허용
       } else {
         next('/'); // 메인 페이지로 이동
@@ -88,8 +91,9 @@ const routes = [
     path:"/findid",
     name:"FindId",
     component: FindId,
-    beforeEnter: (to, from, next) => {
-      if (!localStorage.getItem("user")) {
+    beforeEnter: async (to, from, next) => {
+      const auth = await UserService.getAuth();
+      if (!auth) {
         next(); // 이동 허용
       } else {
         next('/'); // 메인 페이지로 이동
@@ -100,8 +104,9 @@ const routes = [
     path:"/findpassword",
     name:"FindPassword",
     component: FindPassword,
-    beforeEnter: (to, from, next) => {
-      if (!localStorage.getItem("user")) {
+    beforeEnter: async (to, from, next) => {
+      const auth = await UserService.getAuth();
+      if (!auth) {
         next(); // 이동 허용
       } else {
         next('/'); // 메인 페이지로 이동
@@ -131,24 +136,16 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("user");
-  console.log(!token)
+  router.beforeEach( async (to, from, next) => {
+  const token = await UserService.getAuth()
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth); // meta에 requiresAuth가 달려있는지 확인 (type:bool)
-  console.log(requiresAuth)
-  // const loginStaus = to.matched.some(record => record.meta.loginStaus); // 현재 로그인이 되어있는 확인하는 메서드
-  // console.log(loginStaus);
   if (requiresAuth && !token) {
     // 토큰이 없을 경우 로그인 페이지로 이동
     next("/login");
   } else {
-      // // 토큰이 있을 경우 인증 통과
-    //   if(loginStaus){
-    //     next("/");
-    //   }
-    //   else{
-        next();
-    // }
+      
+    next();
+    
   }
 });
 
