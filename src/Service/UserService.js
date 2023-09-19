@@ -7,14 +7,9 @@ class UserService {
   }
   async getAuth() {
     try {
-      const response = await api.post('/auth');
-      console.log(response);
+      await api.post('/auth');
       
-      if (response.data) {
-        return true;
-      } else {
-        return false;
-      }
+      return true;
     } catch (error) {
       console.error(error);
       return false;

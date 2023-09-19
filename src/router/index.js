@@ -10,7 +10,9 @@ import FindPassword from '../components/FindPassword.vue'
 import FindId from '../components/FindId.vue'
 import PayPage from '../components/Pay.vue'
 import CompletePage from '../components/Complete.vue'
+import QRcodeReader from '../components/QRcodeReader.vue'
 import UserService from "@/Service/UserService";
+
 
 const routes = [
   {
@@ -65,53 +67,53 @@ const routes = [
     path:"/login",
     name:"UserLogin",
     component: UserLogin,
-    beforeEnter: async (to, from, next) => {
-      const auth = await UserService.getAuth();
-      if (!auth) {
-        next(); // 이동 허용
-      } else {
-        next('/'); // 메인 페이지로 이동
-      }
-    },
+    // beforeEnter: async (to, from, next) => {
+    //   const auth = await UserService.getAuth();
+    //   if (!auth) {
+    //     next(); // 이동 허용
+    //   } else {
+    //     next('/'); // 메인 페이지로 이동
+    //   }
+    // },
   },
   {
     path:"/join",
     name:"UserJoin",
     component: UserJoin,
-    beforeEnter: async (to, from, next) => {
-      const auth = await UserService.getAuth();
-      if (!auth) {
-        next(); // 이동 허용
-      } else {
-        next('/'); // 메인 페이지로 이동
-      }
-    },
+    // beforeEnter: async (to, from, next) => {
+    //   const auth = await UserService.getAuth();
+    //   if (auth) {
+    //     next(); // 이동 허용
+    //   } else {
+    //     next(); // 메인 페이지로 이동
+    //   }
+    // },
   },
   {
     path:"/findid",
     name:"FindId",
     component: FindId,
-    beforeEnter: async (to, from, next) => {
-      const auth = await UserService.getAuth();
-      if (!auth) {
-        next(); // 이동 허용
-      } else {
-        next('/'); // 메인 페이지로 이동
-      }
-    },
+    // beforeEnter: async (to, from, next) => {
+    //   const auth = await UserService.getAuth();
+    //   if (!auth) {
+    //     next(); // 이동 허용
+    //   } else {
+    //     next('/'); // 메인 페이지로 이동
+    //   }
+    // },
   },
   {
     path:"/findpassword",
     name:"FindPassword",
     component: FindPassword,
-    beforeEnter: async (to, from, next) => {
-      const auth = await UserService.getAuth();
-      if (!auth) {
-        next(); // 이동 허용
-      } else {
-        next('/'); // 메인 페이지로 이동
-      }
-    },
+    // beforeEnter: async (to, from, next) => {
+    //   const auth = await UserService.getAuth();
+    //   if (!auth) {
+    //     next(); // 이동 허용
+    //   } else {
+    //     next('/'); // 메인 페이지로 이동
+    //   }
+    // },
   },
   {
     path:"/pay",
@@ -129,6 +131,14 @@ const routes = [
       requiresAuth: true, 
     },
   },
+  {
+    path:"/qrcode",
+    name:"qr",
+    component: QRcodeReader,
+    meta: {
+      requiresAuth: true, 
+    },
+  },
 ];
 
 const router = createRouter({
@@ -142,10 +152,11 @@ const router = createRouter({
   if (requiresAuth && !token) {
     // 토큰이 없을 경우 로그인 페이지로 이동
     next("/login");
-  } else {
-      
+  } else if(!requiresAuth && token){
+    next("/");
+  }
+  else{
     next();
-    
   }
 });
 

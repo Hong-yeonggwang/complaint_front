@@ -11,6 +11,9 @@ import axios from 'axios'
 
 import apiInterceptors from './Service/apiInterceptor';
 
+import VueQrcodeReader from "vue-qrcode-reader";
+
+
 apiInterceptors(store);
 
 loadFonts()
@@ -21,6 +24,7 @@ app.config.globalProperties.axios = axios;
 app.use(vuetify)
   .use(router)
   .use(store)
+  .use(VueQrcodeReader)
   .mount('#app')
 
 
