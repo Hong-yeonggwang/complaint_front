@@ -17,7 +17,7 @@ const routes = [
     name: "main",
     component: MyPage,
     meta: {
-      requiresAuth: true, // Set this to true for routes that require authentication
+      requiresAuth: true, 
     },
   },
   {
@@ -25,7 +25,7 @@ const routes = [
     name: "userPage",
     component: MyPage,
     meta: {
-      requiresAuth: true, // Set this to true for routes that require authentication
+      requiresAuth: true, 
     },
   },
   {
@@ -33,7 +33,7 @@ const routes = [
     name: "buyPage",
     component: BuyPage,
     meta: {
-      requiresAuth: true, // Set this to true for routes that require authentication
+      requiresAuth: true, 
     },
   },
   {
@@ -41,7 +41,7 @@ const routes = [
     name: "chatPage",
     component: chatPage,
     meta: {
-      requiresAuth: true, // Set this to true for routes that require authentication
+      requiresAuth: true,
     },
   },
   {
@@ -49,7 +49,7 @@ const routes = [
     name: "chatRoomPage",
     component: ChatRoom,
     meta: {
-      requiresAuth: true, // Set this to true for routes that require authentication
+      requiresAuth: true, 
     },
   },
   {
@@ -57,39 +57,55 @@ const routes = [
     name: "csCenterPage",
     component: CscenterPage,
     meta: {
-      requiresAuth: true, // Set this to true for routes that require authentication
+      requiresAuth: true, 
     },
   },
   {
     path:"/login",
     name:"UserLogin",
     component: UserLogin,
-    meta: {
-      loginStaus: true, // Set this to true for routes that require authentication
+    beforeEnter: (to, from, next) => {
+      if (!localStorage.getItem("user")) {
+        next(); // 이동 허용
+      } else {
+        next('/'); // 메인 페이지로 이동
+      }
     },
   },
   {
     path:"/join",
     name:"UserJoin",
     component: UserJoin,
-    meta: {
-      loginStaus: true, // Set this to true for routes that require authentication
+    beforeEnter: (to, from, next) => {
+      if (!localStorage.getItem("user")) {
+        next(); // 이동 허용
+      } else {
+        next('/'); // 메인 페이지로 이동
+      }
     },
   },
   {
     path:"/findid",
     name:"FindId",
     component: FindId,
-    meta: {
-      loginStaus: true, // Set this to true for routes that require authentication
+    beforeEnter: (to, from, next) => {
+      if (!localStorage.getItem("user")) {
+        next(); // 이동 허용
+      } else {
+        next('/'); // 메인 페이지로 이동
+      }
     },
   },
   {
     path:"/findpassword",
     name:"FindPassword",
     component: FindPassword,
-    meta: {
-      loginStaus: true, // Set this to true for routes that require authentication
+    beforeEnter: (to, from, next) => {
+      if (!localStorage.getItem("user")) {
+        next(); // 이동 허용
+      } else {
+        next('/'); // 메인 페이지로 이동
+      }
     },
   },
   {
@@ -97,7 +113,7 @@ const routes = [
     name:"payPage",
     component: PayPage,
     meta: {
-      requiresAuth: true, // Set this to true for routes that require authentication
+      requiresAuth: true, 
     },
   },
   {
@@ -105,7 +121,7 @@ const routes = [
     name:"completePage",
     component: CompletePage,
     meta: {
-      requiresAuth: true, // Set this to true for routes that require authentication
+      requiresAuth: true, 
     },
   },
 ];
@@ -117,20 +133,22 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("user");
+  console.log(!token)
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth); // meta에 requiresAuth가 달려있는지 확인 (type:bool)
-  const loginStaus = to.matched.some(record => record.meta.loginStaus); // 현재 로그인이 되어있는 확인하는 메서드
-  console.log(loginStaus);
+  console.log(requiresAuth)
+  // const loginStaus = to.matched.some(record => record.meta.loginStaus); // 현재 로그인이 되어있는 확인하는 메서드
+  // console.log(loginStaus);
   if (requiresAuth && !token) {
     // 토큰이 없을 경우 로그인 페이지로 이동
     next("/login");
   } else {
-    // 토큰이 있을 경우 인증 통과
-    if(loginStaus){
-      next("/");
-    }
-    else{
-      next();
-    }
+      // // 토큰이 있을 경우 인증 통과
+    //   if(loginStaus){
+    //     next("/");
+    //   }
+    //   else{
+        next();
+    // }
   }
 });
 
