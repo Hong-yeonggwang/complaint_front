@@ -1,7 +1,7 @@
 <template>
   <div class="border rounded-2xl m-4 ">
     <div class="mx-4 mt-6 pb-2 border-b-2">
-      <div class="text-2xl">방이름</div>
+      <div class="text-2xl">방이름 {{ chatRoomInfo.id }}</div>
       <div>인원수 1/9</div>
     </div>
     <div class="my-2 mx-4 채팅방 기본 트레이">
@@ -40,6 +40,8 @@ export default {
   },
   data() {
     return {
+      chatRoomInfo: {id: this.$route.params.room , name:"방이름", owner: 'user1', users: 1, maxUsers: 9 },
+      
 
     }
   },
