@@ -1,9 +1,29 @@
 <template>
-    <qrcode-stream @detect="onDetect" @init="onInit" class="w-3/4 m-auto"></qrcode-stream>
+    <qrcode-stream @detect="onDetect">
+    </qrcode-stream>
+    <div class="absolute w-full top-20 left-0" v-if="this.messageCodeFlag">
+        <div class="w-1/2 m-auto rounded-xl shadow-lg border text-center p-4 bg-sky-50">
+            <div class="w-fit float-right bg-sky-100 hover:bg-sky-200 p-1 rounded-lg text-sm">닫기</div>
+            <div class="clear-both"></div>
+            <ul class="text-left">
+                <li class="tracking-wider">사용자: 
+                    <span>홍영광</span>
+                </li>
+                <li class="tracking-wider">코드:
+                    <span>AAD-125</span>
+                </li>
+                <li class="tracking-wider">이름:
+                    <span>강남행</span>
+                </li>
+            </ul>
+            <button class="w-3/4 border rounded-lg mt-3 m-auto bg-sky-100 hover:bg-sky-200">확인</button>
+        </div>
+    </div>
+    
 </template>
   
 <script>
-import { QrcodeStream} from 'vue-qrcode-reader'
+import { QrcodeStream } from 'vue-qrcode-reader'
 
 export default {
     name: "QRcodeReader",
@@ -14,32 +34,15 @@ export default {
         return {
             result: '',
             error : '',
+            messageCodeFlag:false,
         }
   },
   methods: {
     onDetect (detectedCodes) {
       this.result = detectedCodes
       console.log(this.result)
+      this.messageCodeFlag = true
     },
-    async onInit (promise) {
-      try {
-        await promise
-      } catch (error) {
-        if (error.name === 'NotAllowedError') {
-          this.error = "ERROR: you need to grant camera access permisson"
-        } else if (error.name === 'NotFoundError') {
-          this.error = "ERROR: no camera on this device"
-        } else if (error.name === 'NotSupportedError') {
-          this.error = "ERROR: secure context required (HTTPS, localhost)"
-        } else if (error.name === 'NotReadableError') {
-          this.error = "ERROR: is the camera already in use?"
-        } else if (error.name === 'OverconstrainedError') {
-          this.error = "ERROR: installed cameras are not suitable"
-        } else if (error.name === 'StreamApiNotSupportedError') {
-          this.error = "ERROR: Stream API is not supported in this browser"
-        }
-      }
-    }
   }
 
 }
