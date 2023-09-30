@@ -1,8 +1,9 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { defineComponent } from 'vue'
 import MyPage from '../components/MyPage.vue'
-import chatPage from '../components/Chat.vue'
+// import chatPage from '../components/Chat.vue'
 import ChatRoom from '../components/ChatRoom.vue'
+import ChatTest from '../components/ChatTest.vue'
 import CscenterPage from '../components/CscenterPage.vue'
 import BuyPage from '../components/Buy.vue'
 import UserLogin from '../components/UserLogin.vue'
@@ -46,7 +47,7 @@ const routes = [
   {
     path: "/chat",
     name: "chatPage",
-    component: chatPage,
+    component: ChatTest,
     meta: {
       requiresAuth: true,
     },
@@ -55,6 +56,14 @@ const routes = [
     path: "/chat/:room",
     name: "chatRoomPage",
     component: ChatRoom,
+    meta: {
+      requiresAuth: true, 
+    },
+  },
+  {
+    path: "/ChatTest",
+    name: "ChatTest",
+    component: ChatTest,
     meta: {
       requiresAuth: true, 
     },
