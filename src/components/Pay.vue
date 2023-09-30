@@ -1,4 +1,7 @@
 <template>
+    <NavigationBar2 class="float-left"></NavigationBar2>
+    <div class="ml-14 customWidth float-left">
+
     <section class="test">
         <v-btn class="me-4 mt-4" @click="PaymentBtn">
             결제하기
@@ -7,9 +10,12 @@
         <input type="number" placeholder="금액 입력" v-model="price">
         <!-- <div class="moneyButton" @click="cancelPay">환불하기</div> -->
     </section>
+
+    </div>
 </template>
   
 <script>
+import NavigationBar2 from './NavigationBar2.vue';
 // import jquery from 'jquery';
 // let IMP;
 
@@ -20,6 +26,9 @@
 
 export default {
     name: "payPage",
+    components: {
+        NavigationBar2
+    },
     data() {
         return {
             price: 0

@@ -1,5 +1,7 @@
 <template>
-  <!-- 메뉴바  -->
+  <NavigationBar2 class="float-left"></NavigationBar2>
+  <div class="ml-14 customWidth float-left">
+    <!-- 메뉴바  -->
   <v-card>
     <v-tabs
       v-model="tab"
@@ -46,15 +48,21 @@
     </div>
 
   </div>
+
+  </div>
+  
   
 
   
 </template>
 
 <script>
+import NavigationBar2 from './NavigationBar2.vue';
+
 export default {
   name: 'CscenterPage',
   components: {
+    NavigationBar2
     },  
   data () {
     return {

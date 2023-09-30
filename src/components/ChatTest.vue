@@ -84,20 +84,8 @@ export default {
     methods: {
         wsOpen() {
             this.ws = new WebSocket("ws://localhost:8080/chat/"+this.$route.params.room);
+            console.log("ws://localhost:8080/chat/"+this.$route.params.room);
             console.log(this.ws);
-            // let data = {
-            //     'roomId':"1",
-            //     'sender':"qw",
-            //     "message":"test"
-            // }
-            // UserService.sendWs(data).then(
-            //     (res)=>{
-            //         console.log(res.data)
-            //     },
-            //     (error)=>{
-            //         console.log(error);
-            //     }
-            // );
             console.log("1")
             this.wsEvt();
         },

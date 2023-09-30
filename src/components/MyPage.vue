@@ -1,4 +1,6 @@
 <template>
+  <NavigationBar2 class="float-left"></NavigationBar2>
+  <div class="ml-14 customWidth float-left">
   <!-- 메뉴바  -->
   <v-card>
     <v-tabs
@@ -176,6 +178,9 @@
   
   </div>
   
+</div>
+
+  
 </template>
 
 <script>
@@ -183,6 +188,8 @@ import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiAccount,mdiBookshelf, mdiCake, mdiPhone } from '@mdi/js';
 import NavigationBar from './NavigationBar.vue';
 import UserService from '../Service/UserService';
+import NavigationBar2 from './NavigationBar2.vue'
+
 
 
 // qrcode
@@ -192,7 +199,8 @@ export default {
   name: 'MyPage',
   components: {
     SvgIcon,
-    QrcodeVue
+    QrcodeVue,
+    NavigationBar2
     },  
   data () {
     return {
@@ -311,5 +319,8 @@ export default {
   text-align: center;
   background-color: black;
   color:white;
+}
+.customWidth{
+  width: calc(100% - 3.5rem);
 }
 </style>

@@ -1,4 +1,7 @@
 <template>
+  <NavigationBar2 class="float-left"></NavigationBar2>
+  <div class="ml-14 customWidth float-left">
+    
   <div class="border rounded-2xl m-4 ">
     <div class="mx-4 mt-6 pb-2 border-b-2">
       <div class="text-2xl">방이름 {{ chatRoomInfo.id }}</div>
@@ -31,12 +34,15 @@
       <button class="float-right">전송</button>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
+import NavigationBar2 from './NavigationBar2.vue';
 export default {
   name: 'ChatRoom',
   components: {
+    NavigationBar2
   },
   data() {
     return {

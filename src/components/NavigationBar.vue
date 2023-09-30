@@ -35,7 +35,7 @@
         </v-list>
       </v-navigation-drawer>
       <v-main style="box-sizing: content-box;" @click.stop="rail = true">
-        <router-view></router-view>
+        <!-- <router-view></router-view> -->
     </v-main>
     </v-layout>
   </v-card>

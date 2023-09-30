@@ -1,4 +1,7 @@
 <template>
+  <NavigationBar2 class="float-left"></NavigationBar2>
+  <div class="ml-14 customWidth float-left">
+
   <!-- 메뉴바  -->
   <v-card>
     <v-tabs v-model="tab" bg-color="black">
@@ -92,12 +95,18 @@
       </v-btn>
     </div>
   </form>
+
+  </div>
+
 </template>
 
 <script>
+import NavigationBar2 from './NavigationBar2.vue';
+
 export default {
   name: 'buyPage',
   components: {
+    NavigationBar2  
   },
   data() {
     return {
