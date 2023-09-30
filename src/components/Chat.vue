@@ -1,6 +1,6 @@
 <template>
   <!-- 모달 -->
-  <InputPromptModal @closeModal="closeModal" @handleInput="handleInput" />
+  <InputPromptModal v-if="this.isModalOpen == true" @closeModal="closeModal" @handleInput="handleInput" />
   <!-- // 모달 -->
 
   <div class="border rounded-2xl m-4 ">
@@ -78,7 +78,6 @@ export default {
     createChatRoom() {
       // createChatRoom 함수 내용 구현
       // confirm();
-      // this.isModalOpen = true;
       this.isModalOpen = true;
     },
     leftMouseListener() {
