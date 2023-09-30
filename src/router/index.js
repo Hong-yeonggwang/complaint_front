@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import { defineComponent } from 'vue'
 import MyPage from '../components/MyPage.vue'
 // import chatPage from '../components/Chat.vue'
-import ChatRoom from '../components/ChatRoom.vue'
+// import ChatRoom from '../components/ChatRoom.vue'
 import ChatTest from '../components/ChatTest.vue'
 import CscenterPage from '../components/CscenterPage.vue'
 import BuyPage from '../components/Buy.vue'
@@ -55,7 +55,7 @@ const routes = [
   {
     path: "/chat/:room",
     name: "chatRoomPage",
-    component: ChatRoom,
+    component: ChatTest,
     meta: {
       requiresAuth: true, 
     },

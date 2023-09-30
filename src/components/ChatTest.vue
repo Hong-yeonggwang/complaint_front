@@ -61,8 +61,8 @@
 <script>
 import $ from 'jquery';
 import axios from 'axios';
+// import UserService from "../Service/UserService";
 
-let ws;
 
 axios.get('https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js').then(result => {
     console.log(result);
@@ -77,22 +77,37 @@ export default {
     data() {
         return {
             chatRoomInfo: { id: this.$route.params.room, name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
-
+            ws:'',
 
         }
     },
     methods: {
         wsOpen() {
-            ws = new WebSocket("ws://" + location.host + "/chating");
+            this.ws = new WebSocket("ws://localhost:8080/chat/"+this.$route.params.room);
+            console.log(this.ws);
+            // let data = {
+            //     'roomId':"1",
+            //     'sender':"qw",
+            //     "message":"test"
+            // }
+            // UserService.sendWs(data).then(
+            //     (res)=>{
+            //         console.log(res.data)
+            //     },
+            //     (error)=>{
+            //         console.log(error);
+            //     }
+            // );
+            console.log("1")
             this.wsEvt();
         },
 
         wsEvt() {
-            ws.onopen = function (data) {
+            this.ws.onopen = function (data) {
                 console.log(data)
             };
 
-            ws.onmessage = function (data) {
+            this.ws.onmessage = function (data) {
                 let msg = data.data;
                 if (msg != null && msg.trim() != '') {
                     $("#chating").append("<p>" + msg + "</p>");
@@ -121,7 +136,7 @@ export default {
         send() {
             let uN = $("#userName").val();
             let msg = $("#chatting").val();
-            ws.send(uN + " : " + msg);
+            this.ws.send(uN + " : " + msg);
             $('#chatting').val("");
         },
     }
