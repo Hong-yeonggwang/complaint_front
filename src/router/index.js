@@ -1,4 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
+import { defineComponent } from 'vue'
 import MyPage from '../components/MyPage.vue'
 import chatPage from '../components/Chat.vue'
 import ChatRoom from '../components/ChatRoom.vue'
@@ -13,6 +14,9 @@ import CompletePage from '../components/Complete.vue'
 import QRcodeReader from '../components/QRcodeReader.vue'
 import UserService from "@/Service/UserService";
 
+const NotFound = defineComponent({
+  template: '<div>Not Found</div>',
+})
 
 const routes = [
   {
@@ -67,53 +71,21 @@ const routes = [
     path:"/login",
     name:"UserLogin",
     component: UserLogin,
-    // beforeEnter: async (to, from, next) => {
-    //   const auth = await UserService.getAuth();
-    //   if (!auth) {
-    //     next(); // 이동 허용
-    //   } else {
-    //     next('/'); // 메인 페이지로 이동
-    //   }
-    // },
   },
   {
     path:"/join",
     name:"UserJoin",
     component: UserJoin,
-    // beforeEnter: async (to, from, next) => {
-    //   const auth = await UserService.getAuth();
-    //   if (auth) {
-    //     next(); // 이동 허용
-    //   } else {
-    //     next(); // 메인 페이지로 이동
-    //   }
-    // },
   },
   {
     path:"/findid",
     name:"FindId",
     component: FindId,
-    // beforeEnter: async (to, from, next) => {
-    //   const auth = await UserService.getAuth();
-    //   if (!auth) {
-    //     next(); // 이동 허용
-    //   } else {
-    //     next('/'); // 메인 페이지로 이동
-    //   }
-    // },
   },
   {
     path:"/findpassword",
     name:"FindPassword",
     component: FindPassword,
-    // beforeEnter: async (to, from, next) => {
-    //   const auth = await UserService.getAuth();
-    //   if (!auth) {
-    //     next(); // 이동 허용
-    //   } else {
-    //     next('/'); // 메인 페이지로 이동
-    //   }
-    // },
   },
   {
     path:"/pay",
@@ -139,6 +111,10 @@ const routes = [
       requiresAuth: true, 
     },
   },
+  {
+    path: '/:catchAll(.*)+',
+    component: NotFound
+  },
 ];
 
 const router = createRouter({
@@ -147,17 +123,20 @@ const router = createRouter({
 });
 
   router.beforeEach( async (to, from, next) => {
+  console.log("beforeEach 실행")
   const token = await UserService.getAuth()
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth); // meta에 requiresAuth가 달려있는지 확인 (type:bool)
   if (requiresAuth && !token) {
-    // 토큰이 없을 경우 로그인 페이지로 이동
+    // 인증정보가 필요하고 인증정보가 없는 경우는 로그인 페이지로 
     next("/login");
   } else if(!requiresAuth && token){
+    // 인증이 필요하지않고 인증정보가 존재하면 다음페이지로 이동
     next("/");
   }
   else{
     next();
   }
-});
+  }
+);
 
 export default router;

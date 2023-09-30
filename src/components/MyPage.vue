@@ -24,26 +24,26 @@
       <div class="mt-4 py-6 w-56 m-auto bg-slate-100 rounded-full">
         <svg-icon type="mdi" :path="face_path" class="m-auto" width="120" height="120"></svg-icon>
         <div class="text-center w-44 m-auto">
-          <div>이름:홍영광</div>
-          <div>닉네임:관리자용이</div>
+          <div>이름:{{this.memberInfo.name}}</div>
+          <div>닉네임:{{this.memberInfo.nickName}}</div>
         </div>
       </div>
       <div class="w-10/12 m-auto bg-slate-100 rounded-xl p-3 mt-4 ">
         <div class="py-1.5">      
           <svg-icon type="mdi" :path="major_path" class="float-left mr-1.5" ></svg-icon>
-          <div class="float-left">학과</div>
+          <div class="float-left">학과:{{this.memberInfo.major}}</div>
           <div class="clear-both"></div>
         </div>
 
         <div class="py-1.5">      
           <svg-icon type="mdi" :path="brith_path" class="float-left mr-1.5" ></svg-icon>
-          <div class="float-left">생년월일</div>
+          <div class="float-left">생년월일:{{this.memberInfo.birth}}</div>
           <div class="clear-both"></div>
         </div>
 
         <div class="py-1.5">      
           <svg-icon type="mdi" :path="phone_path" class="float-left mr-1.5" ></svg-icon>
-          <div class="float-left">전화번호</div>
+          <div class="float-left">전화번호:{{this.memberInfo.phoneNumber}}</div>
           <div class="clear-both"></div>
         </div>
       </div>
@@ -118,7 +118,7 @@
           <svg-icon type="mdi" :path="face_path" class="m-auto" width="120" height="120"></svg-icon>
           <div class="text-center w-44 m-auto">
             <div>이름:사용자</div>
-            <input type="text" class="w-28 text-center bg-white" v-model="nickName" :rules="rules" placeholder="닉네임">
+            <input type="text" class="w-28 text-center bg-white" v-model="memberInfo.nickName" placeholder="닉네임">
             <div class="clear-both"></div>
           </div>
         </div>
@@ -126,21 +126,21 @@
           <div class="py-1.5">      
             <svg-icon type="mdi" :path="major_path" class="float-left mr-1.5" ></svg-icon>
             <div class="float-left">학과:</div>
-            <input type="text" class="ml-3 w-32 text-center bg-white float-left" v-model="major" :rules="rules" placeholder="학과">
+            <input type="text" class="ml-3 w-32 text-center bg-white float-left" v-model="memberInfo.major" placeholder="학과">
             <div class="clear-both"></div>
           </div>
 
           <div class="py-1.5">      
             <svg-icon type="mdi" :path="brith_path" class="float-left mr-1.5" ></svg-icon>
             <div class="float-left">생년월일</div>
-            <input type="date" class="ml-3 w-32 text-center bg-white float-left" v-model="birth" :rules="rules" placeholder="생년월일">
+            <input type="date" class="ml-3 w-32 text-center bg-white float-left" v-model="memberInfo.birth" placeholder="생년월일">
             <div class="clear-both"></div>
           </div>
 
           <div class="py-1.5">      
             <svg-icon type="mdi" :path="phone_path" class="float-left mr-1.5" ></svg-icon>
             <div class="float-left">전화번호</div>
-            <input type="text" class="ml-3 w-32 text-center bg-white float-left" v-model="phoneNumber" :rules="rules" placeholder="전화번호">
+            <input type="text" class="ml-3 w-32 text-center bg-white float-left" v-model="memberInfo.phoneNumber" placeholder="전화번호">
             <div class="clear-both"></div>
           </div>
         </div>
@@ -161,11 +161,11 @@
         <div class="m-auto w-fit">
           <div class="mb-3 text-2xl">쿠폰등록하기</div>
           <div class="flex items-center">
-            <input class="w-40 float-left border bg-slate-200 rounded-md mr-3" type="text" placeholder="쿠폰번호를 입력하세요." maxlength="6">
-            <button type="button" class="float-left px-2 bg-slate-300 rounded-md">등록</button>
+            <input v-model="this.couponSerial" class="w-40 float-left border bg-slate-200 rounded-md mr-3" type="text" placeholder="쿠폰번호를 입력하세요." maxlength="10">
+            <button @click="this.useCoupon()" type="button" class="float-left px-2 bg-slate-300 rounded-md">등록</button>
             <div class="clear-both"></div>
           </div>
-          <div class="my-2 text-sm">숫자와 영어로이루어진 6글자를 입력하세요.</div>
+          <div class="my-2 text-sm">숫자와 영어로이루어진 10글자를 입력하세요.</div>
         </div>
 
         </div>
@@ -201,48 +201,55 @@ export default {
       brith_path: mdiCake,
       phone_path: mdiPhone,
       tab: null,
+      couponSerial:'',
       myMenu:[
         {title:'내정보', value:'myInfo',info:'정보를 확인합니다', component:'myInfo'},
         {title:'QR지갑', value:'QRwallet',info:'구매한 QR쿠폰을 확인합니다', component:'QR'},
         {title:'정보수정', value:'updateInfo',info:'정보를 업데이트합니다.', component:'updateInfo'},
         {title:'쿠폰등록', value:'coupon',info:'쿠폰을 등록합니다',component:'couponRegistration'}, 
       ],
-
-      nickName: '용요이',
-      major:'컴퓨터과학과',
-      birth:'2022-02-28',
-      phoneNumber:'010-1234-5678',
-      rules: [
-        value => {
-          if (value) return true
-
-          return 'You must enter a first name.'
-        },
-      ],
+      memberInfo:{
+        name:"홍영",
+        nickName: '용요이',
+        major:'컴퓨터과학과',
+        birth:'2022-02-28',
+        phoneNumber:'010-1234-5678',
+        role:''
+      },
 
       //qrcode
       qrcodeData:{
-        bus:[
-          {
-            content:"강남!행",
-            vlaue:"11d4ddc357e0822968dbfd226b6e1c2aac018d076a54da4f65e1dc8180684ac3",
-            display: false
-          },
-          {
-            content:"인천행",
-            vlaue:"ㅁㄴㅇㅁㄴㅇㄴㅁ",
-            display: false
-          },
-        ],
+        bus:[],
         restaurant: []
       }
 
     }
   },
   created(){
-    UserService.testGetData("hello").then(
+    UserService.getUserInfo().then(
       (res)=>{
-        console.log(res);
+        console.log(res.data)
+        this.memberInfo = res.data
+      },
+      (error)=>{
+        console.log(error);
+      }
+    )
+
+    UserService.getQRcodeList().then(
+      (res)=>{
+        res.data.forEach((qrcode) => {
+          var pushData = {
+            content:qrcode.category.name,
+            vlaue:qrcode.qrCode,
+            display: false
+          };
+          if (qrcode.category.qrCodeCategory == "버스") {
+            this.qrcodeData.bus.push(pushData);
+          } else if (qrcode.category.qrCodeCategory == "식당") {
+            this.qrcodeData.restaurant.push(pushData);
+          }
+        }); 
       },
       (error)=>{
         console.log(error);
@@ -269,6 +276,17 @@ export default {
       else{
         this.qrcodeData.restaurant[index].display = false;
       }
+    },
+    useCoupon(){
+      UserService.useCoupon(this.couponSerial).then(
+      (res)=>{
+        alert(res.data.msg)
+        this.couponSerial = ''
+      },
+      (error)=>{
+        alert(error.msg);
+      }
+    )
     }
 
   },

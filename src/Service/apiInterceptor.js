@@ -9,6 +9,7 @@ const setup = () => {
         const token = TokenService.getLocalAccessToken();
         console.log(
           "axiosInstance.interceptors.request >\n" + "URL: " + config.url);
+        console.log(config)
         if (token) { 
           // for Spring Boot back-end
           config.headers["X-AUTH-TOKEN"] = token;
@@ -23,28 +24,31 @@ const setup = () => {
 
   axiosInstance.interceptors.response.use(
     (res) => {
-      console.log(res);
       return res;
     },
-    // async (err) => {
-    //   const originalConfig = err.config;
-    //   console.log(originalConfig);
+    async (err) => {
+      const originalConfig = err.config;
+      console.log("33라인")
+      console.log(originalConfig);
 
-    //   if (originalConfig.url !== "/auth/sign-in" && err.response) {
-    //     console.log("axiosInstance.interceptors.request >\nERR STATUS: " + err.response.status)
-    //     // Access Token이 만료됨
-    //     if (err.response.status === 401 && !originalConfig._retry) {
-    //       TokenService.removeUser();
-    //       router.push('/login');
-    //     }
+      // if (originalConfig.url !== "/auth/sign-in" && err.response) {
+      //   console.log("axiosInstance.interceptors.request >\nERR STATUS: " + err.response.status)
+      //   // Access Token이 만료됨
+      //   if (err.response.status === 401 && !originalConfig._retry) {
+      //     TokenService.removeUser();
+      //     router.push('/login');
+      //   }
   
-    //     if (err.response.status === 403 && err.response.data) {
-    //       return Promise.reject(err.response.data);
-    //     }
-    //   }
+      //   if (err.response.status === 403 && err.response.data) {
+      //     return Promise.reject(err.response.data);
+      //   }
+      // }
 
-    //   return Promise.reject(err);
-    // }
+      TokenService.removeUser();
+      // router.push('/login');
+
+      return Promise.reject(err);
+    }
   );
 };
 
