@@ -35,6 +35,7 @@
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiLogin } from '@mdi/js';
+import VueJwtDecode from 'vue-jwt-decode'
 // import UserService from '../Service/UserService';
 
 export default {
@@ -54,8 +55,14 @@ export default {
   methods:{
     submitForm(){
       this.$store.dispatch("auth/login", this.formData).then(
-        () => {
-          this.$router.push("/");
+        (res) => {
+          console.log(res);
+          let level = this.decodeToken(res.token).roles[0];
+          if(level == "ROLE_ADMIN"){
+            this.$router.push("/admin");
+          }else if(level == "ROLE_USER"){
+            this.$router.push("/");
+          }
         },
         (error) => {
           console.log(error)
@@ -71,6 +78,10 @@ export default {
     join(){
       this.$router.push("/join");
     },
+
+    decodeToken(token){
+      return VueJwtDecode.decode(token)
+    }
   } 
 }
 </script>

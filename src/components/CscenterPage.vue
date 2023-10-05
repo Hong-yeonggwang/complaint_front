@@ -6,7 +6,6 @@
     <v-tabs
       v-model="tab"
       bg-color="black"
-      classs="overflow-scroll"
     >
       <v-tab v-for="(menu,index) in  csCenterMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
     </v-tabs>

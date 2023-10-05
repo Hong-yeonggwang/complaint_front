@@ -30,7 +30,7 @@
           <div>닉네임:{{this.memberInfo.nickName}}</div>
         </div>
       </div>
-      <div class="w-10/12 m-auto bg-slate-100 rounded-xl p-3 mt-4 ">
+      <div class="w-fit m-auto bg-slate-100 rounded-xl py-3 px-10 mt-4 ">
         <div class="py-1.5">      
           <svg-icon type="mdi" :path="major_path" class="float-left mr-1.5" ></svg-icon>
           <div class="float-left">학과:{{this.memberInfo.major}}</div>
@@ -56,9 +56,9 @@
     
   </div>
 
-  <div v-if="this.tab == 'QRwallet'" class="overflow-scroll">
+  <div v-if="this.tab == 'QRwallet'">
 
-    <div class="w-10/12 m-auto bg-slate-50 rounded-xl border-slate-950 border my-4 overflow-scroll h-48">
+    <div class="w-10/12 m-auto bg-slate-50 rounded-xl border-slate-950 border my-4 overflow-auto h-48">
      <div class="px-4 py-4">
         <div class="text-xl border-b">승차권</div>
 
@@ -84,7 +84,7 @@
     </div>
 
 
-    <div class="w-10/12 m-auto bg-slate-50 rounded-xl border-slate-950 border my-4 overflow-scroll h-48">
+    <div class="w-10/12 m-auto bg-slate-50 rounded-xl border-slate-950 border my-4 overflow-auto h-48">
      <div class="px-4 py-4">
         <div class="text-xl border-b">식권</div>
 
@@ -119,30 +119,30 @@
         <div class="mt-4 py-6 w-56 m-auto bg-slate-100 rounded-full">
           <svg-icon type="mdi" :path="face_path" class="m-auto" width="120" height="120"></svg-icon>
           <div class="text-center w-44 m-auto">
-            <div>이름:사용자</div>
-            <input type="text" class="w-28 text-center bg-white" v-model="memberInfo.nickName" placeholder="닉네임">
+            <div>이름:{{this.memberInfo.name}}</div>
+            <input type="text" class="w-28 text-center bg-white" v-model="this.updateUserInfo.nickName" placeholder="닉네임">
             <div class="clear-both"></div>
           </div>
         </div>
-        <div class="m-auto bg-slate-100 rounded-xl p-3 mt-4 ">
+        <div class="m-auto w-2/3 bg-slate-100 rounded-xl py-3 px-8 mt-4 ">
           <div class="py-1.5">      
             <svg-icon type="mdi" :path="major_path" class="float-left mr-1.5" ></svg-icon>
             <div class="float-left">학과:</div>
-            <input type="text" class="ml-3 w-32 text-center bg-white float-left" v-model="memberInfo.major" placeholder="학과">
+            <input type="text" class="ml-3 w-32 text-center bg-white float-left" v-model="updateUserInfo.major" placeholder="학과">
             <div class="clear-both"></div>
           </div>
 
           <div class="py-1.5">      
             <svg-icon type="mdi" :path="brith_path" class="float-left mr-1.5" ></svg-icon>
             <div class="float-left">생년월일</div>
-            <input type="date" class="ml-3 w-32 text-center bg-white float-left" v-model="memberInfo.birth" placeholder="생년월일">
+            <input type="date" class="ml-3 w-32 text-center bg-white float-left" v-model="updateUserInfo.birth" placeholder="생년월일">
             <div class="clear-both"></div>
           </div>
 
           <div class="py-1.5">      
             <svg-icon type="mdi" :path="phone_path" class="float-left mr-1.5" ></svg-icon>
             <div class="float-left">전화번호</div>
-            <input type="text" class="ml-3 w-32 text-center bg-white float-left" v-model="memberInfo.phoneNumber" placeholder="전화번호">
+            <input type="text" class="ml-3 w-32 text-center bg-white float-left" v-model="updateUserInfo.phoneNumber" placeholder="전화번호">
             <div class="clear-both"></div>
           </div>
         </div>
@@ -150,7 +150,7 @@
         
 
       </div>
-    <v-btn type="submit" block class="mt-5 bg-slate-200">변경</v-btn>
+    <v-btn type="button" @click="this.updateUser" block class="mt-5 bg-slate-200">변경</v-btn>
 
   </v-form>
 
@@ -217,12 +217,19 @@ export default {
         {title:'쿠폰등록', value:'coupon',info:'쿠폰을 등록합니다',component:'couponRegistration'}, 
       ],
       memberInfo:{
-        name:"홍영",
-        nickName: '용요이',
-        major:'컴퓨터과학과',
-        birth:'2022-02-28',
-        phoneNumber:'010-1234-5678',
+        name:"",
+        nickName: '',
+        major:'',
+        birth:'',
+        phoneNumber:'',
         role:''
+      },
+
+      updateUserInfo:{
+        nickName: '',
+        major:'',
+        birth:'',
+        phoneNumber:'',
       },
 
       //qrcode
@@ -236,7 +243,6 @@ export default {
   created(){
     UserService.getUserInfo().then(
       (res)=>{
-        console.log(res.data)
         this.memberInfo = res.data
       },
       (error)=>{
@@ -246,6 +252,7 @@ export default {
 
     UserService.getQRcodeList().then(
       (res)=>{
+        console.log(res.data);
         res.data.forEach((qrcode) => {
           var pushData = {
             content:qrcode.category.name,
@@ -293,6 +300,16 @@ export default {
       },
       (error)=>{
         alert(error.msg);
+      }
+    )
+    },
+    updateUser(){
+      UserService.updateUserInfo(this.updateUserInfo).then(
+      (res)=>{
+        console.log(res.data)
+      },
+      (error)=>{
+        console.log(error);
       }
     )
     }

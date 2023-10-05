@@ -1,7 +1,7 @@
 <template>
   <div class="side-bar border overflow-hidden" @mouseenter="this.drawer =true" @mouseleave="this.drawer=false" >
 
-    <router-link :to="{name:'main'}">
+    <router-link :to="{name:'OperatorMain'}">
       <div class="w-40 border-b">
         <div class="flex items-center my-4 ml-2">
         <img :src="require(`@/assets/logo.png`)" width="35" height="35" class="ml-0.5">
@@ -29,10 +29,10 @@
 
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiTicket,mdiChat,mdiFaceAgent } from '@mdi/js';
+import { mdiTicket,mdiFaceAgent } from '@mdi/js';
 
 export default {
-  name: 'NavigationBar2',
+  name: 'NavigationBarOperator',
   components: {
     SvgIcon
   },  
@@ -41,9 +41,8 @@ export default {
       userFacePath:require(`@/assets/user.png`),
       drawer: false,
       items: [
-        { title: '구매', icon: mdiTicket, value:'buyPage' },
-        { title: '채팅', icon: mdiChat, value:'chatPage' },
-        { title: '고객센터', icon: mdiFaceAgent, value:'csCenterPage' },
+        { title: '티켓 수거 현황', icon: mdiTicket, value:'OperatorStatus' },
+        { title: '고객센터', icon: mdiFaceAgent, value:'OperatorCScenter' },
       ],
       rail: true,
     }
