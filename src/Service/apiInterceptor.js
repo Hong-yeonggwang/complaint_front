@@ -9,7 +9,6 @@ const setup = () => {
         const token = TokenService.getLocalAccessToken();
         console.log(
           "axiosInstance.interceptors.request >\n" + "URL: " + config.url);
-        console.log(config)
         if (token) { 
           // for Spring Boot back-end
           config.headers["X-AUTH-TOKEN"] = token;
@@ -24,6 +23,7 @@ const setup = () => {
 
   axiosInstance.interceptors.response.use(
     (res) => {
+      console.log("2662라인")
       return res;
     },
     async (err) => {

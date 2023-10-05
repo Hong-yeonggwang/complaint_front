@@ -33,6 +33,25 @@ class UserService {
     }
   }
   
+  async useQrcode(qrCodeSerial) {
+    try {
+      console.log(qrCodeSerial)
+      return await api.delete('/qrcode?qrCodeSerial='+qrCodeSerial);
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  }
+
+  async updateUserInfo(data) {
+    try {
+      console.log(data)
+      return await api.put('/auth/memberinfo',data);
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  }
 
 }
 

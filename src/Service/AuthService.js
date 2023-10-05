@@ -8,7 +8,10 @@ class AuthService {
       .post("/auth/sign-in", user)
       .then((response) => {
         if (response.data.token) {
-          TokenService.setUser(response.data);
+          let token = {
+            token:response.data.token
+          }
+          TokenService.setUser(token);
         }
         return response.data;
       });
@@ -27,7 +30,6 @@ class AuthService {
       });
   }
   join(userData){
-    console.log(userData)
     return api.post("/auth/sign-up",userData)
     .then((res)=>{
       console.log(res)

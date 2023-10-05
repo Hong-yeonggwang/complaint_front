@@ -1,20 +1,20 @@
 import AuthService from '../Service/AuthService';
+import VueJwtDecode from 'vue-jwt-decode'
 
-const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user
-  ? { status: { loggedIn: true }, user }
-  : { status: { loggedIn: false }, user: null };
+const token = JSON.parse(localStorage.getItem('user'));
+const initialState = token
+  ? { status: { loggedIn: true }, token }
+  : { status: { loggedIn: false }, token: null };
 
 export const auth = {
   namespaced: true,
   state: initialState,
   actions: {
-    login({ commit }, user) {
-      console.log(user.id);
-      return AuthService.login(user).then(
-        user => {
-          commit('loginSuccess', user);
-          return Promise.resolve(user);
+    login({ commit }, token) {
+      return AuthService.login(token).then(
+        token => {
+          commit('loginSuccess', token);
+          return Promise.resolve(token);
         },
         error => {
           commit('loginFailure');
@@ -45,15 +45,15 @@ export const auth = {
   mutations: {
     loginSuccess(state, user) {
       state.status.loggedIn = true;
-      state.user = user;
+      state.token = user;
     },
     loginFailure(state) {
       state.status.loggedIn = false;
-      state.user = null;
+      state.token = null;
     },
     logout(state) {
       state.status.loggedIn = false;
-      state.user = null;
+      state.token = null;
     },
     registerSuccess(state) {
       state.status.loggedIn = false;
@@ -63,11 +63,16 @@ export const auth = {
     },
     refreshToken(state, accessToken) {
       state.status.loggedIn = true;
-      state.user = { ...state.user, accessToken: accessToken };
+      state.token = { ...state.user, accessToken: accessToken };
     }
   },
   getters: {
     isLoggedIn: state => state.status.loggedIn,
-    getUserName: state => state.user.getUserName
+    getUserId: (state) => {
+      return VueJwtDecode.decode(state.token.token).sub
+    },
+    getLevel: (state) => {
+      return VueJwtDecode.decode(state.token.token).roles[0]
+    }
   }
 };
