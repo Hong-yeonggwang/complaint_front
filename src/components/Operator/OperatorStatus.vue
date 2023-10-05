@@ -2,50 +2,56 @@
   <h1>OperatorManagement</h1>
   <NavigationBarOperator class="float-left"></NavigationBarOperator>
   <div class="ml-14 customWidth float-left">
-  <!-- 메뉴바  -->
-  <v-card>
-    <v-tabs
-      v-model="tab"
-      bg-color="black"
-      class="overflow-x-auto"
-    >
-      <v-tab v-for="(menu,index) in  myMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
-    </v-tabs>
 
-    <v-card-text>
-      <v-window v-model="tab">
-        <v-window-item v-for="(menu,index) in myMenu" :key="index" class="h-12 flex items-center" v-bind:value="menu.value">
-          {{ menu.info }}
-        </v-window-item>
+    <div class="w-full bg-slate-900 text-white">
+      <div class="text-3xl pt-4 mx-4">티켓 수거 현황</div>
+      <div class="pb-1 m-2">
+        <div class=" justify-between px-2 border-b mb-3 ">
+          <div>발행: 400장</div>
+          <div>수거된 티켓: 100장</div>
+          <div>수거 가능한 티켓: 300장</div>
+        </div>
+      </div>
+    </div>
 
-      </v-window>
-    </v-card-text>
-  </v-card>
+    <div class="mx-4 p-3 ">
+      <div class="w-full border-b">
+        <svg-icon type="mdi" :path="ticket_path" class="m-auto mr-1 float-left" width="40" height="40"></svg-icon>
+        <div class=" p-2 pl-0 text-xl font-semibold float-left">날짜별 티켓 수거 현황</div>
+        <div class="clear-both"></div>
+      </div>
+      <div class="border rounded-lg mt-5 m-2 max-h-96 overflow-auto">
+        <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
+          <div>2023년 10월 5일</div>
+          <div>40장</div>
+        </div>
+      </div>
+    </div>
 
-  <div v-if="this.tab == 'status'">
-    <svg-icon type="mdi" :path="face_path" class="m-auto" width="10" height="10"></svg-icon>
-    <div>관리자 현황</div>
-    <div>운영자 현황</div>
+    <div class="mx-4 p-3 ">
+      <div class="w-full border-b flex items-center">
+        <svg-icon type="mdi" :path="search_path" class="ml-1" width="40" height="40"></svg-icon>
+        <div class=" p-2 pl-0 mr-2 text-xl font-semibold ">날짜 검색</div>
+        <input type="date" class="w-32 border rounded-lg p-3">
+        <div class="clear-both"></div>
+      </div>
+      
+      <div class="border rounded-lg mt-5 m-2 max-h-96 overflow-auto">
+        <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
+          <div>2023년 10월 5일</div>
+          <div>40장</div>
+        </div>
+      </div>
+    </div>
 
   </div>
-
-  <div v-if="this.tab == 'management'">
-    <div>계정 생성</div>
-    <div>계정 수정</div>
-  </div>
-  
-  <div v-if="this.tab == 'info'">
-    <div>관리자 삭제</div>
-  </div>
-  
-</div>
 
   
 </template>
 
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiAccount,mdiBookshelf, mdiCake, mdiPhone } from '@mdi/js';
+import { mdiTicket,mdiMagnify } from '@mdi/js';
 import NavigationBarOperator from './NavigationBarOperator.vue'
 
 
@@ -58,16 +64,12 @@ export default {
     },  
   data () {
     return {
-      face_path: mdiAccount,
-      major_path: mdiBookshelf,
-      brith_path: mdiCake,
-      phone_path: mdiPhone,
+      ticket_path: mdiTicket,
+      search_path:mdiMagnify,
       tab: null,
       couponSerial:'',
       myMenu:[
-        {title:'운영자 현황', value:'status',info:'정보를 확인합니다', component:'myInfo'},
-        {title:'운영자 관리 ', value:'management',info:'구매한 QR쿠폰을 확인합니다', component:'QR'},
-        {title:'운영자 정보', value:'info',info:'정보를 업데이트합니다.', component:'updateInfo'},
+        {title:'티켓 수거 현황', value:'status',info:'티켓 수거 현황을 확인합니다'},
       ],
       memberInfo:{
         name:"",

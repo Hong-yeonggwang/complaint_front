@@ -172,7 +172,7 @@ const routes = [
     component: AdminCScenter,
     meta: {
       requiresAuth: true, 
-      authorization: [undefined]
+      
     },
   },
 

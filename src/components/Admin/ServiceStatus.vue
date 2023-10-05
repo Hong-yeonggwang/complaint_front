@@ -28,6 +28,27 @@
     <div>운영중인 qrcode 사용지점 수</div>
     <div>오늘 발급된 qrcode 수</div>
     <div>오늘 사용된 qrcode 수</div>
+
+    <div class="p-5">
+      <div class=" w-full h-48">
+        <div class="w-fit py-4 px-2 float-left">
+          <div>회원 수: 13명</div><div>회원 수: 13명</div><div>회원 수: 13명</div>
+        </div>
+        <div class="w-fit py-4 px-2 float-left">
+          <div>회원 수: 13명</div><div>회원 수: 13명</div><div>회원 수: 13명</div>
+        </div>
+        <div class="w-fit py-4 px-2 float-left">
+          <div>회원 수: 13명</div><div>회원 수: 13명</div><div>회원 수: 13명</div>
+        </div>
+
+
+
+        <div>운영중인 qrcode 사용지점 수</div>
+        <div>오늘 발급된 qrcode 수</div>
+        <div>오늘 사용된 qrcode 수</div>
+      </div>
+    </div>
+  
   </div>
 
   <div v-if="this.tab == 'management'">
@@ -58,13 +79,36 @@
       <div class="bg-sky-100 hover:bg-sky-200 text-black text-center border rounded-lg">회원관리</div>
     </div>
     
-    <div>회원관리</div>
   </div>
 
   <div v-if="this.tab == 'tiket'">
-    <div>쿠폰 발급</div>
-    <div>쿠폰 현황</div>
-    <div>qrcode 현황</div>
+    <div class="text-xl mx-5 font-semibold my-4">쿠폰 발급</div>
+    <div v-for="(type,index) in category" :key="index">
+      <div @click="type.display = !type.display" class="mx-4 border py-2 text-xl px-4">
+          <div class="float-left">{{type.type}}</div>
+          <div class="float-right">+</div>
+          <div class="clear-both"></div>
+      </div>
+      <div class="categoryToggle mx-4 px-4 mb-2" :class="{'active': type.display}">
+        <div v-for="(place, index) in type.category" :key="index" class="my-2 text-lg">{{place}}</div>
+      </div>
+    </div>
+
+    <div class="text-xl mx-5 font-semibold my-4">쿠폰 현황</div>
+    <div class="border rounded-lg mt-5 m-4 max-h-96 overflow-auto">
+      <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
+          <div>운영장소: 인성관</div>
+          <div>11/21</div>
+      </div>
+    </div>
+    
+    <div class="text-xl mx-5 font-semibold my-4">qr 현황</div>
+    <div class="border rounded-lg mt-5 m-4 max-h-96 overflow-auto">
+      <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
+          <div>운영장소: 인성관</div>
+          <div>11/21</div>
+      </div>
+    </div>
   </div>
   
 </div>
