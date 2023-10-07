@@ -1,6 +1,8 @@
 <template>
     <div id="container" class="container">
         <h1>채팅</h1>
+        <input type="hidden" id="sessionId" value="">
+
         <div id="chating" class="chating">
         </div>
 
@@ -77,16 +79,13 @@ export default {
     data() {
         return {
             chatRoomInfo: { id: this.$route.params.room, name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
-            ws: '',
+            // ws: '',
 
         }
     },
     methods: {
         wsOpen() {
             this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.room);
-            console.log("ws://localhost:8080/chat/" + this.$route.params.room);
-            console.log(this.ws);
-            console.log("1")
             this.wsEvt();
         },
 
@@ -101,15 +100,15 @@ export default {
                 if (msg != null && msg.trim() != '') {
                     var jsonMsg = JSON.parse(msg);
                     if (jsonMsg.type == "getId") {
-                        var si = jsonMsg.sessionId != null ? jsonMsg.sessionId : "";
-                        if (si != '') {
-                            $("#sessionId").val(si);
+                        var sessionId = jsonMsg.sessionId != null ? jsonMsg.sessionId : '';
+                        if (sessionId != '') {
+                            $("#sessionId").val(sessionId);
                         }
                     } else if (jsonMsg.type == "message") {
                         if (jsonMsg.sessionId == $("#sessionId").val()) {
-                            $("#chating").append("<p class='me'>나 :" + jsonMsg.msg + "</p>");
+                            $("#chating").append("<p class='me'>" + jsonMsg.msg + "</p>");
                         } else {
-                            $("#chating").append("<p class='others'>" + jsonMsg.userId + " :" + jsonMsg.msg + "</p>");
+                            $("#chating").append("<p class='others'>" + jsonMsg.userId + " : " + jsonMsg.msg + "</p>");
                         }
 
                     } else {
@@ -174,14 +173,19 @@ export default {
 }
 
 .chating {
-    background-color: #000;
+    background-color: #F6F6F6;
     width: 500px;
     height: 500px;
     overflow: auto;
 }
 
-.chating p {
-    color: #fff;
+.chating .me {
+    color: #000;
+    text-align: right;
+}
+
+.chating .others {
+    color: blue;
     text-align: left;
 }
 
