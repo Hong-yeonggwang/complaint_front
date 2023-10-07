@@ -1,46 +1,68 @@
 <template>
-  <!-- 모달 -->
-  <InputPromptModal v-if="this.isModalOpen == true" @closeModal="closeModal" @handleInput="handleInput" />
-  <!-- // 모달 -->
+  <NavigationBar2 class="float-left"></NavigationBar2>
+  <div class="ml-14 customWidth float-left">
 
-  <div class="border rounded-2xl m-4 ">
-    <div class="mx-4 mt-6 pb-2 border-b-2">
-      <div>
-        <div class="text-2xl float-left">실시간 채팅</div>
-        <v-btn class="float-right mr-7" density="comfortable" icon="mdi-chat-plus" @click="createChatRoom()"></v-btn>
+    <!-- 메뉴바  -->
+  <v-card>
+    <v-tabs v-model="tab" bg-color="black">
+      <v-tab v-for="(menu, index) in  buyMenu" :key="index" v-bind:value="menu.value">{{ menu.title }}</v-tab>
+    </v-tabs>
+
+    <v-card-text>
+      <v-window v-model="tab">
+        <v-window-item v-for="(menu, index) in buyMenu" :key="index" class="h-12 flex items-center"
+          v-bind:value="menu.value">
+          {{ menu.info }}
+        </v-window-item>
+      </v-window>
+    </v-card-text>
+  </v-card>
+
+    <!-- 모달 -->
+    <InputPromptModal v-if="this.isModalOpen == true" @closeModal="closeModal" @handleInput="handleInput" />
+    <!-- // 모달 -->
+
+    <div class="border rounded-2xl m-4 ">
+      <div class="mx-4 mt-6 pb-2 border-b-2">
+        <div>
+          <div class="text-2xl float-left">실시간 채팅</div>
+          <v-btn class="float-right mr-7" density="comfortable" icon="mdi-chat-plus" @click="createChatRoom()"></v-btn>
+          <div class="clear-both"></div>
+        </div>
+        <div class="float-left">채팅을 통해 배달 같이 주문할 친구를 구해요~</div>
         <div class="clear-both"></div>
       </div>
-      <div class="float-left">채팅을 통해 배달 같이 주문할 친구를 구해요~</div>
-      <div class="clear-both"></div>
-    </div>
 
-    <div class="overflow-y-auto" style="height: 34rem;">
-      <div class="my-2 mx-4 border rounded-lg" v-for="chatRoom in chatRooms" :key="chatRoom.id" @click="rightMouseListener(chatRoom)">
-        <div class="px-2 py-3 mx-2">
-          <div class="float-left">방이름: {{ chatRoom.name }}</div>
-          <div class="clear-both"></div>
-          <div class="float-left">방장: {{ chatRoom.owner }}</div>
-          <div class="float-right">접속인원: {{ chatRoom.users }}/{{ chatRoom.maxUsers }}</div>
-          <div class="clear-both"></div>
+      <div class="overflow-y-auto" style="height: 34rem;">
+        <div class="my-2 mx-4 border rounded-lg" v-for="chatRoom in chatRooms" :key="chatRoom.id"
+          @click="rightMouseListener(chatRoom)">
+          <div class="px-2 py-3 mx-2">
+            <div class="float-left">방이름: {{ chatRoom.name }}</div>
+            <div class="clear-both"></div>
+            <div class="float-left">방장: {{ chatRoom.owner }}</div>
+            <div class="float-right">접속인원: {{ chatRoom.users }}/{{ chatRoom.maxUsers }}</div>
+            <div class="clear-both"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 마우스 오른쪽 메뉴 -->
-  <div id="context-menus" class="context-menus">
-    <ul>
-      <li>1번 메뉴</li>
-      <li>2번 메뉴</li>
-      <li>3번 메뉴</li>
-      <li>4번 메뉴</li>
-      <li>5번 메뉴</li>
-    </ul>
+    <!-- 마우스 오른쪽 메뉴 -->
+    <div id="context-menus" class="context-menus">
+      <ul>
+        <li>1번 메뉴</li>
+        <li>2번 메뉴</li>
+        <li>3번 메뉴</li>
+        <li>4번 메뉴</li>
+        <li>5번 메뉴</li>
+      </ul>
+    </div>
+    <!-- //마우스 오른쪽 메뉴 -->
   </div>
-  <!-- //마우스 오른쪽 메뉴 -->
 </template>
 
 <script>
+import NavigationBar2 from './NavigationBar2.vue';
 import InputPromptModal from './InputPromptModal.vue';
 
 /* 마우스 오른쪽 메뉴 변수 */
@@ -48,11 +70,20 @@ export default {
   name: 'ChatPage',
   components: {
     InputPromptModal,
+    NavigationBar2,
   },
   data() {
     return {
       isModalOpen: false, // 기존의 isModalOpen을 openModal로 변경
+
+      tab: null,
+      buyMenu: [
+        { title: '채팅방', value: 'chatRooms', info: '승차권을 구매합니다' },
+        { title: '내 채팅방', value: 'myChatRooms', info: '식권을 구매합니다' },
+      ],
+      
       myInfo: { name: '정도훈', 학번: '201727040', 학과: '컴퓨터과학과' },
+
       chatRooms: [
         { id: 1, name: '방1', owner: 'user1', users: 1, maxUsers: 9 },
         { id: 2, name: '방2', owner: 'user2', users: 2, maxUsers: 9 },
