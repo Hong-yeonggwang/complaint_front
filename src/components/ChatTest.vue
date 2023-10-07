@@ -8,7 +8,7 @@
             <table class="inputTable">
                 <tr>
                     <th>사용자명</th>
-                    <th><input type="text" name="userName" id="userName"></th>
+                    <th><input type="text" name="userId" id="userId"></th>
                     <th><button @click="this.chatName()" id="startBtn">이름 등록</button></th>
                 </tr>
             </table>
@@ -77,14 +77,14 @@ export default {
     data() {
         return {
             chatRoomInfo: { id: this.$route.params.room, name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
-            ws:'',
+            ws: '',
 
         }
     },
     methods: {
         wsOpen() {
-            this.ws = new WebSocket("ws://localhost:8080/chat/"+this.$route.params.room);
-            console.log("ws://localhost:8080/chat/"+this.$route.params.room);
+            this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.room);
+            console.log("ws://localhost:8080/chat/" + this.$route.params.room);
             console.log(this.ws);
             console.log("1")
             this.wsEvt();
@@ -96,9 +96,25 @@ export default {
             };
 
             this.ws.onmessage = function (data) {
-                let msg = data.data;
+                //메시지를 받으면 동작
+                var msg = data.data;
                 if (msg != null && msg.trim() != '') {
-                    $("#chating").append("<p>" + msg + "</p>");
+                    var jsonMsg = JSON.parse(msg);
+                    if (jsonMsg.type == "getId") {
+                        var si = jsonMsg.sessionId != null ? jsonMsg.sessionId : "";
+                        if (si != '') {
+                            $("#sessionId").val(si);
+                        }
+                    } else if (jsonMsg.type == "message") {
+                        if (jsonMsg.sessionId == $("#sessionId").val()) {
+                            $("#chating").append("<p class='me'>나 :" + jsonMsg.msg + "</p>");
+                        } else {
+                            $("#chating").append("<p class='others'>" + jsonMsg.userId + " :" + jsonMsg.msg + "</p>");
+                        }
+
+                    } else {
+                        console.warn("unknown type!")
+                    }
                 }
             };
 
@@ -110,10 +126,10 @@ export default {
         },
 
         chatName() {
-            let userName = $("#userName").val();
-            if (userName == null || userName.trim() == "") {
+            let userId = $("#userId").val();
+            if (userId == null || userId.trim() == "") {
                 alert("사용자 이름을 입력해주세요.");
-                $("#userName").focus();
+                $("#userId").focus();
             } else {
                 this.wsOpen();
                 $("#yourName").hide();
@@ -122,9 +138,13 @@ export default {
         },
 
         send() {
-            let uN = $("#userName").val();
-            let msg = $("#chatting").val();
-            this.ws.send(uN + " : " + msg);
+            var option = {
+                type: "message",
+                sessionId: $("#sessionId").val(),
+                userId: $("#userId").val(),
+                msg: $("#chatting").val()
+            }
+            this.ws.send(JSON.stringify(option))
             $('#chatting').val("");
         },
     }

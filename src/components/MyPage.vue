@@ -251,24 +251,24 @@ export default {
     )
 
     UserService.getQRcodeList().then(
-      (res)=>{
-        console.log(res.data);
-        res.data.forEach((qrcode) => {
-          var pushData = {
-            content:qrcode.category.name,
-            vlaue:qrcode.qrCode,
-            display: false
-          };
-          if (qrcode.category.qrCodeCategory == "버스") {
-            this.qrcodeData.bus.push(pushData);
-          } else if (qrcode.category.qrCodeCategory == "식당") {
-            this.qrcodeData.restaurant.push(pushData);
-          }
-        }); 
-      },
-      (error)=>{
-        console.log(error);
-      }
+      // (res)=>{
+      //   console.log(res.data);
+      //   res.data.forEach((qrcode) => {
+      //     var pushData = {
+      //       content:qrcode.category.name,
+      //       vlaue:qrcode.qrCode,
+      //       display: false
+      //     };
+      //     if (qrcode.category.qrCodeCategory == "버스") {
+      //       this.qrcodeData.bus.push(pushData);
+      //     } else if (qrcode.category.qrCodeCategory == "식당") {
+      //       this.qrcodeData.restaurant.push(pushData);
+      //     }
+      //   }); 
+      // },
+      // (error)=>{
+      //   console.log(error);
+      // }
     )
   },
   methods:{
