@@ -3,7 +3,10 @@ import { defineComponent } from 'vue'
 import MyPage from '../components/MyPage.vue'
 import ChatPage from '../components/Chat.vue'
 // import ChatRoom from '../components/ChatRoom.vue'
+
 import ChatTest from '../components/ChatTest.vue'
+import CreateChatTest from '../components/CreateChatTest.vue'
+
 import CscenterPage from '../components/CscenterPage.vue'
 import BuyPage from '../components/Buy.vue'
 import UserLogin from '../components/UserLogin.vue'
@@ -63,6 +66,16 @@ const routes = [
       requiresAuth: true,
     },
   },
+  
+  
+  {
+    path: "/createChatTest",
+    name: "CreateChatTest",
+    component: CreateChatTest,
+    meta: {
+      requiresAuth: true, 
+    },
+  },
   {
     path: "/chat/:room",
     name: "ChatTest", //"chatRoom",
@@ -71,6 +84,9 @@ const routes = [
       requiresAuth: true, 
     },
   },
+
+
+
   {
     path: "/cscenter",
     name: "csCenterPage",

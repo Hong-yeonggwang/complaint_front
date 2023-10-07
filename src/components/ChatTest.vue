@@ -65,7 +65,6 @@ import $ from 'jquery';
 import axios from 'axios';
 // import UserService from "../Service/UserService";
 
-
 axios.get('https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js').then(result => {
     console.log(result);
 }).catch(() => {
@@ -82,25 +81,18 @@ export default {
 
         }
     },
-    created: function() {
+    created: function () {
         // this.wsOpen();
     },
     methods: {
         wsOpen() {
             // 웹소켓 주소 기준은 백엔드 서버
             this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.room);
-            console.log("wsOpen 주소");
-
             this.wsEvt();
-            console.log("wsOpen 이벤트");
-
         },
 
         wsEvt() {
-            console.log("wsOpen 이벤트2");
-
             this.ws.onopen = function (data) {
-                console.log("wsOpen 열림");
                 //소켓이 열리면 동작
                 console.log(data)
             };
@@ -111,10 +103,10 @@ export default {
 
                 if (msg != null && msg.trim() != '') {
                     let jsonMsg = JSON.parse(msg);
-                    
-                    if (jsonMsg.type == "getId") {
+
+                    if (jsonMsg.type == "getSession") {
                         let sessionId = jsonMsg.sessionId != null ? jsonMsg.sessionId : '';
-                        
+
                         if (sessionId != '') {
                             $("#sessionId").val(sessionId);
                         }
@@ -144,7 +136,6 @@ export default {
                 alert("사용자 이름을 입력해주세요.");
                 $("#userId").focus();
             } else {
-                console.log("wsOpen 호출");
                 this.wsOpen();
                 $("#yourName").hide();
                 $("#yourMsg").show();
@@ -163,7 +154,7 @@ export default {
             this.ws.send(JSON.stringify(option))
             $('#chatting').val("");
         },
-        start(){
+        start() {
             console.log(this.$route.params.room);
         }
     }
