@@ -17,10 +17,11 @@
             <table class="inputTable">
                 <tr>
                     <th>방 제목</th>
-                    <!-- name="roomName"  -->
-                    <th><input type="text" id="roomName" v-model="chatRoomName" class="border-solid border-1 border-black">
+                    <th><input type="text" id="roomName" v-model="newChatRoomInfo.chatRoomName"
+                            class="border-solid border-1 border-black">
                     </th>
                     <th><button @click=this.createChatRoom() id="createRoom">방 만들기</button></th>
+                    <th><button @click=this.getChatRoomList() id="getChatRoomList">방 가져오기</button></th>
                 </tr>
             </table>
         </div>
@@ -52,19 +53,25 @@ export default {
                 /* { chatRoomId, chatRoomName, currentUsers, maxUsers,  } */
                 // 다른 방 정보를 추가할 수 있습니다.
             ],
-            chatRoomName: "", // 입력된 방 이름
+            newChatRoomInfo: { chatRoomName: "", maxUsers: 0 }, // 입력한 방이름, 최대 인원
         }
     },
     created: function () {
-        // this.getChatRoom();
+        this.getChatRoomList();
         // this.createChatRoom();
     },
     methods: {
-        getChatRoom() {
+        getChatRoomList() {
             // 서버에서 방 목록을 가져오는 비동기 요청을 수행하고 결과를 chatRooms에 저장
-            ChatService.getChatRoom().then(
-                (result) => {
-                    console.log(result)
+            console.log("컴포넌트 방리스트 호출 : ");
+
+            ChatService.getChatRoomList().then(
+                (response) => {
+                    this.chatRooms = response.data;
+                    // console.log("컴포넌트 방리스트 호출 : " + response.data);
+                    // response.data.forEach((ChatRoomInfo, idx) => {
+                    //     console.log("컴포넌트 방리스트 호출 : " + ChatRoomInfo.chatRoomName + ", " + idx);
+                    // })
                 },
                 (error) => {
                     console.error(error);
@@ -72,7 +79,7 @@ export default {
             )
 
             // axios
-            //     .post("/getChatRoom", "")
+            //     .post("/getChatRoomList", "")
             //     .then((response) => {
             //         // this.chatRooms = response.data;
             //         this.chatRooms.push(response.data);
@@ -84,33 +91,34 @@ export default {
 
         createChatRoom() {
             // 새 방을 생성하는 비동기 요청을 수행
-            let options = {
-                chatRoomName: this.chatRoomName
+            let newChatRoomInfo = {
+                chatRoomName: this.newChatRoomInfo.chatRoomName,
+                maxUsers: this.newChatRoomInfo.maxUsers
             };
-            console.log("컴포넌트 방 생성 호출 : " +  JSON.stringify(options));
+            // console.log("컴포넌트 방 생성 호출 : " +  JSON.stringify(newChatRoomInfo));
+            console.log("컴포넌트 방 생성 호출 : " + newChatRoomInfo);
 
+            ChatService.createChatRoom(newChatRoomInfo).then(
+                (response) => {
+                    console.log("방 생성 결과 : " + response.data);
+                    this.chatRooms = response.data;
+                    // try {
+                    //     response.data.forEach((chatRoom, idx) => {
+                    //         // this.chatRooms.push(chatRoom);
+                    //         console.log("response : " + chatRoom.chatRoomName + ", " + idx);
+                    //     });
+                    // }
+                    // catch (error) {
+                    //     console.error("Error creating chatroom response:", error);
+                    // }
 
-            ChatService.createChatRoom(JSON.stringify(options)).then(
-                (result) => {
-                    console.log(result)
-                    this.chatRoomName = ""; // 입력 필드 초기화
+                    this.newChatRoomInfo.chatRoomName = ""; // 입력 필드 초기화
+                    // this.getChatRoomList();
                 },
                 (error) => {
                     console.error("Error creating room:", error);
                 }
             )
-
-            // axios
-            //     .post("/createChatRoom", msg)
-            //     .then((response) => {
-            //         this.getChatRoom(response); // 방 생성 후 방 목록을 다시 가져와서 갱신
-            //         this.chatRoomName = ""; // 입력 필드 초기화
-            //     })
-            //     .catch((error) => {
-            //         console.error("Error creating room:", error);
-            //     });
-
-            // $("#roomName").val("");
         },
 
         enterRoom(chatRoomId) {

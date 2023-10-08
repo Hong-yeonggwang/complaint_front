@@ -1,23 +1,22 @@
 import api from './api';
 
 class ChatService {
-
-  // testGetData(data) {
-  //   return api.post('/qrcode/coupon', data)
-  // }
-
-  async getChatRoom() {
+  async getChatRoomList() {
     // 서버에서 방 목록을 가져오는 비동기 요청을 수행하고 결과를 chatRooms에 저장
-    await api.post("/getChatRoom", "")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    console.log("서비스 방리스트 호출 : ");
+    try {
+      return await api.post("/getChatRoomList")
+        // .then((response) => {
+        //   console.log("서비스 방리스트 호출 : " + response);
+        //   console.log(response.data);
+        // })
+    }
+    catch (error) {
+      console.log(error);
+    }
 
     // axios
-    //     .post("/getChatRoom", "")
+    //     .post("/getChatRoomList", "")
     //     .then((response) => {
     //         // this.chatRooms = response.data;
     //         this.chatRooms.push(response.data);
@@ -27,38 +26,17 @@ class ChatService {
     //     });
   }
 
-  async createChatRoom(JsonSringifyOptions) {
+  async createChatRoom(JsonOptions) {
     // 새 방을 생성하는 비동기 요청을 수행
-    console.log("서비스 방 생성 호출 : " +  JsonSringifyOptions);
+    // console.log("서비스 방 생성 호출 : " +  JsonOptions);
+    // console.log("서비스 방 생성 호출 : " +  JSON.stringify(JsonOptions));
 
     try {
-
-      return api
-        .post("/createChatRoom", JsonSringifyOptions)
-        .then((response) => {
-          console.log("response : " + response);
-          // this.getChatRoom(response); // 방 생성 후 방 목록을 다시 가져와서 갱신
-        })
+      return await api.post("/createChatRoom", JsonOptions)
     }
     catch (error) {
-      console.error("Error creating chatroom:", error);
+      console.error("Error creating chatroom Service:", error);
     }
-
-    // let msg = {
-    //   chatRoomName: this.chatRoomName
-    // };
-
-    // axios
-    //   .post("/createChatRoom", msg)
-    //   .then((response) => {
-    //     this.getChatRoom(response); // 방 생성 후 방 목록을 다시 가져와서 갱신
-    //     this.chatRoomName = ""; // 입력 필드 초기화
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error creating room:", error);
-    //   });
-
-    // $("#roomName").val("");
   }
 
   // async createChatRoomList(result) {
