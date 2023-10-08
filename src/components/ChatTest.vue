@@ -78,7 +78,6 @@ export default {
     data() {
         return {
             chatRoomInfo: { roomId: this.$route.params.room, name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
-
         }
     },
     created: function () {

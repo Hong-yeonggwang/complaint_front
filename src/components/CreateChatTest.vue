@@ -18,7 +18,8 @@
                 <tr>
                     <th>방 제목</th>
                     <!-- name="roomName"  -->
-                    <th><input type="text" id="roomName" v-model="chatRoomName" class="border-solid border-1 border-black"></th>
+                    <th><input type="text" id="roomName" v-model="chatRoomName" class="border-solid border-1 border-black">
+                    </th>
                     <th><button @click=this.createChatRoom() id="createRoom">방 만들기</button></th>
                 </tr>
             </table>
@@ -28,7 +29,9 @@
 
 <script>
 import $ from 'jquery';
-import axios from 'axios';
+// import axios from 'axios';
+
+import ChatService from '../Service/ChatService';
 
 // axios.get('https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js').then(result => {
 //     console.log(result);
@@ -59,32 +62,53 @@ export default {
     methods: {
         getChatRoom() {
             // 서버에서 방 목록을 가져오는 비동기 요청을 수행하고 결과를 chatRooms에 저장
-            axios
-                .post("/getChatRoom", "")
-                .then((response) => {
-                    // this.chatRooms = response.data;
-                    this.chatRooms.push(response.data);
-                })
-                .catch((error) => {
-                    console.error("Error fetching rooms:", error);
-                });
+            ChatService.getChatRoom().then(
+                (result) => {
+                    console.log(result)
+                },
+                (error) => {
+                    console.error(error);
+                }
+            )
+
+            // axios
+            //     .post("/getChatRoom", "")
+            //     .then((response) => {
+            //         // this.chatRooms = response.data;
+            //         this.chatRooms.push(response.data);
+            //     })
+            //     .catch((error) => {
+            //         console.error("Error fetching rooms:", error);
+            //     });
         },
 
         createChatRoom() {
             // 새 방을 생성하는 비동기 요청을 수행
-            let msg = {
+            let options = {
                 chatRoomName: this.chatRoomName
             };
+            console.log("컴포넌트 방 생성 호출 : " +  JSON.stringify(options));
 
-            axios
-                .post("/createChatRoom", msg)
-                .then((response) => {
-                    this.getChatRoom(response); // 방 생성 후 방 목록을 다시 가져와서 갱신
+
+            ChatService.createChatRoom(JSON.stringify(options)).then(
+                (result) => {
+                    console.log(result)
                     this.chatRoomName = ""; // 입력 필드 초기화
-                })
-                .catch((error) => {
+                },
+                (error) => {
                     console.error("Error creating room:", error);
-                });
+                }
+            )
+
+            // axios
+            //     .post("/createChatRoom", msg)
+            //     .then((response) => {
+            //         this.getChatRoom(response); // 방 생성 후 방 목록을 다시 가져와서 갱신
+            //         this.chatRoomName = ""; // 입력 필드 초기화
+            //     })
+            //     .catch((error) => {
+            //         console.error("Error creating room:", error);
+            //     });
 
             // $("#roomName").val("");
         },
