@@ -36,7 +36,7 @@
       </div>
 
       <div class="overflow-y-auto" style="height: 34rem;">
-        <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom, index) in chatRooms" :key="chatRoom.id"
+        <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom, index) in LatestChatRoomList" :key="chatRoom.id"
           @click="enterRoom(chatRoom)">
           <!-- @click="rightMouseListener(chatRoom)" -->
           <div class="px-2 py-3 mx-2">
