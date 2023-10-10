@@ -148,7 +148,8 @@ export default {
         nickName:true,
         phoneNumber:true,
         birth:true,
-      }
+      },
+      duplication:false,
     }
   },
   watch: {
@@ -191,7 +192,21 @@ export default {
   },
   methods:{
     submitForm() {
-      AuthService.join(this.formData);
+      if(!this.duplication){
+        AuthService.join(this.formData).then((res)=>{
+          console.log(res)
+          alert("회원가입을 축하합니다.")
+          this.duplication = true
+          this.$router.push('/login')
+
+        })
+        .catch((err)=>{
+          console.log(err)
+            alert("오류가 발생했습니다. 다시 시도해주세요")
+        });  
+      }
+      
+  
     },
     checkID() {
       const validateId = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/

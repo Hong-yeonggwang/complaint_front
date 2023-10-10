@@ -31,15 +31,6 @@ class AuthService {
   }
   join(userData){
     return api.post("/auth/sign-up",userData)
-    .then((res)=>{
-      console.log(res)
-        alert("회원가입을 축하합니다.")
-    })
-    .catch((err)=>{
-      console.log(err)
-        alert("오류가 발생했습니다. 다시 시도해주세요")
-    });
-  
   }
   register({ username, email, password }) {
     return api.post("/auth/register", {
