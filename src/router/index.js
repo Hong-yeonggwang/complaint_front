@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { defineComponent } from 'vue'
 import MyPage from '../components/MyPage.vue'
-import ChatPage from '../components/Chat.vue'
+import ChatPage from '../components/ChatList.vue'
 // import ChatRoom from '../components/ChatRoom.vue'
 
 import ChatTest from '../components/ChatTest.vue'
