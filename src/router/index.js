@@ -38,8 +38,7 @@ const routes = [
     name: "main",
     component: MyPage,
     meta: {
-      requiresAuth: true, 
-      authorization: []
+      authorization: ["ROLE_USER"]
     },
   },
   {
@@ -47,7 +46,7 @@ const routes = [
     name: "userPage",
     component: MyPage,
     meta: {
-      requiresAuth: true, 
+      authorization: ["ROLE_USER"]
     },
   },
   {
@@ -55,7 +54,7 @@ const routes = [
     name: "buyPage",
     component: BuyPage,
     meta: {
-      requiresAuth: true, 
+      authorization: ["ROLE_USER"]
     },
   },
   {
@@ -63,7 +62,7 @@ const routes = [
     name: "chatPage",
     component: ChatPage,
     meta: {
-      requiresAuth: true,
+      authorization: ["ROLE_USER"]
     },
   },
   
@@ -73,7 +72,7 @@ const routes = [
     name: "CreateChatTest",
     component: CreateChatTest,
     meta: {
-      requiresAuth: true, 
+      authorization: ["ROLE_USER"]
     },
   },
   {
@@ -81,7 +80,7 @@ const routes = [
     name: "ChatTest", //"chatRoom",
     component: ChatTest,
     meta: {
-      requiresAuth: true, 
+      authorization: ["ROLE_USER"]
     },
   },
 
@@ -92,13 +91,15 @@ const routes = [
     name: "csCenterPage",
     component: CscenterPage,
     meta: {
-      requiresAuth: true, 
+      authorization: ["ROLE_USER"]
     },
   },
   {
     path:"/login",
     name:"UserLogin",
     component: UserLogin,
+    
+    
   },
   {
     path:"/join",
@@ -120,7 +121,7 @@ const routes = [
     name:"payPage",
     component: PayPage,
     meta: {
-      requiresAuth: true, 
+      authorization: ["ROLE_USER"]
     },
   },
   {
@@ -128,15 +129,7 @@ const routes = [
     name:"completePage",
     component: CompletePage,
     meta: {
-      requiresAuth: true, 
-    },
-  },
-  {
-    path:"/qrcode",
-    name:"qr",
-    component: QRcodeReader,
-    meta: {
-      requiresAuth: true, 
+      authorization: ["ROLE_USER"]
     },
   },
   {
@@ -144,7 +137,7 @@ const routes = [
     name:'notFound',
     component: NotFound,
     meta:{
-      authorization: ["ROLE_ADMIN",undefined]
+      authorization: ["ROLE_ADMIN",undefined,"ROLE_USER","ROLE_OPERATOR"]
     }
   },
 
@@ -164,6 +157,7 @@ const routes = [
     component: ServiceStatus,
     meta: {
       requiresAuth: true, 
+      authorization: ["ROLE_ADMIN"]
     },
   },
   {
@@ -172,6 +166,7 @@ const routes = [
     component: AdminManagement,
     meta: {
       requiresAuth: true, 
+      authorization: ["ROLE_ADMIN"]
     },
   },
   {
@@ -180,6 +175,7 @@ const routes = [
     component: AdminCScenter,
     meta: {
       requiresAuth: true, 
+      authorization: ["ROLE_ADMIN"]
       
     },
   },
@@ -192,6 +188,7 @@ const routes = [
     component: OperatorMain,
     meta: {
       requiresAuth: true, 
+      authorization: ["ROLE_OPERATOR"]
     },
   },
   {
@@ -200,7 +197,7 @@ const routes = [
     component: OperatorCScenter,
     meta: {
       requiresAuth: true, 
-      authorization: []
+      authorization: ["ROLE_OPERATOR"]
     },
   },
   {
@@ -209,6 +206,15 @@ const routes = [
     component: OperatorStatus,
     meta: {
       requiresAuth: true, 
+      authorization: ["ROLE_OPERATOR"]
+    },
+  },
+  {
+    path:"/qrcode",
+    name:"qr",
+    component: QRcodeReader,
+    meta: {
+      authorization: ["ROLE_OPERATOR"]
     },
   },
 ];

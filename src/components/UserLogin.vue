@@ -57,11 +57,14 @@ export default {
       this.$store.dispatch("auth/login", this.formData).then(
         (res) => {
           console.log(res);
-          let level = this.decodeToken(res.token).roles[0];
+          let level = this.decodeToken(res.token).roles;
+          console.log(level)
           if(level == "ROLE_ADMIN"){
             this.$router.push("/admin");
           }else if(level == "ROLE_USER"){
             this.$router.push("/");
+          }else if(level == "ROLE_OPERATOR"){
+            this.$router.push("/operator")
           }
         },
         (error) => {
