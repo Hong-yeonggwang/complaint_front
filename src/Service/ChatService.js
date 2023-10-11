@@ -3,7 +3,6 @@ import api from './api';
 class ChatService {
   async getChatRoomList() {
     // 서버에서 방 목록을 가져오는 비동기 요청을 수행하고 List를 반환
-    console.log("서비스 방리스트 호출 : ");
     try {
       return await api.post("/getChatRoomList")
     }
@@ -12,10 +11,12 @@ class ChatService {
     }
   }
 
-  async createChatRoom(JsonOptions) {
+  async createChatRoom(Options) {
     // 새 방을 생성하는 비동기 요청을 수행
-    // console.log("서비스 방 생성 호출 : " +  JsonOptions);
-    // console.log("서비스 방 생성 호출 : " +  JSON.stringify(JsonOptions));
+    let JsonOptions = JSON.stringify(Options);
+   
+    console.log("서비스 방 생성 호출 : " +  Options);
+    console.log("서비스 방 생성 호출 : " +  JsonOptions);
 
     try {
       return await api.post("/createChatRoom", JsonOptions)
@@ -27,7 +28,7 @@ class ChatService {
 
   async getMyChatRoomList(UserId) {
     // 서버에서 해당하는 ID가 대화중인 방 목록을 가져오는 비동기 요청을 수행하고 List를 반환
-    console.log("서비스 방리스트 호출 : ");
+    console.log("서비스 내 방리스트 호출");
     try {
       return await api.post("/getMyChatRoomList", UserId)
     }

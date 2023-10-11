@@ -5,12 +5,12 @@
     <!-- 메뉴바  -->
     <v-card>
       <v-tabs v-model="tab" bg-color="black">
-        <v-tab v-for="(menu, index) in  buyMenu" :key="index" v-bind:value="menu.value">{{ menu.title }}</v-tab>
+        <v-tab v-for="(menu, index) in  chatMenu" :key="index" v-bind:value="menu.value">{{ menu.title }}</v-tab>
       </v-tabs>
-      <!-- 
-    <v-card-text>
+
+      <!-- <v-card-text>
       <v-window v-model="tab">
-        <v-window-item v-for="(menu, index) in buyMenu" :key="index" class="h-12 flex items-center"
+        <v-window-item v-for="(menu, index) in chatMenu" :key="index" class="h-12 flex items-center"
           v-bind:value="menu.value">
           {{ menu.info }}
         </v-window-item>
@@ -61,8 +61,20 @@
         </tr>
         <tr>
           <th>인원 제한</th>
-          <th><input type="number" id="maxUsers" v-model="newChatRoomInfo.maxUsers"
-              class="w-30 border-solid border-1 border-black" placeholder="최대 몇명인지 입력하세요.">
+          <th>
+            <div>
+              <div class="float-left w-fit">
+                <v-btn density="compact" icon="mdi-minus" @click="minusCount()"></v-btn>
+              </div>
+              <div class="float-left">
+                <input type="number" id="maxUsers" v-model="newChatRoomInfo.maxUsers" @input="onChange($event)"
+                  class="w-30 border-solid border-1 border-black" placeholder="최대 몇명인지 입력하세요.">
+              </div>
+              <div class="float-left w-fit">
+                <v-btn density="compact" icon="mdi-plus" @click="plusCount()"></v-btn>
+              </div>
+              <div class="clear-both"></div>
+            </div>
           </th>
         </tr>
       </table>
@@ -101,23 +113,17 @@ export default {
         /* { chatRoomId, chatRoomName, owner, currentUsers, maxUsers,  } */
         // 다른 방 정보를 추가할 수 있습니다.
       ],
-      newChatRoomInfo: { chatRoomName: "", owner: "", maxUsers: 0 }, // 입력한 방이름, 최대 인원
+      newChatRoomInfo: { chatRoomName: "", owner: "", maxUsers: 2 }, // 입력한 방이름, 최대 인원
 
       isModalOpen: false, // 기존의 isModalOpen을 openModal로 변경
 
       tab: null,
-      buyMenu: [
+      chatMenu: [
         { title: '채팅방', value: 'chatRooms', info: '모든 채팅방' },
         { title: '내 채팅방', value: 'myChatRooms', info: '내가 대화중인 채팅방' },
       ],
 
       myInfo: { Id: 'wjdehgns123', name: '정도훈', 학번: '201727040', 학과: '컴퓨터과학과' },
-
-      // chatRooms: [
-      //   { id: 1, name: '방1', owner: 'user1', users: 1, maxUsers: 9 },
-      //   { id: 2, name: '방2', owner: 'user2', users: 2, maxUsers: 9 },
-      //   // 다른 방 정보를 추가할 수 있습니다.
-      // ],
 
       contextMenuVisible: false,
       contextMenuPosition: { x: 0, y: 0 },
@@ -156,12 +162,6 @@ export default {
         return 0;
       }
 
-      // if(this.newChatRoomInfo.maxUsers < 2){
-      //     alert("채팅방 인원 제한은 최소 2명입니다.");
-      //     return 0;
-      // }
-
-
       let newChatRoomInfo = {
         chatRoomName: this.newChatRoomInfo.chatRoomName,
         maxUsers: this.newChatRoomInfo.maxUsers
@@ -177,6 +177,27 @@ export default {
           console.error("Error creating room:", error);
         }
       )
+    },
+
+    onChange(event) {
+      console.log(event.target.value);
+    },
+
+    plusCount() {
+      if (this.tab == "chatRooms") {
+        this.newChatRoomInfo.maxUsers += 1;
+      }
+    },
+
+    minusCount() {
+      if (this.tab == "chatRooms") {
+        if (this.newChatRoomInfo.maxUsers > 2) {
+          this.newChatRoomInfo.maxUsers -= 1;
+        }
+        else {
+          alert("채팅방 인원 제한은 최소 2명입니다.");
+        }
+      }
     },
 
     enterRoom(chatRoom) {
@@ -290,5 +311,18 @@ export default {
 
 .context-menus.active>ul>li:hover {
   background-color: lightgreen;
+}
+
+/* input type number 화살표 제거 */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox  */
+input[type='number'] {
+  -moz-appearance: textfield;
 }
 </style>
