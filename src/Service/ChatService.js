@@ -14,12 +14,16 @@ class ChatService {
   async createChatRoom(Options) {
     // 새 방을 생성하는 비동기 요청을 수행
     let JsonOptions = JSON.stringify(Options);
-   
-    console.log("서비스 방 생성 호출 : " +  Options);
-    console.log("서비스 방 생성 호출 : " +  JsonOptions);
+
+    // console.log("서비스 방 생성 호출 : " + Options);
+    // console.log("서비스 방 생성 호출 : " + JsonOptions);
 
     try {
-      return await api.post("/createChatRoom", JsonOptions)
+      const response = await api.post("/createChatRoom", JsonOptions)
+      console.error("서비스 방 생성 호출 : " + response);
+      return response;
+
+      // return await api.post("/createChatRoom", JsonOptions)
     }
     catch (error) {
       console.error("Error creating chatroom Service:", error);
@@ -36,7 +40,7 @@ class ChatService {
       console.log(error);
     }
   }
-  
+
 }
 
 export default new ChatService();

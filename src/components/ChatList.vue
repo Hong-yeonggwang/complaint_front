@@ -32,19 +32,25 @@
           <div class="clear-both"></div>
         </div>
         <div class="float-left">채팅을 통해 배달 같이 주문할 친구를 구해요~</div>
+        <div class="float-right">
+          <select v-model="sortOrder">
+          <option value="asc">오래된 순</option>
+          <option value="desc">최신순</option>
+        </select>
+        </div>
         <div class="clear-both"></div>
       </div>
 
       <div class="overflow-y-auto" style="height: 34rem;">
-        <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom, index) in LatestChatRoomList" :key="chatRoom.id"
+        <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom) in chatRooms" :key="chatRoom.id"
           @click="enterRoom(chatRoom)">
           <!-- @click="rightMouseListener(chatRoom)" -->
           <div class="px-2 py-3 mx-2">
             <div class="float-left">방이름: {{ chatRoom.chatRoomName }}</div>
-            <div class="float-right">방 번호: {{ index += 1 }}</div>
+            <div class="float-right">방 번호: {{ chatRoom.chatRoomSeq }}</div>
             <div class="clear-both"></div>
             <div class="float-left">방장: {{ chatRoom.owner }}</div>
-            <div class="float-right">접속인원: {{ chatRoom.currentUsers }}/{{ chatRoom.maxUsers }}</div>
+            <div class="float-right">접속인원: {{ chatRoom.currentUsers }}/{{ chatRoom.chatRoomLimited }}</div>
             <div class="clear-both"></div>
           </div>
         </div>
@@ -67,7 +73,7 @@
                 <v-btn density="compact" icon="mdi-minus" @click="minusCount()"></v-btn>
               </div>
               <div class="float-left">
-                <input type="number" id="maxUsers" v-model="newChatRoomInfo.maxUsers" @input="onChange($event)"
+                <input type="number" id="maxUsers" v-model="newChatRoomInfo.chatRoomLimited" @input="onChange($event)"
                   class="w-30 border-solid border-1 border-black" placeholder="최대 몇명인지 입력하세요.">
               </div>
               <div class="float-left w-fit">
@@ -108,12 +114,13 @@ export default {
   },
   data() {
     return {
+      sortOrder: 'desc', // 초기 정렬 순서 (최신순)
       chatRooms: [
         { chatRoomId: "", chatRoomName: "지금 이게 방 제목이야", owner: 'user1', currentUsers: 1, maxUsers: 9 },
         /* { chatRoomId, chatRoomName, owner, currentUsers, maxUsers,  } */
         // 다른 방 정보를 추가할 수 있습니다.
       ],
-      newChatRoomInfo: { chatRoomName: "", owner: "", maxUsers: 2 }, // 입력한 방이름, 최대 인원
+      newChatRoomInfo: { chatRoomName: "", owner: "", chatRoomLimited: 2 }, // 입력한 방이름, 최대 인원
 
       isModalOpen: false, // 기존의 isModalOpen을 openModal로 변경
 
@@ -124,7 +131,6 @@ export default {
       ],
 
       myInfo: { Id: 'wjdehgns123', name: '정도훈', 학번: '201727040', 학과: '컴퓨터과학과' },
-
       contextMenuVisible: false,
       contextMenuPosition: { x: 0, y: 0 },
       selectedChatRoom: null, // 선택한 방 정보를 저장할 변수
@@ -137,9 +143,11 @@ export default {
     // this.rightMouseListener();
   },
   computed: {
-    // 생성된 채팅방 목록을 최신순으로 정렬
-    LatestChatRoomList() {
-      return this.chatRooms.slice().reverse();
+    // 비동기로 받은 Entity List를 정렬하는 computed 속성
+    sortedChatRoomList() {
+      return this.sortOrder === 'asc'
+        ? this.chatRooms.slice().sort((a, b) => a.chatRoomSeq.localeCompare(b.chatRoomSeq))
+        : this.chatRooms.slice().sort((a, b) => b.chatRoomSeq.localeCompare(a.chatRoomSeq));
     },
   },
   methods: {
@@ -164,12 +172,12 @@ export default {
 
       let newChatRoomInfo = {
         chatRoomName: this.newChatRoomInfo.chatRoomName,
-        maxUsers: this.newChatRoomInfo.maxUsers
+        chatRoomLimited: this.newChatRoomInfo.chatRoomLimited
       };
 
       ChatService.createChatRoom(newChatRoomInfo).then(
         (response) => {
-          this.chatRooms.push(response.data);
+          this.chatRooms = response.data;
 
           this.newChatRoomInfo.chatRoomName = ""; // 입력 필드 초기화
         },
@@ -185,14 +193,14 @@ export default {
 
     plusCount() {
       if (this.tab == "chatRooms") {
-        this.newChatRoomInfo.maxUsers += 1;
+        this.newChatRoomInfo.chatRoomLimited += 1;
       }
     },
 
     minusCount() {
       if (this.tab == "chatRooms") {
-        if (this.newChatRoomInfo.maxUsers > 2) {
-          this.newChatRoomInfo.maxUsers -= 1;
+        if (this.newChatRoomInfo.chatRoomLimited > 2) {
+          this.newChatRoomInfo.chatRoomLimited -= 1;
         }
         else {
           alert("채팅방 인원 제한은 최소 2명입니다.");
