@@ -110,7 +110,7 @@ import ChatService from '../Service/ChatService';
 
 /* 마우스 오른쪽 메뉴 변수 */
 export default {
-  name: 'ChatListPage',
+  name: 'chatRoomListPage',
   components: {
     NavigationBar2,
     // InputPromptModal,
@@ -148,17 +148,28 @@ export default {
   },
   computed: {
     // 비동기로 받은 Entity List를 정렬하는 computed 속성
-    sortedChatRoomList() {
-      return this.sortOrder === 'asc'
-        ? this.chatRooms.slice().sort((a, b) => a.chatRoomSeq.localeCompare(b.chatRoomSeq))
-        : this.chatRooms.slice().sort((a, b) => b.chatRoomSeq.localeCompare(a.chatRoomSeq));
-    },
+    // reverseChatRoomList() {
+      // return this.chatRooms = this.sortOrder === 'asc'
+      //   ? this.chatRooms.slice().sort((a, b) => a.chatRoomSeq.localeCompare(b.chatRoomSeq))
+      //   : this.chatRooms.slice().sort((a, b) => b.chatRoomSeq.localeCompare(a.chatRoomSeq));
+
+      // return this.chatRooms.slice().sort((a, b) => {
+      //   if (this.sortOrder === 'asc'){
+      //     return this.chatRooms;
+      //   }
+      //   else{
+      //     return this.chatRooms.slice().reverse();
+      //   }
+      // })
+    // },
   },
   methods: {
     getChatRoomList() {
       // 서버에서 방 목록을 가져오는 비동기 요청을 수행하고 결과를 chatRooms에 저장
       ChatService.getChatRoomList().then(
         (response) => {
+          console.error(this.chatRooms);
+          console.error(response);
           this.chatRooms = response.data;
         },
         (error) => {
@@ -182,6 +193,7 @@ export default {
       ChatService.createChatRoom(newChatRoomInfo).then(
         (response) => {
           this.chatRooms = response.data;
+          console.error(this.chatRooms);
 
           this.newChatRoomInfo.chatRoomName = ""; // 입력 필드 초기화
         },
