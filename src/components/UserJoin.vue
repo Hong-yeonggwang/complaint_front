@@ -226,7 +226,7 @@ export default {
         this.error.password = false
         return
       } 
-        console.log(this.formData.password);
+        // console.log(this.formData.password);
         this.formValid.password = true
         this.error.password = true
     },
@@ -238,7 +238,7 @@ export default {
         this.error.phoneNumber = false
         return
       } 
-        console.log(this.formData.password);
+        console.log(this.formData.phoneNumber);
         this.formValid.phoneNumber = true
         this.error.phoneNumber = true
     }

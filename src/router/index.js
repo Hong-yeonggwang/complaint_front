@@ -1,11 +1,9 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { defineComponent } from 'vue'
 import MyPage from '../components/MyPage.vue'
-import ChatPage from '../components/ChatList.vue'
-// import ChatRoom from '../components/ChatRoom.vue'
 
+import ChatListPage from '../components/ChatList.vue'
 import ChatTest from '../components/ChatTest.vue'
-import CreateChatTest from '../components/CreateChatTest.vue'
 
 import CscenterPage from '../components/CscenterPage.vue'
 import BuyPage from '../components/Buy.vue'
@@ -59,8 +57,8 @@ const routes = [
   },
   {
     path: "/chat",
-    name: "chatPage",
-    component: ChatPage,
+    name: "ChatListPage",
+    component: ChatListPage,
     meta: {
       authorization: ["ROLE_USER"]
     },
@@ -83,7 +81,6 @@ const routes = [
       authorization: ["ROLE_USER"]
     },
   },
-
 
 
   {

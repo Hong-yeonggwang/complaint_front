@@ -41,6 +41,16 @@ class ChatService {
     }
   }
 
+  async test(test){
+    console.log("서비스 test");
+    try {
+      return await api.post("/test", test);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
 }
 
 export default new ChatService();

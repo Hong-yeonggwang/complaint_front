@@ -32,20 +32,20 @@
           <div class="clear-both"></div>
         </div>
         <div class="float-left">채팅을 통해 배달 같이 주문할 친구를 구해요~</div>
-        <div class="float-right">
-          <select v-model="sortOrder">
-          <option value="asc">오래된 순</option>
-          <option value="desc">최신순</option>
-        </select>
+        <div class="float-right mt-2">
+          <select v-model="sortOrder" class="cursor-pointer border text-center mr-2 rounded-md">
+            <option value="asc">오래된 순</option>
+            <option value="desc">최신순</option>
+          </select>
         </div>
         <div class="clear-both"></div>
       </div>
 
       <div class="overflow-y-auto" style="height: 34rem;">
         <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom) in chatRooms" :key="chatRoom.id"
-          @click="enterRoom(chatRoom)">
+          @dblclick="enterRoom(chatRoom)" @click="selectRoom(chatRoom)">
           <!-- @click="rightMouseListener(chatRoom)" -->
-          <div class="px-2 py-3 mx-2">
+          <div class="px-2 py-3 mx-2 cursor-pointer">
             <div class="float-left">방이름: {{ chatRoom.chatRoomName }}</div>
             <div class="float-right">방 번호: {{ chatRoom.chatRoomSeq }}</div>
             <div class="clear-both"></div>
@@ -58,7 +58,7 @@
     </div>
 
     <div>
-      <table class="inputTable">
+      <table class="">
         <tr>
           <th>방 제목</th>
           <th><input type="text" id="roomName" v-model="newChatRoomInfo.chatRoomName"
@@ -73,13 +73,16 @@
                 <v-btn density="compact" icon="mdi-minus" @click="minusCount()"></v-btn>
               </div>
               <div class="float-left">
-                <input type="number" id="maxUsers" v-model="newChatRoomInfo.chatRoomLimited" @input="onChange($event)"
+                <input type="number" id="chatRoomLimited" v-model="newChatRoomInfo.chatRoomLimited" @input="onChange($event)"
                   class="w-30 border-solid border-1 border-black" placeholder="최대 몇명인지 입력하세요.">
               </div>
               <div class="float-left w-fit">
                 <v-btn density="compact" icon="mdi-plus" @click="plusCount()"></v-btn>
               </div>
               <div class="clear-both"></div>
+            </div>
+            <div>
+              <v-btn id="test" density="compact" icon="mdi-plus" @click="this.test(this.sortOrder)"></v-btn>
             </div>
           </th>
         </tr>
@@ -107,24 +110,25 @@ import ChatService from '../Service/ChatService';
 
 /* 마우스 오른쪽 메뉴 변수 */
 export default {
-  name: 'ChatPage',
+  name: 'ChatListPage',
   components: {
     NavigationBar2,
     // InputPromptModal,
   },
   data() {
     return {
+      tab: null,
       sortOrder: 'desc', // 초기 정렬 순서 (최신순)
       chatRooms: [
-        { chatRoomId: "", chatRoomName: "지금 이게 방 제목이야", owner: 'user1', currentUsers: 1, maxUsers: 9 },
-        /* { chatRoomId, chatRoomName, owner, currentUsers, maxUsers,  } */
+        { chatRoomSeq: null, chatRoomId: "", chatRoomName: "지금 이게 방 제목이야", chatRoomOwner: 'user1', currentUsers: 1, maxUsers: 9 },
+        // { chatRoomSeq, chatRoomId, chatRoomName, chatRoomOwner, currentUsers, chatRoomLimited, chatRoomCreatedDate, members }
         // 다른 방 정보를 추가할 수 있습니다.
       ],
-      newChatRoomInfo: { chatRoomName: "", owner: "", chatRoomLimited: 2 }, // 입력한 방이름, 최대 인원
 
-      isModalOpen: false, // 기존의 isModalOpen을 openModal로 변경
+      newChatRoomInfo: { chatRoomName: "", chatRoomLimited: 2 }, // 입력한 방이름, 최대 인원
 
-      tab: null,
+      // isModalOpen: false, // 기존의 isModalOpen을 openModal로 변경
+
       chatMenu: [
         { title: '채팅방', value: 'chatRooms', info: '모든 채팅방' },
         { title: '내 채팅방', value: 'myChatRooms', info: '내가 대화중인 채팅방' },
@@ -208,6 +212,10 @@ export default {
       }
     },
 
+    selectRoom(){
+
+    },
+
     enterRoom(chatRoom) {
       if (confirm(`"` + chatRoom.chatRoomName + `"\n입장하시겠습니까?`)) {
         location.href = "/chat/" + chatRoom.chatRoomId;
@@ -259,6 +267,11 @@ export default {
     showMenu(x, y) {
       this.contextMenuPosition = { x, y };
     },
+
+    test(test) {
+      console.error(test);
+      ChatService.test(test);
+    }
   },
 }
 </script>
