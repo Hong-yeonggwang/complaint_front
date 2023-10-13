@@ -64,15 +64,6 @@ const routes = [
     },
   },
   
-  
-  {
-    path: "/createChatTest",
-    name: "CreateChatTest",
-    component: CreateChatTest,
-    meta: {
-      authorization: ["ROLE_USER"]
-    },
-  },
   {
     path: "/chat/:room",
     name: "ChatTest", //"chatRoom",
