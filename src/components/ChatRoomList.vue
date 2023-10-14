@@ -120,7 +120,7 @@ export default {
       tab: null,
       sortOrder: 'desc', // 초기 정렬 순서 (최신순)
       chatRooms: [
-        { chatRoomSeq: null, chatRoomId: "", chatRoomName: "지금 이게 방 제목이야", chatRoomOwner: 'user1', currentUsers: 1, maxUsers: 9 },
+        { chatRoomSeq: null, chatRoomId: "", chatRoomName: "지금 이게 방 제목이야", chatRoomOwner: 'user1', currentUsers: 1, chatRoomLimited: 9 },
         // { chatRoomSeq, chatRoomId, chatRoomName, chatRoomOwner, currentUsers, chatRoomLimited, chatRoomCreatedDate, members }
         // 다른 방 정보를 추가할 수 있습니다.
       ],
@@ -141,7 +141,7 @@ export default {
     }
   },
   created: function () {
-    this.getChatRoomList();
+    // this.getChatRoomList();
 
     // this.leftMouseListener();
     // this.rightMouseListener();
@@ -169,7 +169,7 @@ export default {
       ChatService.getChatRoomList().then(
         (response) => {
           console.error(this.chatRooms);
-          console.error(response);
+          console.error(response.data);
           this.chatRooms = response.data;
         },
         (error) => {
