@@ -43,14 +43,14 @@
 
       <div class="overflow-y-auto" style="height: 34rem;">
         <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom) in chatRooms" :key="chatRoom.id"
-          @dblclick="enterRoom(chatRoom)" @click="selectRoom(chatRoom)">
+          @dblclick="enterChatRoom(chatRoom)" @click="selectRoom(chatRoom)">
           <!-- @click="rightMouseListener(chatRoom)" -->
           <div class="px-2 py-3 mx-2 cursor-pointer">
             <div class="float-left">방이름: {{ chatRoom.chatRoomName }}</div>
             <div class="float-right">방 번호: {{ chatRoom.chatRoomSeq }}</div>
             <div class="clear-both"></div>
             <div class="float-left">방장: {{ chatRoom.owner }}</div>
-            <div class="float-right">접속인원: {{ chatRoom.currentUsers }}/{{ chatRoom.chatRoomLimited }}</div>
+            <div class="float-right">접속인원: {{ chatRoom.currentNumberOfPeople }}/{{ chatRoom.chatRoomLimited }}</div>
             <div class="clear-both"></div>
           </div>
         </div>
@@ -105,7 +105,7 @@
 
 <script>
 import NavigationBar2 from './NavigationBar2.vue';
-import ChatService from '../Service/ChatService';
+import ChatRoomService from '../Service/ChatRoomService';
 // import InputPromptModal from './InputPromptModal.vue';
 
 /* 마우스 오른쪽 메뉴 변수 */
@@ -141,7 +141,7 @@ export default {
     }
   },
   created: function () {
-    // this.getChatRoomList();
+    this.getChatRoomList();
 
     // this.leftMouseListener();
     // this.rightMouseListener();
@@ -166,7 +166,7 @@ export default {
   methods: {
     getChatRoomList() {
       // 서버에서 방 목록을 가져오는 비동기 요청을 수행하고 결과를 chatRooms에 저장
-      ChatService.getChatRoomList().then(
+      ChatRoomService.getChatRoomList().then(
         (response) => {
           console.error(this.chatRooms);
           console.error(response.data);
@@ -190,7 +190,9 @@ export default {
         chatRoomLimited: this.newChatRoomInfo.chatRoomLimited
       };
 
-      ChatService.createChatRoom(newChatRoomInfo).then(
+      let JsonOptions = JSON.stringify(newChatRoomInfo);
+
+      ChatRoomService.createChatRoom(JsonOptions).then(
         (response) => {
           this.chatRooms = response.data;
           console.error(this.chatRooms);
@@ -201,6 +203,22 @@ export default {
           console.error("Error creating room:", error);
         }
       )
+    },
+
+    enterChatRoom(chatRoom) {
+      if (confirm(`"` + chatRoom.chatRoomName + `"\n입장하시겠습니까?`)) {
+        console.log("component: "+chatRoom);
+        ChatRoomService.enterChatRoom(chatRoom).then(
+          (response) => {
+            console.error(response);
+
+          },
+          (error) => {
+            console.error("Error enterChatRoom:", error);
+          }
+        );
+        // location.href = "/chat/" + chatRoom.chatRoomId;
+      }
     },
 
     onChange(event) {
@@ -227,13 +245,7 @@ export default {
     selectRoom(){
 
     },
-
-    enterRoom(chatRoom) {
-      if (confirm(`"` + chatRoom.chatRoomName + `"\n입장하시겠습니까?`)) {
-        location.href = "/chat/" + chatRoom.chatRoomId;
-      }
-    },
-
+    
     closeModal() {
       this.$refs.inputPromptModal.closeModal();
     },
@@ -282,7 +294,7 @@ export default {
 
     test(test) {
       console.error(test);
-      ChatService.test(test);
+      ChatRoomService.test(test);
     }
   },
 }

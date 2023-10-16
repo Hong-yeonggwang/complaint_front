@@ -10,7 +10,7 @@
             <table class="inputTable">
                 <tr>
                     <th>사용자명</th>
-                    <th><input type="text" name="userId" id="userId"></th>
+                    <th><input type="text" name="userId" id="userId" v-model="userId"></th>
                     <th><button @click="this.chatName()" id="startBtn">이름 등록</button></th>
                 </tr>
             </table>
@@ -19,7 +19,7 @@
             <table class="inputTable">
                 <tr>
                     <th>메시지</th>
-                    <th><input id="chatting" placeholder="보내실 메시지를 입력하세요."></th>
+                    <th><input id="chatting" v-model="chatting" placeholder="보내실 메시지를 입력하세요."></th>
                     <th><button @click="this.send()" id="sendBtn">보내기</button></th>
                 </tr>
             </table>
@@ -77,6 +77,8 @@ export default {
     },
     data() {
         return {
+            userId: null,
+            chatting: null,
             chatRoomInfo: { roomId: this.$route.params.room, name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
         }
     },

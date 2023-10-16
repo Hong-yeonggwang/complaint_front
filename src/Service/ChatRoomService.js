@@ -11,11 +11,10 @@ class ChatService {
     }
   }
 
-  async createChatRoom(Options) {
+  async createChatRoom(JsonOptions) {
     // 새 방을 생성하는 비동기 요청을 수행
-    let JsonOptions = JSON.stringify(Options);
 
-    console.log("서비스 방 생성 호출 : " + Options);
+    // console.log("서비스 방 생성 호출 : " + Options);
     console.log("서비스 방 생성 호출 : " + JsonOptions);
 
     try {
@@ -40,6 +39,17 @@ class ChatService {
       console.log(error);
     }
   }
+
+  async enterChatRoom(chatRoomInfoDTO) {
+    try{
+      console.log("Service: "+chatRoomInfoDTO);
+      return await api.post("/enterChatRoom", chatRoomInfoDTO);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
 
   async test(test){
     console.log("서비스 test");
