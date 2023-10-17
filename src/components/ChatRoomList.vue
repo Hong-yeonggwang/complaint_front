@@ -208,16 +208,7 @@ export default {
     enterChatRoom(chatRoom) {
       if (confirm(`"` + chatRoom.chatRoomName + `"\n입장하시겠습니까?`)) {
         console.log("component: "+chatRoom);
-        // ChatRoomService.enterChatRoom(chatRoom).then(
-        //   (response) => {
-        //     console.log(response.data);
-        //     console.log(JSON.stringify(response.data));
-        //     this.$router.push({ name: 'ChatTest', params: { room: chatRoom.chatRoomId, dtoData: response.data } });
-        //   },
-        //   (error) => {
-        //     console.error("Error enterChatRoom:", error);
-        //   }
-        // );
+        
         location.href = "/chat/" + chatRoom.chatRoomId;
       }
     },

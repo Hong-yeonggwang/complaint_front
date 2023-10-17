@@ -3,7 +3,8 @@
         <h1>채팅</h1>
         <input type="hidden" id="sessionId" value="">
 
-        <div id="chating" class="chating">
+        <div id="chatting" class="chatting">
+
         </div>
 
         <!-- <div id="yourName">
@@ -19,7 +20,7 @@
             <table class="inputTable">
                 <tr>
                     <th>메시지</th>
-                    <th><input id="chatting" v-model="chatting" placeholder="보내실 메시지를 입력하세요."></th>
+                    <th><input id="msg" v-model="this.msg" placeholder="보내실 메시지를 입력하세요."></th>
                     <th><button @click="this.send()" id="sendBtn">보내기</button></th>
                 </tr>
             </table>
@@ -64,8 +65,7 @@
 import $ from 'jquery';
 import axios from 'axios';
 import ChatRoomService from '../Service/ChatRoomService';
-
-// import UserService from "../Service/UserService";
+import ChattingService from '../Service/ChattingService';
 
 axios.get('https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js').then(result => {
     console.log(result);
@@ -81,17 +81,20 @@ export default {
         return {
             checkChatRoomId: false,
             chatRoomId: this.$route.params.chatRoomId,
+            sessionId: null,
             userId: null,
-            chatting: null,
+            userName: null,
+            msg: null,
+            myInfo: null,
             chatRoomInfo: { name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
+            chatHistory: []
         }
     },
     created: function () {
         this.enterChatRoom();
 
-        if(this.checkChatRoomId){
-            this.wsOpen();
-        }
+        // if(this.checkChatRoomId){
+        // }
     },
     // mounted() {
     //     console.log(this.$route.props)
@@ -107,29 +110,33 @@ export default {
         },
 
         wsEvt() {
-            this.ws.onopen = function (data) {
+            this.ws.onopen = (data) => {
                 //소켓이 열리면 동작
                 console.log(data)
             };
 
-            this.ws.onmessage = function (data) {
+            this.ws.onmessage = (data) => {
                 //메시지를 받으면 동작
                 let msg = data.data;
+                console.log("msg: " + msg);
 
                 if (msg != null && msg.trim() != '') {
                     let jsonMsg = JSON.parse(msg);
+                    console.log("jsonMsg: " + jsonMsg);
+
 
                     if (jsonMsg.type == "getSession") {
                         let sessionId = jsonMsg.sessionId != null ? jsonMsg.sessionId : '';
 
                         if (sessionId != '') {
-                            $("#sessionId").val(sessionId);
+                            this.sessionId = sessionId;
+                            // $("#sessionId").val(sessionId);
                         }
                     } else if (jsonMsg.type == "message") {
-                        if (jsonMsg.sessionId == $("#sessionId").val()) {
-                            $("#chating").append("<p class='me'>" + jsonMsg.msg + "</p>");
+                        if (jsonMsg.sessionId == this.sessionId) {
+                            $("#chatting").append("<p class='me'>" + jsonMsg.msg + "</p>");
                         } else {
-                            $("#chating").append("<p class='others'>" + jsonMsg.userId + " : " + jsonMsg.msg + "</p>");
+                            $("#chatting").append("<p class='others'>" + jsonMsg.userId + " : " + jsonMsg.msg + "</p>");
                         }
 
                     } else {
@@ -160,20 +167,24 @@ export default {
         send() {
             let option = {
                 type: "message",
-                roomId: this.chatRoomInfo.roomId,
-                sessionId: $("#sessionId").val(),
-                userId: $("#userId").val(),
-                msg: $("#chatting").val()
+                chatRoomId: this.chatRoomId,
+                sessionId: this.sessionId,
+                userId: this.myInfo.nickName,
+                msg: this.msg
             }
 
+            console.log(option)
             this.ws.send(JSON.stringify(option))
-            $('#chatting').val("");
+            this.msg = "";
         },
         // start() {
         //     console.log(this.$route.params.room);
         // },
 
         enterChatRoom() {
+            let wsOpen = this.wsOpen;
+            let getChatMyInfo = this.getChatMyInfo;
+
             console.log("this.checkChatRoomId : " + this.checkChatRoomId);
             
             let chatRoomId = {
@@ -190,6 +201,10 @@ export default {
                     if(response.data != ''){
                         this.checkChatRoomId = true;
                         console.log("this.checkChatRoomId : " + this.checkChatRoomId);
+                        wsOpen();
+                        console.log("wsOpen")
+                        getChatMyInfo();
+                        console.log("getMyInfo")
                     }
                     else{
                         console.log("this.checkChatRoomId : " + this.checkChatRoomId);
@@ -197,6 +212,18 @@ export default {
                 },
                 (error) => {
                     console.error("Error getChatRoomInfo:", error);
+                }
+            )
+        },
+
+        getChatMyInfo(){
+            ChattingService.getChatMyInfo().then(
+                (response) => {
+                    console.log(response.data);
+                    this.myInfo = response.data;
+                },
+                (error) => {
+                    console.error("Error getChatMyInfo:", error);
                 }
             )
         }
@@ -226,19 +253,19 @@ export default {
     margin-bottom: 20px;
 }
 
-.chating {
+.chatting {
     background-color: #F6F6F6;
     width: 500px;
     height: 500px;
     overflow: auto;
 }
 
-.chating .me {
+.chatting .me {
     color: #000;
     text-align: right;
 }
 
-.chating .others {
+.chatting .others {
     color: blue;
     text-align: left;
 }
