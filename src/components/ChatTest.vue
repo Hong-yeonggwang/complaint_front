@@ -11,7 +11,7 @@
             <table class="inputTable">
                 <tr>
                     <th>사용자명</th>
-                    <th><input type="text" name="userId" id="userId" v-model="userId"></th>
+                    <th><input type="text" name="nickName" id="nickName" v-model="nickName"></th>
                     <th><button @click="this.chatName()" id="startBtn">이름 등록</button></th>
                 </tr>
             </table>
@@ -24,6 +24,9 @@
                     <th><button @click="this.send()" id="sendBtn">보내기</button></th>
                 </tr>
             </table>
+        </div>
+        <div>
+            <v-btn id="exitChatRoom" class="border" @click="this.exitChatRoom()">방 나가기</v-btn>
         </div>
     </div>
 
@@ -82,11 +85,9 @@ export default {
             checkChatRoomId: false,
             chatRoomId: this.$route.params.chatRoomId,
             sessionId: null,
-            userId: null,
-            userName: null,
             msg: null,
-            myInfo: null,
-            chatRoomInfo: { name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
+            myInfo: null, // {memberSeq, nickName}
+            chatRoomInfo: null, // { chatRoomSeq, chatRoomId, chatRoomName, currentNumberOfPeople, chatRoomLimited, members}
             chatHistory: []
         }
     },
@@ -136,7 +137,7 @@ export default {
                         if (jsonMsg.sessionId == this.sessionId) {
                             $("#chatting").append("<p class='me'>" + jsonMsg.msg + "</p>");
                         } else {
-                            $("#chatting").append("<p class='others'>" + jsonMsg.userId + " : " + jsonMsg.msg + "</p>");
+                            $("#chatting").append("<p class='others'>" + jsonMsg.nickName + " : " + jsonMsg.msg + "</p>");
                         }
 
                     } else {
@@ -153,10 +154,10 @@ export default {
         },
 
         // chatName() {
-        //     let userId = $("#userId").val();
-        //     if (userId == null || userId.trim() == "") {
+        //     let nickName = $("#nickName").val();
+        //     if (nickName == null || nickName.trim() == "") {
         //         alert("사용자 이름을 입력해주세요.");
-        //         $("#userId").focus();
+        //         $("#nickName").focus();
         //     } else {
         //         this.wsOpen();
         //         $("#yourName").hide();
@@ -169,7 +170,7 @@ export default {
                 type: "message",
                 chatRoomId: this.chatRoomId,
                 sessionId: this.sessionId,
-                userId: this.myInfo.nickName,
+                nickName: this.myInfo.nickName,
                 msg: this.msg
             }
 
@@ -186,9 +187,9 @@ export default {
             let getChatMyInfo = this.getChatMyInfo;
 
             console.log("this.checkChatRoomId : " + this.checkChatRoomId);
-            
+
             let chatRoomId = {
-                chatRoomId : this.$route.params.chatRoomId
+                chatRoomId: this.$route.params.chatRoomId
             }
 
             let jsonChatRoomId = JSON.stringify(chatRoomId);
@@ -198,7 +199,7 @@ export default {
                     console.log(response);
                     console.log(response.data);
                     this.chatRoomInfo = response.data;
-                    if(response.data != ''){
+                    if (response.data != '') {
                         this.checkChatRoomId = true;
                         console.log("this.checkChatRoomId : " + this.checkChatRoomId);
                         wsOpen();
@@ -206,7 +207,7 @@ export default {
                         getChatMyInfo();
                         console.log("getMyInfo")
                     }
-                    else{
+                    else {
                         console.log("this.checkChatRoomId : " + this.checkChatRoomId);
                     }
                 },
@@ -216,7 +217,7 @@ export default {
             )
         },
 
-        getChatMyInfo(){
+        getChatMyInfo() {
             ChattingService.getChatMyInfo().then(
                 (response) => {
                     console.log(response.data);
@@ -224,6 +225,24 @@ export default {
                 },
                 (error) => {
                     console.error("Error getChatMyInfo:", error);
+                }
+            )
+        },
+
+        exitChatRoom(){
+            let info = {
+                chatRoomSeq : this.chatRoomInfo.chatRoomSeq,
+                memberSeq : this.myInfo.memberSeq
+            }
+
+            let jsonInfo = JSON.stringify(info);
+
+            ChatRoomService.exitChatRoom(jsonInfo).then(
+                (response) => {
+                    console.log(response.data);
+                },
+                (error) => {
+                    console.error("Error exitChatRoom:", error);
                 }
             )
         }

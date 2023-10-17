@@ -50,6 +50,15 @@ class ChatService {
     }
   }
 
+  exitChatRoom(jsonInfo) {
+    try{
+      console.log("Service: "+jsonInfo);
+      return api.post("/exitChatRoom", jsonInfo);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
   async test(test){
     console.log("서비스 test");
