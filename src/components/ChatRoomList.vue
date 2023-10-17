@@ -208,18 +208,27 @@ export default {
     enterChatRoom(chatRoom) {
       if (confirm(`"` + chatRoom.chatRoomName + `"\n입장하시겠습니까?`)) {
         console.log("component: "+chatRoom);
-        ChatRoomService.enterChatRoom(chatRoom).then(
-          (response) => {
-            console.error(response);
-
-          },
-          (error) => {
-            console.error("Error enterChatRoom:", error);
-          }
-        );
-        // location.href = "/chat/" + chatRoom.chatRoomId;
+        // ChatRoomService.enterChatRoom(chatRoom).then(
+        //   (response) => {
+        //     console.log(response.data);
+        //     console.log(JSON.stringify(response.data));
+        //     this.$router.push({ name: 'ChatTest', params: { room: chatRoom.chatRoomId, dtoData: response.data } });
+        //   },
+        //   (error) => {
+        //     console.error("Error enterChatRoom:", error);
+        //   }
+        // );
+        location.href = "/chat/" + chatRoom.chatRoomId;
       }
     },
+
+    // loadDataAndNavigate() {
+    //   // 비동기 데이터 로딩
+    //   fetchData().then(dto => {
+    //     // DTO 데이터를 다른 페이지로 전달
+    //     this.$router.push({ name: 'ChatTest', query: { dtoData: JSON.stringify(dto) } })
+    //   })
+    // },
 
     onChange(event) {
       console.log(event.target.value);

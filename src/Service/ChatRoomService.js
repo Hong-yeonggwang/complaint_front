@@ -40,10 +40,10 @@ class ChatService {
     }
   }
 
-  async enterChatRoom(chatRoomInfoDTO) {
+  async enterChatRoom(jsonChatRoomId) {
     try{
-      console.log("Service: "+chatRoomInfoDTO);
-      return await api.post("/enterChatRoom", chatRoomInfoDTO);
+      console.log("Service: "+jsonChatRoomId);
+      return await api.post("/enterChatRoom", jsonChatRoomId);
     }
     catch (error) {
       console.log(error);

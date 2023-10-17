@@ -6,7 +6,7 @@
         <div id="chating" class="chating">
         </div>
 
-        <div id="yourName">
+        <!-- <div id="yourName">
             <table class="inputTable">
                 <tr>
                     <th>사용자명</th>
@@ -14,7 +14,7 @@
                     <th><button @click="this.chatName()" id="startBtn">이름 등록</button></th>
                 </tr>
             </table>
-        </div>
+        </div> -->
         <div id="yourMsg">
             <table class="inputTable">
                 <tr>
@@ -63,6 +63,8 @@
 <script>
 import $ from 'jquery';
 import axios from 'axios';
+import ChatRoomService from '../Service/ChatRoomService';
+
 // import UserService from "../Service/UserService";
 
 axios.get('https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js').then(result => {
@@ -77,18 +79,30 @@ export default {
     },
     data() {
         return {
+            checkChatRoomId: false,
+            chatRoomId: this.$route.params.chatRoomId,
             userId: null,
             chatting: null,
-            chatRoomInfo: { roomId: this.$route.params.room, name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
+            chatRoomInfo: { name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
         }
     },
     created: function () {
-        // this.wsOpen();
+        this.enterChatRoom();
+
+        if(this.checkChatRoomId){
+            this.wsOpen();
+        }
     },
+    // mounted() {
+    //     console.log(this.$route.props)
+    //     console.log(this.$route.params)
+    //     this.receivedDtoData = JSON.parse(this.$route.params.dtoData)
+    //     console.log(this.receivedDtoData)
+    // },
     methods: {
         wsOpen() {
             // 웹소켓 주소 기준은 백엔드 서버
-            this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.room);
+            this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId);
             this.wsEvt();
         },
 
@@ -131,17 +145,17 @@ export default {
             });
         },
 
-        chatName() {
-            let userId = $("#userId").val();
-            if (userId == null || userId.trim() == "") {
-                alert("사용자 이름을 입력해주세요.");
-                $("#userId").focus();
-            } else {
-                this.wsOpen();
-                $("#yourName").hide();
-                $("#yourMsg").show();
-            }
-        },
+        // chatName() {
+        //     let userId = $("#userId").val();
+        //     if (userId == null || userId.trim() == "") {
+        //         alert("사용자 이름을 입력해주세요.");
+        //         $("#userId").focus();
+        //     } else {
+        //         this.wsOpen();
+        //         $("#yourName").hide();
+        //         $("#yourMsg").show();
+        //     }
+        // },
 
         send() {
             let option = {
@@ -155,8 +169,36 @@ export default {
             this.ws.send(JSON.stringify(option))
             $('#chatting').val("");
         },
-        start() {
-            console.log(this.$route.params.room);
+        // start() {
+        //     console.log(this.$route.params.room);
+        // },
+
+        enterChatRoom() {
+            console.log("this.checkChatRoomId : " + this.checkChatRoomId);
+            
+            let chatRoomId = {
+                chatRoomId : this.$route.params.chatRoomId
+            }
+
+            let jsonChatRoomId = JSON.stringify(chatRoomId);
+
+            ChatRoomService.enterChatRoom(jsonChatRoomId).then(
+                (response) => {
+                    console.log(response);
+                    console.log(response.data);
+                    this.chatRoomInfo = response.data;
+                    if(response.data != ''){
+                        this.checkChatRoomId = true;
+                        console.log("this.checkChatRoomId : " + this.checkChatRoomId);
+                    }
+                    else{
+                        console.log("this.checkChatRoomId : " + this.checkChatRoomId);
+                    }
+                },
+                (error) => {
+                    console.error("Error getChatRoomInfo:", error);
+                }
+            )
         }
     }
 }
@@ -207,6 +249,6 @@ input {
 }
 
 #yourMsg {
-    display: none;
+    /* display: none; */
 }
 </style>

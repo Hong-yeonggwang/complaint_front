@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import ChatService from '../Service/ChatService';
+import ChatService from '../Service/ChatRoomService';
 
 export default {
     name: 'CreateChatTest',
