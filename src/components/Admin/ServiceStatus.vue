@@ -23,32 +23,53 @@
   </v-card>
 
   <div v-if="this.tab == 'status'">
-    <svg-icon type="mdi" :path="face_path" class="m-auto" width="120" height="120"></svg-icon>
-    <div>회원 수</div>
-    <div>운영중인 qrcode 사용지점 수</div>
-    <div>오늘 발급된 qrcode 수</div>
-    <div>오늘 사용된 qrcode 수</div>
-
-    <div class="p-5">
-      <div class=" w-full h-48">
-        <div class="w-fit py-4 px-2 float-left">
-          <div>회원 수: 13명</div><div>회원 수: 13명</div><div>회원 수: 13명</div>
+    <div class=" m-4 rounded border bg-sky-200">
+      <div class="m-3 my-5">
+        <div class="border border-b-0 rounded-t-xl bg-sky-100 pl-3 py-1.5">서비스 현황</div>
+        <div class="border border-t-0 bg-sky-50 px-3 py-1 flex justify-between">
+          <div class="flex items-center">
+            <svg-icon type="mdi" :path="face" class="m-auto " width="30" height="30"></svg-icon>
+             <span class="ml-1">회원 수</span>
+          </div>
+          <div>32명</div>
         </div>
-        <div class="w-fit py-4 px-2 float-left">
-          <div>회원 수: 13명</div><div>회원 수: 13명</div><div>회원 수: 13명</div>
+        <div class="border border-t-0 bg-sky-50 px-3 py-1 flex justify-between">
+          <div class="flex items-center">
+            <svg-icon type="mdi" :path="place" class="m-auto " width="30" height="30"></svg-icon>
+             <span class="ml-1"> 운영중인 지점 수</span>
+          </div>
+          <div>7곳</div>
         </div>
-        <div class="w-fit py-4 px-2 float-left">
-          <div>회원 수: 13명</div><div>회원 수: 13명</div><div>회원 수: 13명</div>
-        </div>
-
-
-
-        <div>운영중인 qrcode 사용지점 수</div>
-        <div>오늘 발급된 qrcode 수</div>
-        <div>오늘 사용된 qrcode 수</div>
       </div>
     </div>
-  
+
+    <div class=" m-4 rounded border bg-sky-200">
+      <div class="m-3 my-5">
+        <div class="border border-b-0 rounded-t-xl bg-sky-100 pl-3 py-1.5">오늘 qrcode 사용 현황</div>
+        <div class="border border-t-0 bg-sky-50 px-3 py-1 flex justify-between">
+          <div class="flex items-center">
+            <svg-icon type="mdi" :path="plus" class="m-auto " width="30" height="30"></svg-icon>
+             <span class="ml-1"> 오늘 발급된 qrcode 수</span>
+          </div>
+          <div>7곳</div>
+        </div>
+        <div class="border border-t-0 bg-sky-50 px-3 py-1 flex justify-between">
+          <div class="flex items-center">
+            <svg-icon type="mdi" :path="minus" class="m-auto " width="30" height="30"></svg-icon>
+             <span class="ml-1"> 오늘 사용된 qrcode 수</span>
+          </div>
+          <div>7곳</div>
+        </div>
+        <div class="border border-t-0 bg-sky-50 px-3 py-1 flex justify-between">
+          <div class="flex items-center">
+            <svg-icon type="mdi" :path="qrcodeI" class="m-auto " width="30" height="30"></svg-icon>
+             <span class="ml-1"> 현재 남은 qrcode 수</span>
+          </div>
+          <div>7곳</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div v-if="this.tab == 'management'">
@@ -61,6 +82,9 @@
       </div>
       <div class="categoryToggle mx-4 px-4 mb-2" :class="{'active': type.display}">
         <div v-for="(place, index) in type.category" :key="index" class="my-2 text-lg">{{place}}</div>
+        <div>
+          <div class=""></div>
+        </div>
       </div>
     </div>
       
@@ -82,20 +106,43 @@
   </div>
 
   <div v-if="this.tab == 'tiket'">
-    <div class="text-xl mx-5 font-semibold my-4">쿠폰 발급</div>
-    <div v-for="(type,index) in category" :key="index">
+    <div class="text-xl mx-5 font-semibold mt-4">쿠폰 발급</div>
+
+      <div class="p-4 ">
+        <div class="p-4 bg-sky-100 border flex items-center justify-between">
+          <div class="flex items-centest justify-between">
+            <select class="border px-3 rounded-xl bg-sky-50" >
+              <option>쿠폰 종류</option>
+            </select>
+            <select class="ml-3 border px-3 rounded-xl bg-sky-50" >
+              <option>쿠폰 종류</option>
+            </select>
+          </div>
+          <div class=" bg-sky-50 hover:bg-sky-200 border rounded-xl px-3"> 발급하기</div>
+        </div>
+      </div>
+
+    <div class="text-xl mx-5 font-semibold my-4">발행된 쿠폰</div>
+      
+    <div v-for="(type,index) in coupon" :key="index">
       <div @click="type.display = !type.display" class="mx-4 border py-2 text-xl px-4">
           <div class="float-left">{{type.type}}</div>
           <div class="float-right">+</div>
           <div class="clear-both"></div>
       </div>
-      <div class="categoryToggle mx-4 px-4 mb-2" :class="{'active': type.display}">
-        <div v-for="(place, index) in type.category" :key="index" class="my-2 text-lg">{{place}}</div>
+      <div class="categoryToggle mx-4 px-4 mb-2 overflow-auto" :class="{'active': type.display}">
+        <div v-for="(coupon, index) in type.coupon" :key="index" class="my-2">
+
+          <div class="border my-2 p-2">
+            <div>쿠폰번호: {{coupon.serial}}</div>
+            <div>쿠폰종류: {{coupon.place}}</div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="text-xl mx-5 font-semibold my-4">쿠폰 현황</div>
-    <div class="border rounded-lg mt-5 m-4 max-h-96 overflow-auto">
+    <div class="border rounded-lg mt-5 m-4 max-h-96 overflow-auto bg-sky-100">
       <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
           <div>운영장소: 인성관</div>
           <div>11/21</div>
@@ -103,7 +150,7 @@
     </div>
     
     <div class="text-xl mx-5 font-semibold my-4">qr 현황</div>
-    <div class="border rounded-lg mt-5 m-4 max-h-96 overflow-auto">
+    <div class="border rounded-lg mt-5 m-4 max-h-96 overflow-auto bg-sky-100">
       <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
           <div>운영장소: 인성관</div>
           <div>11/21</div>
@@ -119,6 +166,7 @@
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
 import NavigationBarAdmin from './NavigationBarAdmin.vue'
+import { mdiAccount,mdiMapMarker,mdiPlusBox,mdiMinusBox,mdiQrcode } from '@mdi/js';
 
 export default {
   name: 'AdminMain',
@@ -128,7 +176,12 @@ export default {
     },  
   data () {
     return {
-      tab: null,
+      face:mdiAccount,
+      place:mdiMapMarker,
+      plus:mdiPlusBox,
+      minus:mdiMinusBox,
+      qrcodeI:mdiQrcode,
+      tab: 'tiket',
       myMenu:[
         {title:'서비스 현황', value:'status',info:'현황을 확인합니다.'},
         {title:'서비스 관리 ', value:'management',info:'현재 서비스를 관리합니다.'},
@@ -145,6 +198,55 @@ export default {
             {name:"인성관"},
             {name:"인성관"},
             {name:"인성관"},
+          ]
+        },
+        {
+          type:'식당',
+          display:false,
+          category:[
+            {name:"인성관"},
+            {name:"인성관"},
+            {name:"인성관"},
+          ]
+        }
+      ],
+      coupon:[
+        {
+          type:'버스',
+          display:false,
+          coupon:[
+            {
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },{
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },{
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },{
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },
+            {
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },{
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },{
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },{
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },{
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },{
+              serial:'ABCDEFGHIJK',
+              place:'파랭이',
+            },
           ]
         },
         {
@@ -175,7 +277,7 @@ export default {
   transition:all 0.5s ease;
 }
 .categoryToggle.active {
-  max-height: 600px; /* 적절한 높이로 조정하세요 */
+  max-height: 400px; /* 적절한 높이로 조정하세요 */
   border-bottom-right-radius: 0.5rem; /* 8px */
   border-bottom-left-radius: 0.5rem; /* 8px */
   border: 0.5px solid lightgray;

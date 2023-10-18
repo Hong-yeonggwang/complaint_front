@@ -227,33 +227,15 @@ const router = createRouter({
   router.beforeEach( async (to, from, next) => {
   console.log("beforeEach 실행")
   console.log(to)
-  // console.log(to.meta)
-  // const { authorization } = to.meta;
-  // console.log(authorization) // ['ROLE_ADMIN'] 배열 형태
-  // const token = store.getters['auth/isLoggedIn']
-  // const requiresAuth = to.matched.some(record => record.meta.requiresAuth); // meta에 requiresAuth가 달려있는지 확인 (type:bool)
-  // if (requiresAuth && !token) {
-  //   // 인증정보가 필요하고 인증정보가 없는 경우는 로그인 페이지로 
-  //   next("/login");
-  // } else if(!requiresAuth && token){
-  //   // 인증이 필요하지않고 인증정보가 존재하면 다음페이지로 이동
-  //   next("/");
-  // }
-  // else{
-  //   next();
-  // }
+
   const authenticationState = store.getters['auth/isLoggedIn']
   const { authorization } = to.meta;
-  console.log(!authenticationState)
-  console.log(authorization)
 
     if (authorization){
-
       if (!authenticationState) {
         console.log("로그인창으로")
         return next("/login");
       }
-
       if (
         authorization.length &&
         !authorization.includes(store.getters['auth/getLevel'])
