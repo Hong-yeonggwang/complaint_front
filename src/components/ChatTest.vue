@@ -3,26 +3,30 @@
         <h1>채팅</h1>
         <input type="hidden" id="sessionId" value="">
 
-        <div id="chating" class="chating">
+        <div id="chatting" class="chatting">
+
         </div>
 
-        <div id="yourName">
+        <!-- <div id="yourName">
             <table class="inputTable">
                 <tr>
                     <th>사용자명</th>
-                    <th><input type="text" name="userId" id="userId"></th>
+                    <th><input type="text" name="nickName" id="nickName" v-model="nickName"></th>
                     <th><button @click="this.chatName()" id="startBtn">이름 등록</button></th>
                 </tr>
             </table>
-        </div>
+        </div> -->
         <div id="yourMsg">
             <table class="inputTable">
                 <tr>
                     <th>메시지</th>
-                    <th><input id="chatting" placeholder="보내실 메시지를 입력하세요."></th>
+                    <th><input id="msg" v-model="this.msg" placeholder="보내실 메시지를 입력하세요."></th>
                     <th><button @click="this.send()" id="sendBtn">보내기</button></th>
                 </tr>
             </table>
+        </div>
+        <div>
+            <v-btn id="exitChatRoom" class="border" @click="this.exitChatRoom()">방 나가기</v-btn>
         </div>
     </div>
 
@@ -63,7 +67,8 @@
 <script>
 import $ from 'jquery';
 import axios from 'axios';
-// import UserService from "../Service/UserService";
+import ChatRoomService from '../Service/ChatRoomService';
+import ChattingService from '../Service/ChattingService';
 
 axios.get('https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js').then(result => {
     console.log(result);
@@ -77,43 +82,62 @@ export default {
     },
     data() {
         return {
-            chatRoomInfo: { roomId: this.$route.params.room, name: "방이름", owner: 'user1', users: 1, maxUsers: 9 },
+            checkChatRoomId: false,
+            chatRoomId: this.$route.params.chatRoomId,
+            sessionId: null,
+            msg: null,
+            myInfo: null, // {memberSeq, nickName}
+            chatRoomInfo: null, // { chatRoomSeq, chatRoomId, chatRoomName, currentNumberOfPeople, chatRoomLimited, members}
+            chatHistory: []
         }
     },
     created: function () {
-        // this.wsOpen();
+        this.enterChatRoom();
+
+        // if(this.checkChatRoomId){
+        // }
     },
+    // mounted() {
+    //     console.log(this.$route.props)
+    //     console.log(this.$route.params)
+    //     this.receivedDtoData = JSON.parse(this.$route.params.dtoData)
+    //     console.log(this.receivedDtoData)
+    // },
     methods: {
         wsOpen() {
             // 웹소켓 주소 기준은 백엔드 서버
-            this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.room);
+            this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId);
             this.wsEvt();
         },
 
         wsEvt() {
-            this.ws.onopen = function (data) {
+            this.ws.onopen = (data) => {
                 //소켓이 열리면 동작
                 console.log(data)
             };
 
-            this.ws.onmessage = function (data) {
+            this.ws.onmessage = (data) => {
                 //메시지를 받으면 동작
                 let msg = data.data;
+                console.log("msg: " + msg);
 
                 if (msg != null && msg.trim() != '') {
                     let jsonMsg = JSON.parse(msg);
+                    console.log("jsonMsg: " + jsonMsg);
+
 
                     if (jsonMsg.type == "getSession") {
                         let sessionId = jsonMsg.sessionId != null ? jsonMsg.sessionId : '';
 
                         if (sessionId != '') {
-                            $("#sessionId").val(sessionId);
+                            this.sessionId = sessionId;
+                            // $("#sessionId").val(sessionId);
                         }
                     } else if (jsonMsg.type == "message") {
-                        if (jsonMsg.sessionId == $("#sessionId").val()) {
-                            $("#chating").append("<p class='me'>" + jsonMsg.msg + "</p>");
+                        if (jsonMsg.sessionId == this.sessionId) {
+                            $("#chatting").append("<p class='me'>" + jsonMsg.msg + "</p>");
                         } else {
-                            $("#chating").append("<p class='others'>" + jsonMsg.userId + " : " + jsonMsg.msg + "</p>");
+                            $("#chatting").append("<p class='others'>" + jsonMsg.nickName + " : " + jsonMsg.msg + "</p>");
                         }
 
                     } else {
@@ -129,32 +153,98 @@ export default {
             });
         },
 
-        chatName() {
-            let userId = $("#userId").val();
-            if (userId == null || userId.trim() == "") {
-                alert("사용자 이름을 입력해주세요.");
-                $("#userId").focus();
-            } else {
-                this.wsOpen();
-                $("#yourName").hide();
-                $("#yourMsg").show();
-            }
-        },
+        // chatName() {
+        //     let nickName = $("#nickName").val();
+        //     if (nickName == null || nickName.trim() == "") {
+        //         alert("사용자 이름을 입력해주세요.");
+        //         $("#nickName").focus();
+        //     } else {
+        //         this.wsOpen();
+        //         $("#yourName").hide();
+        //         $("#yourMsg").show();
+        //     }
+        // },
 
         send() {
             let option = {
                 type: "message",
-                roomId: this.chatRoomInfo.roomId,
-                sessionId: $("#sessionId").val(),
-                userId: $("#userId").val(),
-                msg: $("#chatting").val()
+                chatRoomId: this.chatRoomId,
+                sessionId: this.sessionId,
+                nickName: this.myInfo.nickName,
+                msg: this.msg
             }
 
+            console.log(option)
             this.ws.send(JSON.stringify(option))
-            $('#chatting').val("");
+            this.msg = "";
         },
-        start() {
-            console.log(this.$route.params.room);
+        // start() {
+        //     console.log(this.$route.params.room);
+        // },
+
+        enterChatRoom() {
+            let wsOpen = this.wsOpen;
+            let getChatMyInfo = this.getChatMyInfo;
+
+            console.log("this.checkChatRoomId : " + this.checkChatRoomId);
+
+            let chatRoomId = {
+                chatRoomId: this.$route.params.chatRoomId
+            }
+
+            let jsonChatRoomId = JSON.stringify(chatRoomId);
+
+            ChatRoomService.enterChatRoom(jsonChatRoomId).then(
+                (response) => {
+                    console.log(response);
+                    console.log(response.data);
+                    this.chatRoomInfo = response.data;
+                    if (response.data != '') {
+                        this.checkChatRoomId = true;
+                        console.log("this.checkChatRoomId : " + this.checkChatRoomId);
+                        wsOpen();
+                        console.log("wsOpen")
+                        getChatMyInfo();
+                        console.log("getMyInfo")
+                    }
+                    else {
+                        console.log("this.checkChatRoomId : " + this.checkChatRoomId);
+                    }
+                },
+                (error) => {
+                    console.error("Error getChatRoomInfo:", error);
+                }
+            )
+        },
+
+        getChatMyInfo() {
+            ChattingService.getChatMyInfo().then(
+                (response) => {
+                    console.log(response.data);
+                    this.myInfo = response.data;
+                },
+                (error) => {
+                    console.error("Error getChatMyInfo:", error);
+                }
+            )
+        },
+
+        exitChatRoom(){
+            let info = {
+                chatRoomSeq : this.chatRoomInfo.chatRoomSeq,
+                memberSeq : this.myInfo.memberSeq
+            }
+
+            let jsonInfo = JSON.stringify(info);
+
+            ChatRoomService.exitChatRoom(jsonInfo).then(
+                (response) => {
+                    console.log(response.data);
+                },
+                (error) => {
+                    console.error("Error exitChatRoom:", error);
+                }
+            )
         }
     }
 }
@@ -182,19 +272,19 @@ export default {
     margin-bottom: 20px;
 }
 
-.chating {
+.chatting {
     background-color: #F6F6F6;
     width: 500px;
     height: 500px;
     overflow: auto;
 }
 
-.chating .me {
+.chatting .me {
     color: #000;
     text-align: right;
 }
 
-.chating .others {
+.chatting .others {
     color: blue;
     text-align: left;
 }
@@ -205,6 +295,6 @@ input {
 }
 
 #yourMsg {
-    display: none;
+    /* display: none; */
 }
 </style>

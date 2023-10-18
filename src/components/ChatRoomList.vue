@@ -5,12 +5,12 @@
     <!-- 메뉴바  -->
     <v-card>
       <v-tabs v-model="tab" bg-color="black">
-        <v-tab v-for="(menu, index) in  buyMenu" :key="index" v-bind:value="menu.value">{{ menu.title }}</v-tab>
+        <v-tab v-for="(menu, index) in  chatMenu" :key="index" v-bind:value="menu.value">{{ menu.title }}</v-tab>
       </v-tabs>
-      <!-- 
-    <v-card-text>
+
+      <!-- <v-card-text>
       <v-window v-model="tab">
-        <v-window-item v-for="(menu, index) in buyMenu" :key="index" class="h-12 flex items-center"
+        <v-window-item v-for="(menu, index) in chatMenu" :key="index" class="h-12 flex items-center"
           v-bind:value="menu.value">
           {{ menu.info }}
         </v-window-item>
@@ -32,19 +32,25 @@
           <div class="clear-both"></div>
         </div>
         <div class="float-left">채팅을 통해 배달 같이 주문할 친구를 구해요~</div>
+        <div class="float-right mt-2">
+          <select v-model="sortOrder" class="cursor-pointer border text-center mr-2 rounded-md">
+            <option value="asc">오래된 순</option>
+            <option value="desc">최신순</option>
+          </select>
+        </div>
         <div class="clear-both"></div>
       </div>
 
       <div class="overflow-y-auto" style="height: 34rem;">
-        <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom, index) in LatestChatRoomList" :key="chatRoom.id"
-          @click="enterRoom(chatRoom)">
+        <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom) in chatRooms" :key="chatRoom.id"
+          @dblclick="enterChatRoom(chatRoom)" @click="selectRoom(chatRoom)">
           <!-- @click="rightMouseListener(chatRoom)" -->
-          <div class="px-2 py-3 mx-2">
+          <div class="px-2 py-3 mx-2 cursor-pointer">
             <div class="float-left">방이름: {{ chatRoom.chatRoomName }}</div>
-            <div class="float-right">방 번호: {{ index += 1 }}</div>
+            <div class="float-right">방 번호: {{ chatRoom.chatRoomSeq }}</div>
             <div class="clear-both"></div>
             <div class="float-left">방장: {{ chatRoom.owner }}</div>
-            <div class="float-right">접속인원: {{ chatRoom.currentUsers }}/{{ chatRoom.maxUsers }}</div>
+            <div class="float-right">접속인원: {{ chatRoom.currentNumberOfPeople }}/{{ chatRoom.chatRoomLimited }}</div>
             <div class="clear-both"></div>
           </div>
         </div>
@@ -52,7 +58,7 @@
     </div>
 
     <div>
-      <table class="inputTable">
+      <table class="">
         <tr>
           <th>방 제목</th>
           <th><input type="text" id="roomName" v-model="newChatRoomInfo.chatRoomName"
@@ -61,8 +67,23 @@
         </tr>
         <tr>
           <th>인원 제한</th>
-          <th><input type="number" id="maxUsers" v-model="newChatRoomInfo.maxUsers"
-              class="w-30 border-solid border-1 border-black" placeholder="최대 몇명인지 입력하세요.">
+          <th>
+            <div>
+              <div class="float-left w-fit">
+                <v-btn density="compact" icon="mdi-minus" @click="minusCount()"></v-btn>
+              </div>
+              <div class="float-left">
+                <input type="number" id="chatRoomLimited" v-model="newChatRoomInfo.chatRoomLimited" @input="onChange($event)"
+                  class="w-30 border-solid border-1 border-black" placeholder="최대 몇명인지 입력하세요.">
+              </div>
+              <div class="float-left w-fit">
+                <v-btn density="compact" icon="mdi-plus" @click="plusCount()"></v-btn>
+              </div>
+              <div class="clear-both"></div>
+            </div>
+            <div>
+              <v-btn id="test" density="compact" icon="mdi-plus" @click="this.test(this.sortOrder)"></v-btn>
+            </div>
           </th>
         </tr>
       </table>
@@ -84,41 +105,36 @@
 
 <script>
 import NavigationBar2 from './NavigationBar2.vue';
-import ChatService from '../Service/ChatService';
+import ChatRoomService from '../Service/ChatRoomService';
 // import InputPromptModal from './InputPromptModal.vue';
 
 /* 마우스 오른쪽 메뉴 변수 */
 export default {
-  name: 'ChatPage',
+  name: 'chatRoomListPage',
   components: {
     NavigationBar2,
     // InputPromptModal,
   },
   data() {
     return {
+      tab: null,
+      sortOrder: 'desc', // 초기 정렬 순서 (최신순)
       chatRooms: [
-        { chatRoomId: "", chatRoomName: "지금 이게 방 제목이야", owner: 'user1', currentUsers: 1, maxUsers: 9 },
-        /* { chatRoomId, chatRoomName, owner, currentUsers, maxUsers,  } */
+        { chatRoomSeq: null, chatRoomId: "", chatRoomName: "지금 이게 방 제목이야", chatRoomOwner: 'user1', currentUsers: 1, chatRoomLimited: 9 },
+        // { chatRoomSeq, chatRoomId, chatRoomName, chatRoomOwner, currentUsers, chatRoomLimited, chatRoomCreatedDate, members }
         // 다른 방 정보를 추가할 수 있습니다.
       ],
-      newChatRoomInfo: { chatRoomName: "", owner: "", maxUsers: 0 }, // 입력한 방이름, 최대 인원
 
-      isModalOpen: false, // 기존의 isModalOpen을 openModal로 변경
+      newChatRoomInfo: { chatRoomName: "", chatRoomLimited: 2 }, // 입력한 방이름, 최대 인원
 
-      tab: null,
-      buyMenu: [
+      // isModalOpen: false, // 기존의 isModalOpen을 openModal로 변경
+
+      chatMenu: [
         { title: '채팅방', value: 'chatRooms', info: '모든 채팅방' },
         { title: '내 채팅방', value: 'myChatRooms', info: '내가 대화중인 채팅방' },
       ],
 
       myInfo: { Id: 'wjdehgns123', name: '정도훈', 학번: '201727040', 학과: '컴퓨터과학과' },
-
-      // chatRooms: [
-      //   { id: 1, name: '방1', owner: 'user1', users: 1, maxUsers: 9 },
-      //   { id: 2, name: '방2', owner: 'user2', users: 2, maxUsers: 9 },
-      //   // 다른 방 정보를 추가할 수 있습니다.
-      // ],
-
       contextMenuVisible: false,
       contextMenuPosition: { x: 0, y: 0 },
       selectedChatRoom: null, // 선택한 방 정보를 저장할 변수
@@ -131,16 +147,29 @@ export default {
     // this.rightMouseListener();
   },
   computed: {
-    // 생성된 채팅방 목록을 최신순으로 정렬
-    LatestChatRoomList() {
-      return this.chatRooms.slice().reverse();
-    },
+    // 비동기로 받은 Entity List를 정렬하는 computed 속성
+    // reverseChatRoomList() {
+      // return this.chatRooms = this.sortOrder === 'asc'
+      //   ? this.chatRooms.slice().sort((a, b) => a.chatRoomSeq.localeCompare(b.chatRoomSeq))
+      //   : this.chatRooms.slice().sort((a, b) => b.chatRoomSeq.localeCompare(a.chatRoomSeq));
+
+      // return this.chatRooms.slice().sort((a, b) => {
+      //   if (this.sortOrder === 'asc'){
+      //     return this.chatRooms;
+      //   }
+      //   else{
+      //     return this.chatRooms.slice().reverse();
+      //   }
+      // })
+    // },
   },
   methods: {
     getChatRoomList() {
       // 서버에서 방 목록을 가져오는 비동기 요청을 수행하고 결과를 chatRooms에 저장
-      ChatService.getChatRoomList().then(
+      ChatRoomService.getChatRoomList().then(
         (response) => {
+          console.error(this.chatRooms);
+          console.error(response.data);
           this.chatRooms = response.data;
         },
         (error) => {
@@ -156,20 +185,17 @@ export default {
         return 0;
       }
 
-      // if(this.newChatRoomInfo.maxUsers < 2){
-      //     alert("채팅방 인원 제한은 최소 2명입니다.");
-      //     return 0;
-      // }
-
-
       let newChatRoomInfo = {
         chatRoomName: this.newChatRoomInfo.chatRoomName,
-        maxUsers: this.newChatRoomInfo.maxUsers
+        chatRoomLimited: this.newChatRoomInfo.chatRoomLimited
       };
 
-      ChatService.createChatRoom(newChatRoomInfo).then(
+      let JsonOptions = JSON.stringify(newChatRoomInfo);
+
+      ChatRoomService.createChatRoom(JsonOptions).then(
         (response) => {
-          this.chatRooms.push(response.data);
+          this.chatRooms = response.data;
+          console.error(this.chatRooms);
 
           this.newChatRoomInfo.chatRoomName = ""; // 입력 필드 초기화
         },
@@ -179,12 +205,47 @@ export default {
       )
     },
 
-    enterRoom(chatRoom) {
+    enterChatRoom(chatRoom) {
       if (confirm(`"` + chatRoom.chatRoomName + `"\n입장하시겠습니까?`)) {
+        console.log("component: "+chatRoom);
+        
         location.href = "/chat/" + chatRoom.chatRoomId;
       }
     },
 
+    // loadDataAndNavigate() {
+    //   // 비동기 데이터 로딩
+    //   fetchData().then(dto => {
+    //     // DTO 데이터를 다른 페이지로 전달
+    //     this.$router.push({ name: 'ChatTest', query: { dtoData: JSON.stringify(dto) } })
+    //   })
+    // },
+
+    onChange(event) {
+      console.log(event.target.value);
+    },
+
+    plusCount() {
+      if (this.tab == "chatRooms") {
+        this.newChatRoomInfo.chatRoomLimited += 1;
+      }
+    },
+
+    minusCount() {
+      if (this.tab == "chatRooms") {
+        if (this.newChatRoomInfo.chatRoomLimited > 2) {
+          this.newChatRoomInfo.chatRoomLimited -= 1;
+        }
+        else {
+          alert("채팅방 인원 제한은 최소 2명입니다.");
+        }
+      }
+    },
+
+    selectRoom(){
+
+    },
+    
     closeModal() {
       this.$refs.inputPromptModal.closeModal();
     },
@@ -230,6 +291,11 @@ export default {
     showMenu(x, y) {
       this.contextMenuPosition = { x, y };
     },
+
+    test(test) {
+      console.error(test);
+      ChatRoomService.test(test);
+    }
   },
 }
 </script>
@@ -290,5 +356,18 @@ export default {
 
 .context-menus.active>ul>li:hover {
   background-color: lightgreen;
+}
+
+/* input type number 화살표 제거 */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox  */
+input[type='number'] {
+  -moz-appearance: textfield;
 }
 </style>

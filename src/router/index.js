@@ -1,11 +1,12 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { defineComponent } from 'vue'
 import MyPage from '../components/MyPage.vue'
-import ChatPage from '../components/ChatList.vue'
+
+import ChatRoomListPage from '../components/ChatRoomList.vue'
 // import ChatRoom from '../components/ChatRoom.vue'
 
 import ChatTest from '../components/ChatTest.vue'
-import CreateChatTest from '../components/CreateChatTest.vue'
+// import CreateChatTest from '../components/CreateChatTest.vue'
 
 import CscenterPage from '../components/CscenterPage.vue'
 import BuyPage from '../components/Buy.vue'
@@ -59,8 +60,8 @@ const routes = [
   },
   {
     path: "/chat",
-    name: "chatPage",
-    component: ChatPage,
+    name: "chatPage", // 여기 수정하면 고장나는데 이유를 모르겠음
+    component: ChatRoomListPage,
     meta: {
       authorization: ["ROLE_USER"]
     },
@@ -68,20 +69,13 @@ const routes = [
   
   
   {
-    path: "/createChatTest",
-    name: "CreateChatTest",
-    component: CreateChatTest,
-    meta: {
-      authorization: ["ROLE_USER"]
-    },
-  },
-  {
-    path: "/chat/:room",
+    path: "/chat/:chatRoomId",
     name: "ChatTest", //"chatRoom",
     component: ChatTest,
     meta: {
       authorization: ["ROLE_USER"]
     },
+    mode: 'history' // URL에서 해시(#)를 사용하지 않고 깔끔한 URL을 사용하도록 지정
   },
 
 
@@ -246,5 +240,6 @@ const router = createRouter({
   next();
   }
 );
+
 
 export default router;
