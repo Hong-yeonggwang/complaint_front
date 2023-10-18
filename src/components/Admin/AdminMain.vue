@@ -1,6 +1,4 @@
 <template>
-  {{ this.test }}
-  {{ isAuthenticated }}
   <NavigationBarAdmin class="float-left"></NavigationBarAdmin>
   <div class="ml-14 customWidth float-left">
     <div class="w-full h-20 bg-slate-900 flex items-center">
@@ -69,7 +67,7 @@ export default {
         {title:'쿠폰등록', value:'coupon',info:'쿠폰을 등록합니다',component:'couponRegistration'}, 
       ],
       adminInfo:{
-        name:"홍영광",
+        name:'홍영광',
         phoneNumber:'010-1234-1234',
         role:'최고 관리자'
       },
@@ -88,6 +86,7 @@ export default {
     )
     this.test = this.$store.state;
     console.log(this.test)
+
   },
   computed: {
     isAuthenticated() {
