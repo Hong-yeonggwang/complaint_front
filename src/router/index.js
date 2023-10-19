@@ -3,9 +3,7 @@ import { defineComponent } from 'vue'
 import MyPage from '../components/MyPage.vue'
 
 import ChatRoomListPage from '../components/ChatRoomList.vue'
-// import ChatRoom from '../components/ChatRoom.vue'
-
-import ChatTest from '../components/ChatTest.vue'
+import ChatRoom from '../components/ChatRoom.vue'
 // import CreateChatTest from '../components/CreateChatTest.vue'
 
 import CscenterPage from '../components/CscenterPage.vue'
@@ -70,13 +68,22 @@ const routes = [
   
   {
     path: "/chat/:chatRoomId",
-    name: "ChatTest", //"chatRoom",
-    component: ChatTest,
+    name: "ChatRoom", //"chatRoom",
+    component: ChatRoom,
     meta: {
       authorization: ["ROLE_USER"]
     },
     mode: 'history' // URL에서 해시(#)를 사용하지 않고 깔끔한 URL을 사용하도록 지정
   },
+  // {
+  //   path: "/chat/:chatRoomId",
+  //   name: "ChatRoom", //"chatRoom",
+  //   component: ChatRoom,
+  //   meta: {
+  //     authorization: ["ROLE_USER"]
+  //   },
+  //   mode: 'history' // URL에서 해시(#)를 사용하지 않고 깔끔한 URL을 사용하도록 지정
+  // },
 
 
 

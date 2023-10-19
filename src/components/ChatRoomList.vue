@@ -49,7 +49,7 @@
             <div class="float-left">방이름: {{ chatRoom.chatRoomName }}</div>
             <div class="float-right">방 번호: {{ chatRoom.chatRoomSeq }}</div>
             <div class="clear-both"></div>
-            <div class="float-left">방장: {{ chatRoom.owner }}</div>
+            <!-- <div class="float-left">방장: {{ chatRoom.owner }}</div> -->
             <div class="float-right">접속인원: {{ chatRoom.currentNumberOfPeople }}/{{ chatRoom.chatRoomLimited }}</div>
             <div class="clear-both"></div>
           </div>
@@ -142,9 +142,6 @@ export default {
   },
   created: function () {
     this.getChatRoomList();
-
-    // this.leftMouseListener();
-    // this.rightMouseListener();
   },
   computed: {
     // 비동기로 받은 Entity List를 정렬하는 computed 속성
