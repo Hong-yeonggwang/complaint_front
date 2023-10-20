@@ -60,6 +60,16 @@ class ChatService {
     }
   }
 
+  async refreshChatRoomInfo(chatRoomId){
+    try{
+      console.log("Service: "+ chatRoomId);
+      return await api.post("/refreshChatRoomInfo", chatRoomId);
+    }
+    catch (error){
+      console.log(error);
+    }
+  }
+
   async test(test){
     console.log("서비스 test");
     try {
@@ -69,7 +79,7 @@ class ChatService {
       console.log(error);
     }
   }
-
+  
 }
 
 export default new ChatService();

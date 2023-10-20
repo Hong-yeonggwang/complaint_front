@@ -142,6 +142,9 @@ export default {
   },
   created: function () {
     this.getChatRoomList();
+    Notification.requestPermission();
+    let permission = Notification.requestPermission();
+    console.log(permission)
   },
   computed: {
     // 비동기로 받은 Entity List를 정렬하는 computed 속성
@@ -165,8 +168,8 @@ export default {
       // 서버에서 방 목록을 가져오는 비동기 요청을 수행하고 결과를 chatRooms에 저장
       ChatRoomService.getChatRoomList().then(
         (response) => {
-          console.error(this.chatRooms);
-          console.error(response.data);
+          console.log(this.chatRooms);
+          console.log(response.data);
           this.chatRooms = response.data;
         },
         (error) => {
