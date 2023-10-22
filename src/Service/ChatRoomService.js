@@ -59,10 +59,10 @@ class ChatService {
     }
   }
 
-  async refreshChatRoomInfo(chatRoomId){
+  async refreshChatRoomInfo(jsonChatRoomId){
     try{
-      console.log("Service: "+ chatRoomId);
-      return await api.post("/refreshChatRoomInfo", chatRoomId);
+      console.log("Service: "+ jsonChatRoomId);
+      return await api.post("/refreshChatRoomInfo", jsonChatRoomId);
     }
     catch (error){
       console.log(error);
