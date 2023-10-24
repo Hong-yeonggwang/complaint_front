@@ -8,7 +8,7 @@
                     <!-- <v-btn class="float-left ml-4" density="compact" icon="mdi-pencil"
                         @click="this.getChatRoomList()"></v-btn> -->
                     <v-btn class="float-right mr-4" density="compact" icon="mdi-refresh"
-                        @click="this.refreshChatRoomInfo()"></v-btn>
+                        @click="this.getChatHistories()"></v-btn>
                 </div>
                 <div class="clear-both"></div>
                 <div class="mt-2">인원 수 : {{ this.chatRoomInfo.currentNumberOfPeople }} / {{
@@ -30,9 +30,10 @@
                                         </div>
                                         <div class="clear-both"></div>
                                     </div>
-                                    <!-- <div v-else>
-                                        <div class="others">
-                                        <div class="flex items-center my-2">
+                                </div>
+                                <div v-else>
+                                    <div class="others my-2">
+                                        <div class="flex items-center">
                                             <img :src="require(`@/assets/logo.png`)" class="float-left w-6 ml-1">
                                             <div class="float-left ml-1">{{ chat.nickName }}</div>
                                             <div class="clear-both"></div>
@@ -40,15 +41,16 @@
                                         <div class="px-1 py-3 border rounded-lg w-2/3 float-left">
                                             {{ chat.msg }}
                                         </div>
-                                        <div class="text-sm float-left">{{ chat.chatHistoryTime }}</div>
+                                        <div class="text-sm float-left">
+                                            {{ chat.chatHistoryTime }}
+                                        </div>
                                         <div class="clear-both"></div>
-                                    </div> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <div class="my-2 mx-4">
@@ -58,6 +60,7 @@
         </div>
         <div>
             <v-btn id="exitChatRoom" class="border" @click="this.exitChatRoom()">방 나가기</v-btn>
+            <!-- <v-btn class="float-right mr-4" density="compact" icon="mdi-refresh" @click="this.refreshChatRoomInfo()"></v-btn> -->
         </div>
     </div>
 </template>
@@ -81,7 +84,7 @@ export default {
             chatRoomId: this.$route.params.chatRoomId,
             messageType: ["getSession", "message", "enter", "exit"],
             sessionId: null,
-            senderMemberSeq: null,
+            // senderMemberSeq: null,
             msg: null,
             myInfo: { memberSeq: null, nickName: null },
             chatRoomInfo: { chatRoomSeq: null, chatRoomId: null, chatRoomName: null, currentNumberOfPeople: null, chatRoomLimited: null, members: null },
@@ -90,11 +93,15 @@ export default {
     },
     created: function () {
         this.enterChatRoom();
+        this.getChatHistories();
     },
     methods: {
         wsOpen() {
             // 웹소켓 주소 기준은 백엔드 서버
+            // const Token = TokenService.getLocalAccessToken();
+
             this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId);
+            // this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId, Token);
             this.wsEvt();
         },
 
@@ -120,7 +127,7 @@ export default {
                     if (jsonMsg.messageType == this.messageType[0]) { // getSeesion
                         let sessionId = jsonMsg.sessionId != null ? jsonMsg.sessionId : '';
 
-                        this.senderMemberSeq = jsonMsg.memberSeq
+                        // this.senderMemberSeq = jsonMsg.memberSeq
 
                         if (sessionId != '') {
                             this.sessionId = sessionId;
@@ -138,14 +145,14 @@ export default {
                         this.chatHistory.push(jsonMsg);
                     }
                     else if (jsonMsg.messageType == this.messageType[2]) { // enter
-                        jsonMsg.chatHistory = convertTo12HourFormat(jsonMsg.chatHistory);
+                        jsonMsg.chatHistoryTime = convertTo12HourFormat(jsonMsg.chatHistoryTime);
                         // jsonMsg.msg = jsonMsg.nickName + jsonMsg.msg;
                         this.chatHistory.push(jsonMsg);
 
                         // 누군가 입장하면 멤버 정보 새로 받아오기
                     }
                     else if (jsonMsg.messageType == this.messageType[3]) { // exit
-                        jsonMsg.chatHistory = convertTo12HourFormat(jsonMsg.chatHistory);
+                        jsonMsg.chatHistoryTime = convertTo12HourFormat(jsonMsg.chatHistoryTime);
                         // jsonMsg.msg = jsonMsg.nickName + jsonMsg.msg;
                         this.chatHistory.push(jsonMsg);
 
@@ -195,7 +202,6 @@ export default {
             // })
             // let sendEnter = this.send;
 
-
             console.log("this.checkChatRoomId : " + this.checkChatRoomId);
 
             let chatRoomId = {
@@ -232,19 +238,14 @@ export default {
                             if (response.data.chatRoomRemaining == true) {
                                 console.log("this.checkChatRoomId : " + this.checkChatRoomId);
                                 wsOpen();
-                                // wsOpenPromise.then(() => {
-                                //     console.log("wsOpen")
-                                // });
                                 console.log("wsOpen completed, now sendEnter(2)");
 
                             }
                             else {
                                 alert("인원이 가득 찬 채팅방 입니다.");
-                                // location.href = "/chat/"
+                                location.href = "/chat/"
                             }
                         }
-                        // getChatMyInfo();
-                        // console.log("getMyInfo")
                     }
                     else {
                         console.log("this.checkChatRoomId : " + this.checkChatRoomId);
@@ -282,10 +283,18 @@ export default {
         },
 
         refreshChatRoomInfo() {
-            ChatRoomService.refreshChatRoomInfo(this.$route.params.chatRoomId).then(
+            let chatRoomId = {
+                chatRoomId: this.$route.params.chatRoomId
+            }
+
+            let jsonChatRoomId = JSON.stringify(chatRoomId);
+
+            ChatRoomService.refreshChatRoomInfo(jsonChatRoomId).then(
                 (response) => {
+                    console.log(response);
                     console.log(response.data);
-                    // this.chatRoomInfo.members = response.data;
+                    this.chatRoomInfo = response.data;
+                    console.log(this.chatRoomInfo);
                 },
                 (error) => {
                     console.error("Error refreshChatRoomInfo:", error);
@@ -305,10 +314,24 @@ export default {
             return formattedTime;
         },
 
-        getChatHistories(){
-            ChatHistoryService.getChatHistories(this.$route.params.chatRoomId).then(
+        async getChatHistories() {
+            const convertTo12HourFormat = this.convertTo12HourFormat;
+
+            let chatRoomId = {
+                chatRoomId: this.$route.params.chatRoomId
+            }
+
+            let jsonChatRoomId = JSON.stringify(chatRoomId);
+
+            ChatHistoryService.getChatHistories(jsonChatRoomId).then(
                 (response) => {
-                    console.log(response.data)
+                    // console.log(response.data)
+
+                    response.data.forEach(messageOptions => {
+                        messageOptions.chatHistoryTime = convertTo12HourFormat(messageOptions.chatHistoryTime);
+                    })
+
+                    this.chatHistory = response.data;
                 },
                 (error) => {
                     console.error("Error getChatHistories:", error);

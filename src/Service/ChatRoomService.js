@@ -29,11 +29,10 @@ class ChatService {
     }
   }
 
-  async getMyChatRoomList(UserId) {
-    // 서버에서 해당하는 ID가 대화중인 방 목록을 가져오는 비동기 요청을 수행하고 List를 반환
+  async getMyChatRoomList() {
     console.log("서비스 내 방리스트 호출");
     try {
-      return await api.post("/getMyChatRoomList", UserId)
+      return await api.post("/getMyChatRoomList")
     }
     catch (error) {
       console.log(error);
@@ -60,10 +59,10 @@ class ChatService {
     }
   }
 
-  async refreshChatRoomInfo(chatRoomId){
+  async refreshChatRoomInfo(jsonChatRoomId){
     try{
-      console.log("Service: "+ chatRoomId);
-      return await api.post("/refreshChatRoomInfo", chatRoomId);
+      console.log("Service: "+ jsonChatRoomId);
+      return await api.post("/refreshChatRoomInfo", jsonChatRoomId);
     }
     catch (error){
       console.log(error);

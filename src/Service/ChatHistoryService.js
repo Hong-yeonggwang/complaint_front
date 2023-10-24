@@ -1,9 +1,9 @@
 import api from './api';
 
 class ChatHistoryService {
-    async getChatHistories() {
+    async getChatHistories(jsonChatRoomId) {
         try {
-            return await api.post("/getChatHistories")
+            return await api.post("/getChatHistories", jsonChatRoomId)
         }
         catch (error) {
             console.log(error);
