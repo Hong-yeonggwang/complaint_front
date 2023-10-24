@@ -19,6 +19,8 @@ import QRcodeReader from '../components/Operator/QRcodeReader.vue'
 import AdminMain from "../components/Admin/AdminMain.vue"
 import AdminCScenter from "../components/Admin/AdminCScenter.vue"
 import AdminManagement from "../components/Admin/AdminManagement.vue"
+import AdminCategory from "../components/Admin/AdminCategory.vue"
+import AdminUser from "../components/Admin/AdminUser.vue"
 import ServiceStatus from "../components/Admin/ServiceStatus.vue"
 
 import OperatorMain from "../components/Operator/OperatorMain.vue"
@@ -180,7 +182,27 @@ const routes = [
       
     },
   },
-
+  {
+    path:"/admin/category",
+    name:"AdminCategory",
+    component: AdminCategory,
+    meta: {
+      requiresAuth: true, 
+      authorization: ["ROLE_ADMIN"]
+      
+    },
+  },
+  {
+    path:"/admin/user",
+    name:"AdminUser",
+    component: AdminUser,
+    meta: {
+      requiresAuth: true, 
+      authorization: ["ROLE_ADMIN"]
+      
+    },
+  },
+  
 
   //Operator단
   {
@@ -226,22 +248,19 @@ const router = createRouter({
 });
 
   router.beforeEach( async (to, from, next) => {
-  console.log("beforeEach 실행")
-  console.log(to)
 
   const authenticationState = store.getters['auth/isLoggedIn']
   const { authorization } = to.meta;
 
     if (authorization){
       if (!authenticationState) {
-        console.log("로그인창으로")
         return next("/login");
       }
       if (
         authorization.length &&
         !authorization.includes(store.getters['auth/getLevel'])
       ) {// 빈배열의 길이가 조건문으로 들어가면 0이기 떄문에 거짓이다. 인증을 하고 싶지 않은 페이지는 meta에 authorization에 빈 배열 넣으면됌.
-        return next("/notFound");
+        return next("/notFound"); // notfound가 뜨는 경우는 이상한 주소이거나 권한이 없는 페이지 메인화면으로 이동하거나 로그인창으로 이동하는 버튼생성하기로
       }
     }
   next();

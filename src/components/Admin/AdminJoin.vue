@@ -57,11 +57,24 @@
 
         <div class="flex items-center border-b"> 
           <div class="float-left mx-1">
+            <svg-icon type="mdi" :path="level" class="m-auto" height="30"></svg-icon>
+          </div>
+          <div class="float-left w-fit">
+            <select class="w-36 bg-slate-100" v-model="formData.role" :class="{'unVaild':formData.phoneNumber , 'active': error.phoneNumber }">
+              <option value="ROLE_ADMIN">관리자</option>
+              <option value="ROLE_OPERATOR">운영자</option>
+            </select>
+          </div>
+          <div class="clear-both"></div>
+        </div>
+
+        <div class="flex items-center border-b"> 
+          <div class="float-left mx-1">
             <svg-icon type="mdi" :path="type" class="m-auto" height="30"></svg-icon>
           </div>
           <div class="float-left w-fit">
             <select class="w-36 bg-slate-100" v-model="formData.type" :class="{'unVaild':formData.phoneNumber , 'active': error.phoneNumber }">
-              <option v-for="(item, index) in operatorType" :key="index" :value="item">{{ item}}</option>
+              <option v-for="(item, index) in operatorType" :key="index" :value="item">{{ item.type}}</option>
             </select>
           </div>
           <div class="clear-both"></div>
@@ -99,8 +112,8 @@
 
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiLogin,mdiAccountOutline,mdiLockOutline,mdiPhone,mdiMapMarker,mdiFormatListBulletedType } from '@mdi/js';
-import AuthService from '@/Service/AuthService';
+import { mdiLogin,mdiAccountOutline,mdiLockOutline,mdiPhone,mdiMapMarker,mdiFormatListBulletedType,mdiShieldCrown } from '@mdi/js';
+import AdminService from '@/Service/AdminService';
 
 export default {
   name: 'AdminJoin',
@@ -115,13 +128,14 @@ export default {
       phone_path: mdiPhone,
       place: mdiMapMarker,
       type: mdiFormatListBulletedType,
+      level:mdiShieldCrown,
       formData:{
         id:'',
         password:'',
         name:'',
         phoneNumber:'',
-        place:'',
-        type:'버스',
+        place:'장소',
+        role:'등급선택'
       },
       formValid:{
         id:false,
@@ -140,7 +154,7 @@ export default {
         phoneNumber:true,
         birth:true,
       },
-      operatorType:['식당','버스'],
+      operatorType:[],
       operatorPlace:[],
     }
   },
@@ -181,10 +195,50 @@ export default {
         this.formValid.birth = false;
       }
     },
+    'formData.type':function(){
+        this.operatorPlace = this.formData.type.category.map(item => item.name)        
+    }
+  },
+  created(){
+    AdminService.getCategory().then(
+      (res) =>{
+        console.log(res)
+
+        const apiResult = res.data;
+        const categorySortMap = new Map();
+
+          apiResult.forEach((items) => {
+            const typeName = items.qrcodeUsingPlace.name;
+            if (!categorySortMap.has(typeName)) {
+              categorySortMap.set(typeName, {
+                type: typeName,
+                display: false,
+                category: [],
+              });
+            }
+
+            const temp = { name: items.name };
+            categorySortMap.get(typeName).category.push(temp);
+          });
+
+          const categorySort = Array.from(categorySortMap.values());
+
+          this.operatorType = categorySort.map(item => item.type)
+          console.log(categorySort)
+          this.operatorPlace = categorySort.map(item => item.category.map(item => item.name)) 
+          console.log(this.operatorPlace)
+
+          this.operatorType = categorySort;
+      }
+    )
   },
   methods:{
     submitForm() {
-      AuthService.join(this.formData);
+      AdminService.signAdmin(this.formData).then(
+        (res)=>{
+          console.log(res)
+        }
+      )
     },
     checkID() {
       const validateId = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/

@@ -33,15 +33,13 @@
 
       <div class="border rounded-lg mt-5 m-2 max-h-96 overflow-auto">
 
-        <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
-          <div class="">운영장소: 인성관</div>
-          <div class="flex items-center justify-between">
-            <div class="mx-1">운영자 이름: 홍영광</div>
-            <div class="px-2 box-border m-1 mr-0 bg-sky-100 hover:bg-sky-200 border rounded-lg">수정</div>
+        <div class="my-2 w-5/6 m-auto">
+          <div v-for="(operator,index) in operatorList" :key="index" class="border rounded-xl bg-sky-100 m-auto mb-2 pl-3 py-2 shadow-lg">
+            <div class="">운영장소: {{operator.qrcodeCategory.name}}</div>
+            <div class="">이름: {{operator.name}}</div>
+            <div class="">전화번호: {{ operator.phoneNumber }}</div>
           </div>
-          
         </div>
-
       </div>
     </div>
 
@@ -69,24 +67,6 @@
     </div>
   </div>
   
-  <div v-if="this.tab == 'info'">
-    <div class="mx-8 p-3 ">
-      <div class="w-full border-b">
-        <svg-icon type="mdi" :path="face_path" class="m-auto float-left" width="40" height="40"></svg-icon>
-        <div class=" p-2 pl-0 text-xl font-semibold float-left">운영자 티켓 수거 현황</div>
-        <div class="clear-both"></div>
-      </div>
-
-      <div class="border rounded-lg mt-5 m-2 max-h-96 overflow-auto">
-
-        <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
-          <div>운영장소: 인성관</div>
-          <div>11/21</div>
-        </div>
-
-      </div>
-    </div>
-  </div>
   
 </div>
 
@@ -99,6 +79,7 @@ import { mdiAccount,mdiBookshelf, mdiCake, mdiPhone } from '@mdi/js';
 import NavigationBarAdmin from './NavigationBarAdmin.vue'
 import AdminJoin from './AdminJoin.vue';
 import AdminInfoEdit from './AdminInfoEdit.vue'
+import AdminService from '@/Service/AdminService';
 
 
 export default {
@@ -121,7 +102,6 @@ export default {
       myMenu:[
         {title:'운영자 현황', value:'status',info:'정보를 확인합니다', component:'myInfo'},
         {title:'운영자 관리 ', value:'management',info:'구매한 QR쿠폰을 확인합니다', component:'QR'},
-        {title:'운영자 정보', value:'info',info:'정보를 업데이트합니다.', component:'updateInfo'},
       ],
       memberInfo:{
         name:"",
@@ -138,11 +118,18 @@ export default {
         birth:'',
         phoneNumber:'',
       },
+
+      operatorList:[]
     }
   },
   created(){
-    
-
+    AdminService.operatorStatus().then(
+      (res)=>{
+        console.log("adsdsass")
+        console.log(res.data)
+        this.operatorList = res.data
+      }
+    )
   },
   methods:{
 

@@ -13,7 +13,7 @@
     
     <div v-for="(qrcode,index) in qrcodeList" :key="index" >
         <div class="absolute w-full top-32 left-0" v-if="qrcode.messageCodeFlag">
-            <div class="w-1/2 m-auto rounded-xl shadow-lg border text-center p-4 bg-sky-50">
+            <div class="w-fit m-auto rounded-xl shadow-lg border text-center p-4 bg-sky-50">
                 <div @click="this.closePop(index)" class="border w-fit float-right bg-sky-100 hover:bg-sky-200 p-1 rounded-lg text-sm">닫기</div>
                 <div class="clear-both"></div>
                 <ul class="text-left">
