@@ -56,7 +56,7 @@
         <div class="my-2 mx-4">
             <input id="msg" class="border rounded-2xl w-11/12 h-fit py-1 px-2" v-model="this.msg"
                 placeholder="보내실 메시지를 입력하세요.">
-            <v-btn @click="this.send(1)" id="sendBtn" class="ml-1 bg-yellow" density="comfortable" icon="mdi-send"></v-btn>
+            <v-btn @click="send(1)" id="sendBtn" class="ml-1 bg-yellow" density="comfortable" icon="mdi-send"></v-btn>
         </div>
         <div>
             <v-btn id="exitChatRoom" class="border" @click="this.exitChatRoom()">방 나가기</v-btn>
@@ -166,12 +166,14 @@ export default {
 
             document.addEventListener("keypress", (e) => {
                 if (e.keyCode == 13) { //enter press
-                    this.send(0);
+                    this.send(1);
                 }
             });
         },
 
         send(messageType) {
+            console.log(messageType);
+
             let option = {
                 messageType: this.messageType[messageType],
                 chatRoomId: this.chatRoomId,
