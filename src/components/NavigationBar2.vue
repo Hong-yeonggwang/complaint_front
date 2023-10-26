@@ -5,7 +5,7 @@
         <div class="flex items-center my-4 ml-2">
         <img @click="this.toMypage" :src="require(`@/assets/logo.png`)" width="35" height="35" class="ml-0.5">
         <div @click="this.toMypage" class="ml-4 float-left hidden itemTitle overflow-hidden" :class="{'active': this.drawer}">마이페이지</div>  
-        <svg-icon width="25" height="25" class="ml-4 itemTitle hidden" type="mdi" :path="this.logout" :class="{'active': this.drawer}"></svg-icon>
+        <svg-icon @click="userlogout()" width="25" height="25" class="ml-4 itemTitle hidden" type="mdi" :path="this.logout" :class="{'active': this.drawer}"></svg-icon>
 
         </div>
       </div>
@@ -31,6 +31,7 @@
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiTicket,mdiChat,mdiFaceAgent,mdiLogout } from '@mdi/js';
+import TokenService from '@/Service/TokenService';
 
 export default {
   name: 'NavigationBar2',
@@ -53,6 +54,11 @@ export default {
     toMypage(){
         this.$router.push({ name:'main'});
     },
+    userlogout(){
+      alert("로그인되었습니다.")
+      TokenService.removeUser();
+      this.$router.push({name:'UserLogin'})
+    }
   } 
 }
 </script>

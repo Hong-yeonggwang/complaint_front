@@ -1,16 +1,17 @@
 <template>
   <div class="side-bar border overflow-hidden" @mouseenter="this.drawer =true" @mouseleave="this.drawer=false" >
 
-    <router-link :to="{name:'adminMain'}">
-      <div class="w-40 border-b">
+      <div class="w-44 border-b">
         <div class="flex items-center my-4 ml-2">
-        <img :src="require(`@/assets/logo.png`)" width="35" height="35" class="ml-0.5">
-        <div class="ml-4 float-left hidden itemTitle overflow-hidden" :class="{'active': this.drawer}">마이페이지</div>  
+        <img @click="this.toMypage" :src="require(`@/assets/logo.png`)" width="35" height="35" class="ml-0.5">
+        <div @click="this.toMypage" class="ml-4 float-left hidden itemTitle overflow-hidden" :class="{'active': this.drawer}">마이페이지</div>  
+        <svg-icon @click="userlogout()" width="25" height="25" class="ml-4 itemTitle hidden" type="mdi" :path="this.logout" :class="{'active': this.drawer}"></svg-icon>
+
         </div>
       </div>
       
       <div class="clear-both"></div>
-    </router-link>
+
       <div v-for="(item,index) in items" :key="index">
         <div class="w-40">
           <div class="flex items-center my-4 ml-3">
@@ -29,7 +30,8 @@
 
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiAccountSupervisor,mdiFaceAgent,mdiAccountWrenchOutline } from '@mdi/js';
+import { mdiAccountSupervisor,mdiFaceAgent,mdiAccountWrenchOutline,mdiLogout } from '@mdi/js';
+import TokenService from '@/Service/TokenService';
 
 export default {
   name: 'NavigationBarAdmin',
@@ -46,20 +48,22 @@ export default {
         { title: '고객센터', icon: mdiFaceAgent, value:'AdminCScenter' },
       ],
       rail: true,
+      logout:mdiLogout,
     }
   },
   methods:{
     toMypage(){
-      if(this.rail == false){
-        this.$router.push({ name: 'userPage'});
-        this.rail = false
-      }
-        
+        this.$router.push({ name:'adminMain'});
     },
+    userlogout(){
+      alert("로그인되었습니다.")
+      TokenService.removeUser();
+      this.$router.push({name:'UserLogin'})
+    }
   } 
 }
 </script>
-<style>
+<style scoped>
 .side-bar{
   width:3.5rem;
   background-color:white;
@@ -67,7 +71,7 @@ export default {
   height:100%;
 }
 .side-bar:hover{
-  width:10rem;
+  width:11rem;
   background-color:white;
   z-index: 999;
   height:100%;
