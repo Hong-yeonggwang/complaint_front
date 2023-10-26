@@ -5,9 +5,10 @@
 
   <form @submit.prevent="submitForm()">
     <div class="m-auto w-48">
-      <div class="border rounded-md">
 
-        <div class="flex items-center border-b "> 
+      <div class="border rounded-md mb-1">
+
+        <div class="flex items-center"> 
           <div class="float-left mx-1">
             <svg-icon type="mdi" :path="face_path" class="m-auto" height="30"></svg-icon>
           </div>
@@ -16,6 +17,15 @@
           </div>
           <div class="clear-both"></div>
         </div>
+      </div>
+      <div @click="checkDuplicatedID()" class="mt-2 mb-2 m-auto text-center w-32 border rounded-xl bg-sky-100">중복확인</div>
+      <div class="text-sm">
+        <div class="mt-1 m-auto text-center w-fit text-red-600" :class="{'hidden': idDuplication,}">-아이디 중복확인을 해주세요.</div>
+        <div class="mt-1 mb-2 m-auto text-center w-fit text-blue-600 hidden checkHidden" :class="{'active': idDuplication,}">-중복확인이 완료되었습니다.</div>
+      </div>
+      
+
+      <div class="border rounded-md">
 
         <div class="flex items-center"> 
           <div class="float-left mx-1">
@@ -29,8 +39,8 @@
       </div>
 
       <div class="text-sm pl-2 mt-2 Warning">
-        <div :class="{'hidden': error.id,}">-잘못된 아이디입니다</div>
-        <div :class="{'hidden': error.password,}">-잘못된 비밀번호입니다.</div>
+        <div :class="{'hidden': error.id,}" class="mb-2">-아이디는 영어와 숫자를 포함한 8글자입니다.</div>
+        <div :class="{'hidden': error.password,}">-비밀번호는 영어와 숫자 특수문자를 포험한 9글자입니다.</div>
       </div>
 
 
@@ -75,7 +85,7 @@
           <div class="clear-both"></div>
         </div>
 
-        <div class="flex items-center"> 
+        <div class="flex items-center border-b"> 
           <div class="float-left mx-1">
             <svg-icon type="mdi" :path="birth_path" class="m-auto" height="30"></svg-icon>
           </div>
@@ -84,13 +94,32 @@
           </div>
           <div class="clear-both"></div>
         </div>
+
+        <div class="flex items-center"> 
+          <div class="float-left mx-1">
+            <svg-icon type="mdi" :path="email_path" class="m-auto" height="30"></svg-icon>
+          </div>
+          <div class="float-left w-fit">
+            <input v-model="formData.email" type="text" placeholder="이메일" class="w-36">
+          </div>
+          <div class="clear-both"></div>
+        </div>
+      </div>
+
+      <div @click="checkDuplicatedEmail()" class="mt-2 mb-2 m-auto text-center w-32 border rounded-xl bg-sky-100">중복확인</div>
+
+      <div class="text-sm">
+        <div class="mt-1 m-auto text-center w-fit text-red-600" :class="{'hidden': emailDuplication,}">-이메일 중복확인을 해주세요.</div>
+        <div class="mt-1 mb-2 m-auto text-center w-fit text-blue-600 hidden checkHidden" :class="{'active': emailDuplication,}">-중복확인이 완료되었습니다.</div>
       </div>
 
       <div class="text-sm pl-2 mt-2 mb-2 Warning">
         <div :class="{'hidden': error.phoneNumber,}">-01012341234형식으로 입력하세요</div>
         <div :class="{'hidden': error.name,}">-이름은 필수사항입니다.</div>
         <div :class="{'hidden': error.birth,}">-생년월일은 필수사항입니다.</div>
+        <div :class="{'hidden': error.major,}">-학과는 필수사항입니다.</div>
         <div :class="{'hidden': error.nickName,}">-닉네임은 필수사항입니다.</div>
+        <div :class="{'hidden': error.email,}">-잘못된 이메일 형식입니다.</div>
       </div>
 
     </div>
@@ -106,7 +135,7 @@
 
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiLogin,mdiAccountOutline,mdiLockOutline,mdiBookshelf, mdiCake, mdiPhone,mdiAccountCowboyHatOutline } from '@mdi/js';
+import { mdiLogin,mdiAccountOutline,mdiLockOutline,mdiBookshelf, mdiCake, mdiPhone,mdiAccountCowboyHatOutline,mdiEmailBox } from '@mdi/js';
 import AuthService from '@/Service/AuthService';
 
 export default {
@@ -123,6 +152,7 @@ export default {
       birth_path: mdiCake,
       phone_path: mdiPhone,
       nickname_path:mdiAccountCowboyHatOutline,
+      email_path:mdiEmailBox,
       formData:{
         id:'',
         password:'',
@@ -131,6 +161,7 @@ export default {
         major:'',
         phoneNumber:'',
         birth:'',
+        email:'',
       },
       formValid:{
         id:false,
@@ -140,6 +171,7 @@ export default {
         major:false,
         phoneNumber:false,
         birth:false,
+        email:false,
       },
       error:{
         id:true,
@@ -148,8 +180,13 @@ export default {
         nickName:true,
         phoneNumber:true,
         birth:true,
+        major:true,
+        email:true,
       },
       duplication:false,
+
+      idDuplication:false,
+      emailDuplication:false,
     }
   },
   watch: {
@@ -189,9 +226,36 @@ export default {
         this.formValid.birth = false;
       }
     },
+
+    'formData.major': function() {
+      if(this.formData.major){
+        this.error.major = true;
+        this.formValid.major = true;
+      }else{
+        this.error.major = false;
+        this.formValid.major = false;
+      }
+    },
+
+    'formData.email': function() {
+      this.checkEmail();
+    },
   },
   methods:{
     submitForm() {
+      if(!this.isFormValid()){
+        alert("양식을 모두 작성해주세요.")
+        return
+      }
+
+      if(!this.idDuplication){
+        alert("아이디 중복확인을 해주세요")
+        return 0;
+      }
+      if(!this.emailDuplication){
+        alert("이메일 중복확인을 해주세요")
+        return 0;
+      }
       if(!this.duplication){
         AuthService.join(this.formData).then((res)=>{
           console.log(res)
@@ -230,6 +294,8 @@ export default {
         this.formValid.password = true
         this.error.password = true
     },
+    
+
     checkphoneNumber(){
       const validatePhoneNumber = /^(010|01[1-9])\d{3,4}\d{4}$/
 
@@ -241,9 +307,88 @@ export default {
         console.log(this.formData.phoneNumber);
         this.formValid.phoneNumber = true
         this.error.phoneNumber = true
+    },
+
+    checkEmail(){
+      const validateㄷEmail =  /^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$/;
+
+      if (!validateㄷEmail.test(this.formData.email) || !this.formData.email) {
+        this.formValid.email = false
+        this.error.email = false
+        return
+      } 
+        console.log(this.formData.email);
+        this.formValid.email = true
+        this.error.email = true
+    },
+
+    checkDuplicatedID(){
+      if(this.formData.id == '' || this.formData.id == null){
+        alert("아이디를 입력하세요.")
+        return 0;
+      }
+      if(!this.formValid.id){
+        alert("형식에 맞지 않는 아이디입니다.")
+        return 0;
+      }
+
+      let data = {
+        id:this.formData.id,
+      }
+      
+      AuthService.checkId(data).then(
+          (res)=>{
+            console.log(res)
+            let checkValue = res.data
+            if(checkValue){
+              this.idDuplication = checkValue;
+              alert("사용가능한 아이디입니다.");
+            }
+            else{
+              this.idDuplication = checkValue;
+              alert("중복된 아이디입니다.");
+            }
+          }
+        )
+
+      },
+
+      checkDuplicatedEmail(){
+          if(this.formValid.email == false){
+            alert("잘못된 이메일 형식입니다")
+            return 0;
+          }
+          let data = {
+            email: this.formData.email
+          }
+          AuthService.checkEmail(data).then(
+            (res)=>{
+              let checkValue = res.data
+              if(checkValue){
+                this.emailDuplication = checkValue;
+                alert("사용가능한 이메일입니다.");
+              }
+              else{
+                this.emailDuplication = checkValue;
+                alert("중복된 이메일입니다.");
+              }
+            }
+          )
+      },
+
+      isFormValid(){
+        for (let key in this.formValid) {
+          if (this.formValid[key] === false) {
+            return false; // 하나라도 false가 있으면 false 반환
+          }
+        }
+        return true; // 모든 속성이 true인 경우 true 반환
+      }
+
     }
+    
   } 
-}
+
 </script>
 <style>
 .Warning{
@@ -260,5 +405,8 @@ export default {
   margin-right:0;
   background-color:white;
   color:black;
+}
+.checkHidden.active{
+  display: block
 }
 </style>

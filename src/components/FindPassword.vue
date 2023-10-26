@@ -11,47 +11,33 @@
           <svg-icon type="mdi" :path="face_path" class="m-auto" height="40" width="30"></svg-icon>
         </div>
         <div class="float-left w-48">
-          <input type="text" placeholder="아이디"> 
+          <input v-model="userId" class="w-full" type="text" placeholder="아이디"> 
         </div>
         <div class="clear-both"></div>
       </div>
     </div>
 
-    <div class="border w-fit py-1 px-4 m-auto my-4 bg-slate-300 rounded-md">
-      <button type="button" class="w-48">다음</button>
+    <div class="border w-fit py-1 px-4 m-auto my-4 bg-sky-200 rounded-md">
+      <button type="button" class="w-48" @click="sendCode(this.userId)">다음</button>
     </div>
 
 
-    <div class="w-fit m-auto my-12">
+    <div class="w-fit m-auto my-12" :class="{'hidden': this.codeInputFlag}">
       <div>가입하신 이메일로 보안문자 보냈습니다!</div>
       <div class="m-auto w-fit">
-        <input type="text" placeholder="보안문자" class="text-center border rounded my-2">
+        <input v-model="userCode" type="text" placeholder="보안문자" class="text-center border rounded my-2">
       </div>
       <div class="w-fit m-auto">
-        <button type="button" class="bg-slate-300 w-44 rounded">인증하기</button>
+        <button @click="sendPassword()" type="button" class="bg-sky-200 w-44 border rounded">인증하기</button>
       </div>
     </div>
-
-
-    <div class="w-fit m-auto">
-      <div>
-        <input type="text" placeholder="새로운 비밀번호" class="text-center border rounded">
-      </div>
-      <div>
-        <input type="text" placeholder="비밀번호 확인" class="text-center border rounded my-2">
-      </div>
-      <div>
-        <butto type="button" class="bg-slate-300 w-full rounded text-center">비밀번호 변경</butto>
-      </div>
-      
-    </div>
-
 
 </template>
 
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiAccountOutline,mdiLockOutline} from '@mdi/js';
+import AuthService from '@/Service/AuthService';
 
 export default {
   name: 'FindPassword',
@@ -62,9 +48,39 @@ export default {
     return {
       face_path : mdiAccountOutline,
       password_path : mdiLockOutline,
+
+      codeSendDefend:true,
+
+      codeInputFlag: true,
+
+      userId:'',
+      userCode:'',
     }
   },
   methods:{
+    async sendCode(userId){
+      if(this.codeSendDefend){
+        await AuthService.sendPasswordCode(userId).then(
+        (res)=>{
+          alert(res.data)
+          this.codeInputFlag = false
+          this.codeSendDefend = false
+        }
+      )
+        
+      }
+    },
+    async sendPassword(){
+      let data = {
+        id:this.userId,
+        code:this.userCode
+      }
+      await AuthService.sendTempPassword(data).then(
+        (res)=>{
+          alert(res.data)
+        }
+      )
+    }
     
   } 
 }
