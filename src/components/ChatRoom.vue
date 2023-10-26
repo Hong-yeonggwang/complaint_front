@@ -2,17 +2,61 @@
     <NavigationBar2 class="float-left"></NavigationBar2>
     <div class="ml-14 customWidth float-left">
         <div class="border rounded-2xl m-4 ">
+
+            <!-- <transition name="slide" mode="out-in">
+                <div v-if="slideVisible" class="slide-container">
+                    <div class="m-4">
+                        <div class="font-semibold">대화상대</div>
+                        <v-btn @click="toggleSlide()">슬라이딩 토글</v-btn>
+                        <ul>
+                            <li v-for="(member) in this.chatRoomInfo.members" :key="member">
+                                {{ member.nickName }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </transition> -->
+            <!-- <v-btn>
+                <svg-icon type="mdi" :path="path"></svg-icon>
+            </v-btn>
+            <div>
+                <div class="m-4">
+                    <div class="font-semibold">대화상대</div>
+
+                    <div>
+
+                        <nav>
+                            <ul>
+                                <li v-for="(member) in this.chatRoomInfo.members" :key="member">
+                                    {{ member.nickName }}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div> -->
+
+
+
+
             <div class="mx-4 mt-6 pb-2 border-b-2">
                 <div>
                     <div class="text-2xl float-left"> {{ this.chatRoomInfo.chatRoomName }}</div>
                     <!-- <v-btn class="float-left ml-4" density="compact" icon="mdi-pencil"
                         @click="this.getChatRoomList()"></v-btn> -->
-                    <v-btn class="float-right mr-4" density="compact" icon="mdi-refresh"
-                        @click="this.getChatHistories()"></v-btn>
+
+                </div>
+                <v-btn @click="toggleSlide()" class="float-right">
+                    <svg-icon type="mdi" :path="path"></svg-icon>
+                </v-btn>
+                <div class="clear-both"></div>
+                <div class="mt-2 float-left">인원 수 : {{ this.chatRoomInfo.currentNumberOfPeople }} / {{
+                    this.chatRoomInfo.chatRoomLimited }}
+                </div>
+                <div class="text-center">
+                    <v-btn class="mr-4" density="compact" icon="mdi-refresh" @click="this.getChatHistories()"></v-btn>
                 </div>
                 <div class="clear-both"></div>
-                <div class="mt-2">인원 수 : {{ this.chatRoomInfo.currentNumberOfPeople }} / {{
-                    this.chatRoomInfo.chatRoomLimited }}</div>
             </div>
             <div class="my-2 mx-4"> <!-- 채팅방 기본 트레이 -->
                 <div id="chatting" class="chatting my-2">
@@ -56,13 +100,14 @@
         <div class="my-2 mx-4">
             <input id="msg" class="border rounded-2xl w-11/12 h-fit py-1 px-2" v-model="this.msg"
                 placeholder="보내실 메시지를 입력하세요.">
-            <v-btn @click="this.send(1)" id="sendBtn" class="ml-1 bg-yellow" density="comfortable" icon="mdi-send"></v-btn>
+            <v-btn @click="send(1)" id="sendBtn" class="ml-1 bg-yellow" density="comfortable" icon="mdi-send"></v-btn>
         </div>
         <div>
             <v-btn id="exitChatRoom" class="border" @click="this.exitChatRoom()">방 나가기</v-btn>
             <!-- <v-btn class="float-right mr-4" density="compact" icon="mdi-refresh" @click="this.refreshChatRoomInfo()"></v-btn> -->
         </div>
     </div>
+    <!-- <div class="clear-both"></div> -->
 </template>
   
 <script>
@@ -70,13 +115,18 @@ import NavigationBar2 from './NavigationBar2.vue';
 import ChatRoomService from '../Service/ChatRoomService';
 import ChatHistoryService from '../Service/ChatHistoryService'
 
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiFormatListBulleted } from '@mdi/js';
+
 export default {
     name: 'ChatRoom',
     components: {
-        NavigationBar2
+        NavigationBar2,
+        SvgIcon
     },
     data() {
         return {
+            path: mdiFormatListBulleted,
             checkChatRoomId: false,
             chatRoomExist: false,
             chatRooomRemaining: false,
@@ -88,7 +138,8 @@ export default {
             msg: null,
             myInfo: { memberSeq: null, nickName: null },
             chatRoomInfo: { chatRoomSeq: null, chatRoomId: null, chatRoomName: null, currentNumberOfPeople: null, chatRoomLimited: null, members: null },
-            chatHistory: []
+            chatHistory: [],
+            slideVisible: false
         }
     },
     created: function () {
@@ -99,9 +150,9 @@ export default {
         wsOpen() {
             // 웹소켓 주소 기준은 백엔드 서버
             // const Token = TokenService.getLocalAccessToken();
+            // this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId, Token);
 
             this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId);
-            // this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId, Token);
             this.wsEvt();
         },
 
@@ -127,12 +178,10 @@ export default {
                     if (jsonMsg.messageType == this.messageType[0]) { // getSeesion
                         let sessionId = jsonMsg.sessionId != null ? jsonMsg.sessionId : '';
 
-                        // this.senderMemberSeq = jsonMsg.memberSeq
-
                         if (sessionId != '') {
                             this.sessionId = sessionId;
                             if (!alreadyEntered) {
-                                send(2);
+                                send(2); // enter
                             }
                             // $("#sessionId").val(sessionId);
                         }
@@ -166,12 +215,14 @@ export default {
 
             document.addEventListener("keypress", (e) => {
                 if (e.keyCode == 13) { //enter press
-                    this.send(0);
+                    this.send(1);   // message
                 }
             });
         },
 
         send(messageType) {
+            // console.log(messageType);
+
             let option = {
                 messageType: this.messageType[messageType],
                 chatRoomId: this.chatRoomId,
@@ -196,11 +247,6 @@ export default {
 
         async enterChatRoom() {
             let wsOpen = this.wsOpen;
-            // let wsOpenPromise = new Promise((reslove) => {
-            //     this.wsOpen;
-            //     reslove();
-            // })
-            // let sendEnter = this.send;
 
             console.log("this.checkChatRoomId : " + this.checkChatRoomId);
 
@@ -337,6 +383,12 @@ export default {
                     console.error("Error getChatHistories:", error);
                 }
             )
+        },
+
+        toggleSlide() {
+            console.log("클릭 전 : " + this.slideVisible);
+            this.slideVisible = !this.slideVisible;
+            console.log("클릭 후 : " + this.slideVisible);
         }
     }
 }
@@ -353,7 +405,9 @@ export default {
 .chatting {
     background-color: #F6F6F6;
     height: 500px;
-    overflow: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .chatting .me {
@@ -369,5 +423,30 @@ export default {
 input {
     width: 330px;
     height: 25px;
+}
+
+/* 슬라이딩 애니메이션을 정의합니다. */
+.slide-enter-active,
+.slide-leave-active {
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.slide-enter,
+.slide-leave-to {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.slide-container {
+    /* 슬라이딩할 컨텐츠의 초기 스타일을 정의합니다. */
+    width: 60%;
+    float: right;
+    /* 컨텐츠 너비를 조절하세요. */
+    height: 500px;
+    position: relative;
+    background-color: lightblue;
+    /* 원하는 배경색을 지정하세요. */
+    z-index: 1;
+    /* 다른 컨텐츠 위로 나타나도록 설정 */
 }
 </style>
