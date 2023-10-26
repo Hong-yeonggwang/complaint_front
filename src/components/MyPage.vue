@@ -80,6 +80,8 @@
           </div>
         </div>
 
+        <div v-if="qrcodeData.bus.length == 0" class="m-auto w-fit flex items-center mt-12 text-2xl">승차권 없음</div> 
+
      </div>
     </div>
 
@@ -105,6 +107,8 @@
             </div>
           </div>
         </div>
+
+        <div v-if="qrcodeData.restaurant.length == 0" class="m-auto w-fit flex items-center mt-12 text-2xl">식권 없음</div> 
 
 
      </div>
@@ -151,9 +155,8 @@
 
       </div>
     <v-btn type="button" @click="this.updateUser" block class="mt-5 bg-slate-200">변경</v-btn>
-
   </v-form>
-
+  <UpdatePassword></UpdatePassword>
   </div>
   
   <div v-if="this.tab == 'coupon'">
@@ -194,13 +197,15 @@ import NavigationBar2 from './NavigationBar2.vue'
 
 // qrcode
 import QrcodeVue from 'qrcode.vue'
+import UpdatePassword from './UpdatePassword.vue'
 
 export default {
   name: 'MyPage',
   components: {
     SvgIcon,
     QrcodeVue,
-    NavigationBar2
+    NavigationBar2,
+    UpdatePassword
     },  
   data () {
     return {
@@ -208,7 +213,7 @@ export default {
       major_path: mdiBookshelf,
       brith_path: mdiCake,
       phone_path: mdiPhone,
-      tab: null,
+      tab: 'QRwallet',
       couponSerial:'',
       myMenu:[
         {title:'내정보', value:'myInfo',info:'정보를 확인합니다', component:'myInfo'},
@@ -217,7 +222,7 @@ export default {
         {title:'쿠폰등록', value:'coupon',info:'쿠폰을 등록합니다',component:'couponRegistration'}, 
       ],
       memberInfo:{
-        name:"",
+        name:'',
         nickName: '',
         major:'',
         birth:'',
@@ -226,8 +231,8 @@ export default {
       },
 
       updateUserInfo:{
-        nickName: '',
-        major:'',
+        nickName:null,
+        major:null,
         birth:'',
         phoneNumber:'',
       },
@@ -252,24 +257,24 @@ export default {
 
     UserService.getQRcodeList().then(
       (res)=>{
-        console.log(res.data);
-        // res.data.forEach((qrcode) => {
-        //   var pushData = {
-        //     content:qrcode.category.name,
-        //     vlaue:qrcode.qrCode,
-        //     display: false
-        //   };
-        //   if (qrcode.category.qrCodeCategory == "버스") {
-        //     this.qrcodeData.bus.push(pushData);
-        //   } else if (qrcode.category.qrCodeCategory == "식당") {
-        //     this.qrcodeData.restaurant.push(pushData);
-        //   }
-        // }); 
+        res.data.forEach((qrcode) => {
+          let pushData = {
+            content:qrcode.category.name,
+            vlaue:qrcode.qrCode,
+            display: false
+          };
+          if (qrcode.category.qrcodeUsingPlace.name == "버스") {
+            this.qrcodeData.bus.push(pushData);
+          } else if (qrcode.category.qrcodeUsingPlace.name == "식당") {
+            this.qrcodeData.restaurant.push(pushData);
+          }
+        }); 
       },
       (error)=>{
         console.log(error);
       }
     )
+    console.log(this.qrcodeData)
   },
   methods:{
     componentTest(){
@@ -309,7 +314,10 @@ export default {
         console.log(res.data)
       },
       (error)=>{
-        console.log(error);
+        let data = error.response.data.errors
+        const errorMessagesArray = data.map(error => error.defaultMessage);
+        const errorMessageString = errorMessagesArray.join('\n');
+        alert(errorMessageString);
       }
     )
     }

@@ -42,10 +42,6 @@ const setup = () => {
           return Promise.reject(err.response.data);
         }
       }
-
-      TokenService.removeUser();
-      router.push('/login');
-
       return Promise.reject(err);
     }
   );

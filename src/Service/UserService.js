@@ -44,13 +44,7 @@ class UserService {
   }
 
   async updateUserInfo(data) {
-    try {
-      console.log(data)
-      return await api.put('/auth/memberinfo',data);
-    } catch (error) {
-      console.error(error);
-      return error;
-    }
+    return await api.put('/auth/memberinfo',data);
   }
 
 }
