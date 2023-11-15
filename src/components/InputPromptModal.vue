@@ -28,7 +28,6 @@ export default {
       // 입력값을 처리하는 로직을 구현합니다.
       // 입력값은 this.inputValue에 저장되어 있습니다.
       // 예를 들어, 입력값을 콘솔에 출력하는 경우:
-      console.log("입력값:", this.inputValue);
 
       // 모달 닫기
       this.closeModal();

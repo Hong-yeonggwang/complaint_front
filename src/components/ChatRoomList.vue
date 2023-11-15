@@ -77,7 +77,7 @@
 
         <div class="overflow-y-auto" style="height: 34rem;">
           <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom) in sortedChatRoomList" :key="chatRoom.id"
-            @dblclick="enterChatRoom(chatRoom)" @click="selectRoom(chatRoom)">
+            @click="enterChatRoom(chatRoom)">
             <!-- @click="rightMouseListener(chatRoom)" -->
             <div class="px-2 py-3 mx-2 cursor-pointer">
               <div class="float-left">방이름: {{ chatRoom.chatRoomName }}</div>
@@ -113,7 +113,7 @@
 
         <div class="overflow-y-auto" style="height: 34rem;">
           <div class="my-2 mx-4 border rounded-lg" v-for="(chatRoom) in sortedMyChatRoomList" :key="chatRoom.id"
-            @dblclick="enterChatRoom(chatRoom)" @click="selectRoom(chatRoom)">
+            @click="enterChatRoom(chatRoom)">
             <!-- @click="rightMouseListener(chatRoom)" -->
             <div class="px-2 py-3 mx-2 cursor-pointer">
               <div class="float-left">방이름: {{ chatRoom.chatRoomName }}</div>

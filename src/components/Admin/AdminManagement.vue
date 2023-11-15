@@ -56,7 +56,7 @@
       </div>
     </div>
     
-    <div class="p-6 pt-0">
+    <!-- <div class="p-6 pt-0">
       <div @click="this.editToggle = !this.editToggle" class="py-2 flex justify-between items-center border rounded-xl px-6">
         <div class="">관리자 정보 수정</div>
         <div>+</div>  
@@ -64,7 +64,7 @@
       <div class="editToggle" :class="{'active': editToggle}">
         <AdminInfoEdit></AdminInfoEdit>
       </div>
-    </div>
+    </div> -->
   </div>
   
   
@@ -78,7 +78,7 @@ import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiAccount,mdiBookshelf, mdiCake, mdiPhone } from '@mdi/js';
 import NavigationBarAdmin from './NavigationBarAdmin.vue'
 import AdminJoin from './AdminJoin.vue';
-import AdminInfoEdit from './AdminInfoEdit.vue'
+// import AdminInfoEdit from './AdminInfoEdit.vue'
 import AdminService from '@/Service/AdminService';
 
 
@@ -88,7 +88,7 @@ export default {
     SvgIcon,
     NavigationBarAdmin,
     AdminJoin,
-    AdminInfoEdit
+    // AdminInfoEdit
     },  
   data () {
     return {
@@ -125,8 +125,6 @@ export default {
   created(){
     AdminService.operatorStatus().then(
       (res)=>{
-        console.log("adsdsass")
-        console.log(res.data)
         this.operatorList = res.data
       }
     )
@@ -144,7 +142,7 @@ export default {
   transition:all 0.3s ease;
 }
 .joinToggle.active{
-  max-height: 400px;
+  max-height: 600px;
 }
 .editToggle{
   max-height: 0;  

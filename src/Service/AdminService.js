@@ -4,7 +4,7 @@ class AdminService {
 
   async getAuth() {
     try {
-      await api.post('/auth');
+      await api.post('/v1/auth');
     } catch (error) {
       console.error(error);
     }
@@ -12,7 +12,7 @@ class AdminService {
 
   async createCoupon(data){
     try {
-      return await api.post('/qrcode/coupon',data);
+      return await api.post('/v1/qrcode/coupon',data);
     } catch (error) {
       console.error(error);
     }
@@ -20,7 +20,7 @@ class AdminService {
 
   async getCouponList(){
     try {
-      return await api.post('/qrcode/coupon');
+      return await api.post('/v1/qrcode/coupon');
     } catch (error) {
       console.error(error);
     }
@@ -28,7 +28,7 @@ class AdminService {
 
   async ticketStatus(){
     try {
-      return await api.post('/qrcode/coupon');
+      return await api.post('/v1/qrcode/coupon');
     } catch (error) {
       console.error(error);
     }
@@ -36,7 +36,7 @@ class AdminService {
 
   async serviceStatus(){
     try {
-      return await api.get('/admin/serviceStatus');
+      return await api.get('/v1/admin/serviceStatus');
     } catch (error) {
       console.error(error);
     }
@@ -44,7 +44,7 @@ class AdminService {
 
   async operatorStatus(){
     try {
-      return await api.get('/admin/operatorStatus');
+      return await api.get('/v1/admin/operatorStatus');
     } catch (error) {
       console.error(error);
     }
@@ -52,15 +52,42 @@ class AdminService {
 
   async getCategory(){
     try {
-      return await api.get('/admin/category');
+      return await api.get('/v1/admin/category');
     } catch (error) {
       console.error(error);
     }
   }
   async signAdmin(data){
+    await api.post('/v1/auth/sign-up/admin',data).then(
+      (res)=>{
+        return res
+      },
+      (err)=>{
+        return err
+      }
+
+    );
+  }
+
+  async getOperatorQrcode(){
     try {
-      console.log(data)
-      return await api.post('/auth/sign-up/admin',data);
+      return await api.get('/v1/admin/operator/qrcode');
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getCouponLog(){
+    try {
+      return await api.get('/v1/admin/coupon/log');
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getUserInfo(){
+    try {
+      return await api.get('/v1/admin/user/log');
     } catch (error) {
       console.error(error);
     }

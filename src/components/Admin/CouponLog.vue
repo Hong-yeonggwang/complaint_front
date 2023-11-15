@@ -2,18 +2,21 @@
   <div @click="$router.push({name:'seviceStatus'})" class="my-4 mr-4 border text-lg w-fit px-4 py-1 rounded-xl bg-sky-50 float-right">이전 페이지로</div>
   <div class="clear-both"></div>
   <div class="w-11/12 m-auto overflow-x-auto">
-    <DataTable :data="this.couponLog" class="display px-4">
+    <DataTable :data="this.couponLog" class="display px-4 ">
       <thead>
         <tr>
-          <th>이름</th>
-          <th>닉네임</th>
-          <th>학과</th>
-          <th>전화번호</th>
-          <th>이메일</th>
+          <th>번호</th>
+          <th>사용장소</th>
+          <th>가격</th>
+          <th>쿠폰번호</th>
+          <th>사용여부</th>
+          <th>사용자</th>
         </tr>
       </thead>
     </DataTable>
   </div>
+  
+
 </template>
 
 <script>
@@ -37,14 +40,17 @@ export default {
     }
   },
   async created(){
-    await AdminService.getUserInfo().then(
+    await AdminService.getCouponLog().then(
       (res)=>{
         console.log(res.data)
         res.data.forEach(item => {
-
-            let temp = [item.name,item.nickName,item.major,item.phoneNumber,item.email]
-            
-            this.couponLog.push(temp)
+          let userSeq  = item.userMemberSeq
+          if(item.userMemberSeq == null){
+            userSeq = '없음'
+          }
+          let temp = [item.qrCategorySeq,item.qrCodeCategory.name,item.qrCodeCategory.price,item.serial,item.status,userSeq]
+          
+          this.couponLog.push(temp)
             
         });
       }
@@ -59,7 +65,7 @@ export default {
 </script>
 <style scoped>
 @import 'datatables.net-dt';
-th,tr{
-  min-width: 3rem;
+th,td{
+  min-width: 3.5rem;
 }
 </style>

@@ -1,5 +1,4 @@
 <template>
-  <h1>serviceStatus</h1>
   <NavigationBarAdmin class="float-left"></NavigationBarAdmin>
   <div class="ml-14 customWidth float-left">
   <!-- 메뉴바  -->
@@ -38,7 +37,7 @@
             <svg-icon type="mdi" :path="place" class="m-auto " width="30" height="30"></svg-icon>
              <span class="ml-1"> 운영중인 지점 수</span>
           </div>
-          <div>7곳</div>
+          <div>{{this.variousCount.usingCategory }}곳</div>
         </div>
       </div>
     </div>
@@ -51,21 +50,21 @@
             <svg-icon type="mdi" :path="plus" class="m-auto " width="30" height="30"></svg-icon>
              <span class="ml-1"> 오늘 발급된 qrcode 수</span>
           </div>
-          <div>{{this.variousCount.todayCreatedQrcode}}</div>
+          <div>{{this.variousCount.todayCreatedQrcode}}개</div>
         </div>
         <div class="border border-t-0 bg-sky-50 px-3 py-1 flex justify-between">
           <div class="flex items-center">
             <svg-icon type="mdi" :path="minus" class="m-auto " width="30" height="30"></svg-icon>
              <span class="ml-1"> 오늘 사용된 qrcode 수</span>
           </div>
-          <div>{{this.variousCount.todayUsedQrcode}}</div>
+          <div>{{this.variousCount.todayUsedQrcode}}개</div>
         </div>
         <div class="border border-t-0 bg-sky-50 px-3 py-1 flex justify-between">
           <div class="flex items-center">
             <svg-icon type="mdi" :path="qrcodeI" class="m-auto " width="30" height="30"></svg-icon>
              <span class="ml-1"> 현재 남은 qrcode 수</span>
           </div>
-          <div>{{this.variousCount.remainQRcode}}</div>
+          <div>{{this.variousCount.remainQRcode}}개</div>
         </div>
       </div>
     </div>
@@ -92,7 +91,7 @@
       <div @click="goToCategory()" class="bg-sky-100 hover:bg-sky-200 text-black text-center border rounded-lg">카테고리 수정</div>
     </div>
 
-    <div class="text-xl mx-5 font-semibold my-4">회원관리</div>
+    <div class="text-xl mx-5 font-semibold my-4">회원정보</div>
 
     <div class="mx-4 my-4">
       <div @click="$router.push({name:'AdminUser'})" class="bg-sky-100 hover:bg-sky-200 text-black text-center border rounded-lg">회원관리</div>
@@ -108,19 +107,20 @@
         <div class="p-4 bg-sky-100 border flex items-center justify-between">
           <div class="flex items-centest justify-between">
             <select v-model="this.selectedCouponInfo.category" class="border px-3 rounded-xl bg-sky-50" >
-              <option>쿠폰 종류</option>
-              <option>버스</option>
+              <option  v-for="(couponType,index) in category" :key="index">{{ couponType.type }}</option>
             </select>
             <select v-model="selectedCouponInfo.name" class="ml-3 border px-3 rounded-xl bg-sky-50" >
-              <option>쿠폰 종류</option>
-              <option>강남행 등교</option>
+              <option  v-for="(type,index) in category[this.smallCategory].category" :key="index">{{ type.name }}</option>
             </select>
           </div>
           <div @click="createCoupon()" class="bg-sky-50 hover:bg-sky-200 border rounded-xl px-3"> 발급하기</div>
         </div>
       </div>
 
-    <div class="text-xl mx-5 font-semibold my-4">발행된 쿠폰</div>
+    <div class="text-xl mx-5 font-semibold my-4 flex items-center justify-between">
+      <div>발행된 쿠폰</div>
+      <div @click="$router.push({name:'couponLog'})" class="border rounded-xl text-base font-normal py-2 px-4">로그확인</div>
+    </div>
       
     <div v-for="(type,index) in coupon" :key="index">
       <div @click="type.display = !type.display" class="mx-4 border py-2 text-xl px-4">
@@ -139,7 +139,7 @@
       </div>
     </div>
 
-    <div class="text-xl mx-5 font-semibold my-4">쿠폰 현황</div>
+    <div class="text-xl mx-5 font-semibold my-4">QR 현황</div>
     <div class="border rounded-lg mt-5 m-4 max-h-96 overflow-auto bg-sky-100">
       <div class="px-2 mx-4 my-5 ">
         <div v-for="(rate,index) in this.couponUseRate" :key="index" class="flex items-center justify-between border-b mb-2 pb-1 px-2">
@@ -150,7 +150,7 @@
       </div>
     </div>
     
-    <div class="text-xl mx-5 font-semibold my-4">qr 현황</div>
+    <div class="text-xl mx-5 font-semibold my-4">쿠폰 현황</div>
     <div class="border rounded-lg mt-5 m-4 max-h-96 overflow-auto bg-sky-100">
       <div class="px-2 mx-4 my-5 ">
         <div v-for="(rate,index) in this.qrcodeUseRate" :key="index" class="flex items-center justify-between border-b mb-2 pb-1 px-2">
@@ -185,7 +185,7 @@ export default {
       plus:mdiPlusBox,
       minus:mdiMinusBox,
       qrcodeI:mdiQrcode,
-      tab: 'management',
+      tab: null,
       myMenu:[
         {title:'서비스 현황', value:'status',info:'현황을 확인합니다.'},
         {title:'서비스 관리 ', value:'management',info:'현재 서비스를 관리합니다.'},
@@ -196,26 +196,34 @@ export default {
 
       category:[],
       coupon:[],
+      smallCategory:0,
 
       qrcodeUseRate:[],
       couponUseRate:[],
       
       variousCount:{
-        todayUsedQrcode:'',
-        todayCreatedQrcode:'',
-        remainQRcode:'',
-        userCount:'',
+        // todayUsedQrcode:'',
+        // todayCreatedQrcode:'',
+        // remainQRcode:'',
+        // userCount:'',
       },
 
       selectedCouponInfo:{
-        category:"버스",
-        name:"강남행 등교"
+        category:null,
+        name:null
       }
 
     }
   },
   created(){
     this.getServiceStatus()
+  },
+  watch: {
+    'selectedCouponInfo.category': function() {
+      const target = this.selectedCouponInfo.category;
+      const index = this.category.findIndex(item => item.type === target);
+      this.smallCategory = index;
+    },
   },
   methods:{
     createCoupon(){
@@ -229,7 +237,7 @@ export default {
       AdminService.serviceStatus().then(
         (res)=>{
           const apiResult = res.data;
-
+          console.log(res.data)
           const categorySortMap = new Map();
 
           apiResult.categoryInfo.forEach((items) => {
@@ -273,13 +281,15 @@ export default {
             todayCreatedQrcode:apiResult.todayCreatedCount,
             remainQRcode:apiResult.remainQrcodeCount,
             userCount:apiResult.userCount,
+            usingCategory:apiResult.usingCategory
           }
 
           this.qrcodeUseRate = apiResult.qrcodeUSeRate;
           this.couponUseRate = apiResult.couponUseRate;
-          console.log(res)
 
-          console.log(this.category)
+
+          this.selectedCouponInfo.category = this.category[0].type
+          this.selectedCouponInfo.name = this.category[0].category[0].name
         }
       )
     },

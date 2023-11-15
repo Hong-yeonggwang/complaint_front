@@ -1,5 +1,4 @@
 <template>
-  <h1>OperatorCScenter</h1>
   <NavigationBarOperator class="float-left"></NavigationBarOperator>
   <div class="ml-14 customWidth float-left">
   <!-- 메뉴바  -->
@@ -28,7 +27,7 @@
     
   </div>
 
-  <div v-if="this.tab == 'QRwallet'" class="overflow-scroll">
+  <div v-if="this.tab == 'QRwallet'" >
 
     
 
@@ -102,7 +101,6 @@ export default {
 
     UserService.getQRcodeList().then(
       (res)=>{
-        console.log(res.data);
         res.data.forEach((qrcode) => {
           var pushData = {
             content:qrcode.category.name,
@@ -149,16 +147,6 @@ export default {
       }
     )
     },
-    updateUser(){
-      UserService.updateUserInfo(this.updateUserInfo).then(
-      (res)=>{
-        console.log(res.data)
-      },
-      (error)=>{
-        console.log(error);
-      }
-    )
-    }
 
   },
 }

@@ -8,7 +8,7 @@
       bg-color="black"
       class="overflow-x-auto"
     >
-      <v-tab @click="componentTest()" v-for="(menu,index) in  myMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
+      <v-tab v-for="(menu,index) in  myMenu" :key="index" v-bind:value="menu.value">{{menu.title}}</v-tab>
     </v-tabs>
 
     <v-card-text>
@@ -60,7 +60,11 @@
 
     <div class="w-10/12 m-auto bg-slate-50 rounded-xl border-slate-950 border my-4 overflow-auto h-48">
      <div class="px-4 py-4">
-        <div class="text-xl border-b">승차권</div>
+        <div class="flex items-center justify-between border-b">
+          <div class="text-xl">승차권</div>
+          <div class="mr-3"> 잔여 티켓 수: {{ this.qrcodeData.bus.length }}</div>
+        </div>
+        
 
         <div class="m-auto" v-for="(tiket, index) in  qrcodeData.bus" :key="index">
           <div class="my-4 border border-slate-500 rounded-xl">
@@ -88,7 +92,10 @@
 
     <div class="w-10/12 m-auto bg-slate-50 rounded-xl border-slate-950 border my-4 overflow-auto h-48">
      <div class="px-4 py-4">
-        <div class="text-xl border-b">식권</div>
+        <div class="flex items-center justify-between border-b">
+          <div class="text-xl ">식권</div>
+          <div class="mr-3"> 잔여 티켓 수: {{ this.qrcodeData.restaurant.length }}</div>
+        </div>
 
         <div class="m-auto" v-for="(tiket, index) in  qrcodeData.restaurant" :key="index">
           <div class="my-4 border border-slate-500 rounded-xl">
@@ -109,10 +116,16 @@
         </div>
 
         <div v-if="qrcodeData.restaurant.length == 0" class="m-auto w-fit flex items-center mt-12 text-2xl">식권 없음</div> 
-
-
      </div>
+
     </div>
+
+    <div @click="$router.push({name:'qrcodeLog'})" class="w-10/12 m-auto bg-slate-50 rounded-xl border my-8 text-center py-2 font-semibold text-xl">
+      사용 이력 확인하기
+    </div>
+
+
+    
 
   </div>
   
@@ -189,7 +202,6 @@
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiAccount,mdiBookshelf, mdiCake, mdiPhone } from '@mdi/js';
-import NavigationBar from './NavigationBar.vue';
 import UserService from '../Service/UserService';
 import NavigationBar2 from './NavigationBar2.vue'
 
@@ -213,7 +225,7 @@ export default {
       major_path: mdiBookshelf,
       brith_path: mdiCake,
       phone_path: mdiPhone,
-      tab: 'QRwallet',
+      tab: null,
       couponSerial:'',
       myMenu:[
         {title:'내정보', value:'myInfo',info:'정보를 확인합니다', component:'myInfo'},
@@ -274,13 +286,8 @@ export default {
         console.log(error);
       }
     )
-    console.log(this.qrcodeData)
   },
   methods:{
-    componentTest(){
-      NavigationBar.drawer = true
-      console.log(NavigationBar.drawer);
-    },
     openQrcode(index , flag){
       if(flag === "bus"){
         this.qrcodeData.bus[index].display = true;
@@ -310,8 +317,9 @@ export default {
     },
     updateUser(){
       UserService.updateUserInfo(this.updateUserInfo).then(
-      (res)=>{
-        console.log(res.data)
+      ()=>{
+        alert("정상적으로 변경했습니다!")
+        location.reload();
       },
       (error)=>{
         let data = error.response.data.errors
@@ -320,7 +328,7 @@ export default {
         alert(errorMessageString);
       }
     )
-    }
+    },
 
   },
 }

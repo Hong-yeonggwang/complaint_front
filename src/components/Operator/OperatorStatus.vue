@@ -1,5 +1,4 @@
 <template>
-  <h1>OperatorManagement</h1>
   <NavigationBarOperator class="float-left"></NavigationBarOperator>
   <div class="ml-14 customWidth float-left">
 
@@ -7,9 +6,9 @@
       <div class="text-3xl pt-4 mx-4">티켓 수거 현황</div>
       <div class="pb-1 m-2">
         <div class=" justify-between px-2 border-b mb-3 ">
-          <div>발행: 400장</div>
+          <!-- <div>발행: 400장</div>
           <div>수거된 티켓: 100장</div>
-          <div>수거 가능한 티켓: 300장</div>
+          <div>수거 가능한 티켓: 300장</div> -->
         </div>
       </div>
     </div>
@@ -21,14 +20,14 @@
         <div class="clear-both"></div>
       </div>
       <div class="border rounded-lg mt-5 m-2 max-h-96 overflow-auto">
-        <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
-          <div>2023년 10월 5일</div>
-          <div>40장</div>
+        <div v-for="(item,index) in qrcodeCount" :key="index" class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
+          <div>{{item.time}}</div>
+          <div>{{item.count}}장</div>
         </div>
       </div>
     </div>
 
-    <div class="mx-4 p-3 ">
+    <!-- <div class="mx-4 p-3 ">
       <div class="w-full border-b flex items-center">
         <svg-icon type="mdi" :path="search_path" class="ml-1" width="40" height="40"></svg-icon>
         <div class=" p-2 pl-0 mr-2 text-xl font-semibold ">날짜 검색</div>
@@ -37,12 +36,12 @@
       </div>
       
       <div class="border rounded-lg mt-5 m-2 max-h-96 overflow-auto">
-        <div class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
+        <div  class="flex items-center justify-between px-2 border-b mx-4 my-5 ">
           <div>2023년 10월 5일</div>
           <div>40장</div>
         </div>
       </div>
-    </div>
+    </div> -->
 
   </div>
 
@@ -53,6 +52,8 @@
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiTicket,mdiMagnify } from '@mdi/js';
 import NavigationBarOperator from './NavigationBarOperator.vue'
+import AdminService from '@/Service/AdminService';
+
 
 
 
@@ -71,32 +72,17 @@ export default {
       myMenu:[
         {title:'티켓 수거 현황', value:'status',info:'티켓 수거 현황을 확인합니다'},
       ],
-      memberInfo:{
-        name:"",
-        nickName: '',
-        major:'',
-        birth:'',
-        phoneNumber:'',
-        role:''
-      },
 
-      updateUserInfo:{
-        nickName: '',
-        major:'',
-        birth:'',
-        phoneNumber:'',
-      },
-
-      //qrcode
-      qrcodeData:{
-        bus:[],
-        restaurant: []
-      }
+      qrcodeCount:[],
 
     }
   },
   created(){
-    
+    AdminService.getOperatorQrcode().then(
+      (res)=>{
+        this.qrcodeCount = res.data
+      }
+    )
 
   },
   methods:{

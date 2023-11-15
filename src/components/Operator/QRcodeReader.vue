@@ -7,9 +7,10 @@
     </div>
     <div class="p-4">
         <div>
-            <qrcode-stream id="qrVideo" @detect="onDetect"></qrcode-stream>
+            <qrcode-stream  @detect="onDetect"></qrcode-stream>
         </div>
     </div>
+    <img :src="require(`@/assets/qrNotice.png`)">
     
     <div v-for="(qrcode,index) in qrcodeList" :key="index" >
         <div class="absolute w-full top-32 left-0" v-if="qrcode.messageCodeFlag">
@@ -17,14 +18,8 @@
                 <div @click="this.closePop(index)" class="border w-fit float-right bg-sky-100 hover:bg-sky-200 p-1 rounded-lg text-sm">닫기</div>
                 <div class="clear-both"></div>
                 <ul class="text-left">
-                    <li class="tracking-wider">사용자: 
-                        <span>홍영광</span>
-                    </li>
                     <li class="tracking-wider">코드:
                         <span>{{qrcode.qrcode}}</span>
-                    </li>
-                    <li class="tracking-wider">이름:
-                        <span>{{ qrcode.messageCodeFlag }}</span>
                     </li>
                 </ul>
                 <button @click="this.useQRcode(qrcode.qrcode,index)" class="w-3/4 border rounded-lg mt-3 m-auto bg-sky-100 hover:bg-sky-200">확인</button>
@@ -50,10 +45,10 @@ export default {
   },
   methods: {
     closePop(index){
-        console.log(index)
         this.qrcodeList[index].messageCodeFlag = false
     },
-    onDetect (detectedCodes) {
+    onDetect(detectedCodes) {
+        console.log(detectedCodes)
         detectedCodes.forEach((qrcode)=> {
             let pushData = {
                 qrcode:qrcode.rawValue,
@@ -65,11 +60,16 @@ export default {
     useQRcode(qrCodeSerial,index){
         UserService.useQrcode(qrCodeSerial)
         .then((res)=>{
-            console.log(res.data)
+            if(res.data.msg == '사용이 완료되었습니다.'){
+                var audio = new Audio(require(`@/assets/usedVoice.mp3`));
+                audio.play();
+            }
+            else{
+                var audio1 = new Audio(require(`@/assets/ddeang.mp3`));
+                audio1.play();
+            }
             alert(res.data.msg);
-            console.log(this.qrcodeList)
             this.closePop(index);
-            console.log(this.qrcodeList)
         }
         )
     },

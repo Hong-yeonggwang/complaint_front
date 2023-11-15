@@ -9,10 +9,12 @@
       
     </div>
     <!-- 로그인 관리자 정보 -->
-    <div class="h-28 w-11/12 m-auto flex my-6 border rounded-lg ">
+    <div class="h-28 w-11/12 m-auto flex my-6 border rounded-lg items-center">
       <div class="float-left p-2">
-        <img  :src="require(`@/assets/logo.png`)" class="ml-4 border rounded-full h-full" >
+        <img  :src="require(`@/assets/complaint.png`)" class="ml-4 border rounded-full w-20" >
       </div>
+
+
       <div class="float-left ml-4 flex flex-col justify-center">
         <div class="my-0.5">
           <span class="float-left text-slate-500">이름:</span>
@@ -30,17 +32,20 @@
           <div class="clear-both"></div>
         </div>
       </div>
+      
       <div class="clear-both"></div>
     </div>
     
     <!-- 알림 -->
-    <div class="h-28 w-11/12 m-auto my-6 border rounded-lg px-4">
+    <div class="overflow-y-auto max-h-80 w-11/12 m-auto my-6 border rounded-lg px-4">
       <div class="w-full text-lg my-2 border-b px-2">알림</div>
-    </div>
-
-    <!-- 활동 -->
-    <div class="h-28 w-11/12 m-auto my-6 border rounded-lg px-4">
-      <div class="w-full text-lg my-2 border-b px-2">활동</div>
+      <div>
+        <div v-for="(item,index) in noti" :key="index" class="ml-2 my-2">
+          -{{item.write}}님이 문의글을 남겼어요!
+          <div class="h-0.5 w-full bg-slate-300"></div>
+        </div>
+        
+      </div>
     </div>
 
   </div>
@@ -48,15 +53,14 @@
 
 <script>
 import UserService from '../../Service/UserService';
+import BoardService from '@/Service/BoardService';
 import NavigationBarAdmin from './NavigationBarAdmin.vue'
-
-
 
 
 export default {
   name: 'AdminMain',
   components: {
-    NavigationBarAdmin
+    NavigationBarAdmin,
     },  
   data () {
     return {
@@ -67,30 +71,36 @@ export default {
         {title:'쿠폰등록', value:'coupon',info:'쿠폰을 등록합니다',component:'couponRegistration'}, 
       ],
       adminInfo:{
-        name:'홍영광',
-        phoneNumber:'010-1234-1234',
+        name:'',
+        phoneNumber:'',
         role:'최고 관리자'
       },
-      test:'',
+      noti:[],
 
     }
   },
   created(){
+
     UserService.getUserInfo().then(
       (res)=>{
-        this.memberInfo = res.data
+        this.adminInfo.name = res.data.name
+        this.adminInfo.phoneNumber = res.data.phoneNumber
       },
       (error)=>{
         console.log(error);
       }
     )
-    this.test = this.$store.state;
-    console.log(this.test)
+
+    BoardService.getAllPost().then(
+      (res)=>{
+        this.noti = res.data.no
+      }
+    )
+    
 
   },
   computed: {
     isAuthenticated() {
-      console.log(this.$store.getters['auth/getLevel'])
       return this.$store.getters['auth/getUserId'];
     }
   },
@@ -100,7 +110,9 @@ export default {
 }
 
 </script>
-<style>
+<style scoped>
+
+
 .qrbackground{
   background-color : rgb(128,128,128,0.9);
   display: none;

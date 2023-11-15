@@ -2,8 +2,11 @@ import api from './api';
 
 class UserService {
 
-  getUserInfo() {
-    return api.post('/auth/memeberinfo')
+  async getUserInfo() {
+    return await api.post('/v1/auth/memeberinfo')
+  }
+  async getOpratorInfo(){
+    return await api.post('/v1/auth/memeberinfo/operator')
   }
   async getAuth() {
     try {
@@ -16,8 +19,7 @@ class UserService {
   }
   async useCoupon(couponSerial) {
     try {
-      console.log(couponSerial)
-      return await api.delete('/qrcode/coupon?couponSerial='+couponSerial);
+      return await api.delete('/v1/qrcode/coupon?couponSerial='+couponSerial);
     } catch (error) {
       console.error(error);
       return error;
@@ -26,7 +28,7 @@ class UserService {
 
   async getQRcodeList() {
     try {
-      return await api.post('/qrcode');
+      return await api.post('/v1/qrcode');
     } catch (error) {
       console.error(error);
       return error;
@@ -35,8 +37,7 @@ class UserService {
   
   async useQrcode(qrCodeSerial) {
     try {
-      console.log(qrCodeSerial)
-      return await api.delete('/qrcode?qrCodeSerial='+qrCodeSerial);
+      return await api.delete('/v1/qrcode?qrCodeSerial='+qrCodeSerial);
     } catch (error) {
       console.error(error);
       return error;
@@ -44,7 +45,16 @@ class UserService {
   }
 
   async updateUserInfo(data) {
-    return await api.put('/auth/memberinfo',data);
+    return await api.put('/v1/auth/memberinfo',data);
+  }
+
+  async getQRcodeLog() {
+    try {
+      return await api.get('/v1/qrcode/log');
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
   }
 
 }

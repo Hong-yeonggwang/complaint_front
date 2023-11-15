@@ -257,8 +257,7 @@ export default {
         return 0;
       }
       if(!this.duplication){
-        AuthService.join(this.formData).then((res)=>{
-          console.log(res)
+        AuthService.join(this.formData).then(()=>{
           alert("회원가입을 축하합니다.")
           this.duplication = true
           this.$router.push('/login')
@@ -304,7 +303,6 @@ export default {
         this.error.phoneNumber = false
         return
       } 
-        console.log(this.formData.phoneNumber);
         this.formValid.phoneNumber = true
         this.error.phoneNumber = true
     },
@@ -317,7 +315,6 @@ export default {
         this.error.email = false
         return
       } 
-        console.log(this.formData.email);
         this.formValid.email = true
         this.error.email = true
     },
@@ -338,7 +335,6 @@ export default {
       
       AuthService.checkId(data).then(
           (res)=>{
-            console.log(res)
             let checkValue = res.data
             if(checkValue){
               this.idDuplication = checkValue;

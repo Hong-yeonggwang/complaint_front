@@ -12,10 +12,18 @@ module.exports = defineConfig({
 })
 
 module.exports = {
-  runtimeCompiler: true,
+  productionSourceMap: false,
 
   devServer: {
-    proxy: 'http://localhost:8080/',
+    allowedHosts: "all",
+    proxy: 
+    {
+      "/v1": {
+        target: "https://bck.twoleebubu.com",
+        // target: "http://localhost:8080",
+        changeOrigin: true,
+      }
+    }
   },
 
   transpileDependencies: [

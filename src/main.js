@@ -18,6 +18,7 @@ loadFonts()
 const app = createApp(App)
 
 app.config.globalProperties.axios = axios;
+app.config.productionTip = false;
 
 app.use(vuetify)
   .use(router)

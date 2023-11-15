@@ -92,7 +92,7 @@ export default {
 }
 
 </script>
-<style>
+<style scoped>
 .Warning{
   color:red;
   opacity: 0.7;

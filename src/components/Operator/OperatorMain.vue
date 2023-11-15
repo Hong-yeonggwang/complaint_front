@@ -9,9 +9,9 @@
       
     </div>
     <!-- 로그인 관리자 정보 -->
-    <div class="h-28 w-11/12 m-auto flex my-6 border rounded-lg ">
+    <div class="h-28 w-11/12 m-auto flex my-6 border rounded-lg items-center">
       <div class="float-left p-2">
-        <img  :src="require(`@/assets/logo.png`)" class="ml-4 border rounded-full h-full" >
+        <img  :src="require(`@/assets/complaint.png`)" class="ml-4 border rounded-full w-20" >
       </div>
       <div class="float-left ml-4 flex flex-col justify-center">
         <div class="my-0.5">
@@ -71,9 +71,11 @@ export default {
     }
   },
   created(){
-    UserService.getUserInfo().then(
+    UserService.getOpratorInfo().then(
       (res)=>{
-        this.memberInfo = res.data
+        this.adminInfo.name = res.data.name
+        this.adminInfo.place = res.data.category.name
+        this.adminInfo.phoneNumber = res.data.phoneNumber
       },
       (error)=>{
         console.log(error);

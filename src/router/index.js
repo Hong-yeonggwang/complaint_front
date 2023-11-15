@@ -1,7 +1,9 @@
 import { createWebHistory, createRouter } from "vue-router";
-import { defineComponent } from 'vue'
-import MyPage from '../components/MyPage.vue'
 
+import MainPage from '../components/MainPage.vue'
+
+import MyPage from '../components/MyPage.vue'
+import QRcodeLog from '../components/QRcodeLog.vue'
 import ChatRoomListPage from '../components/ChatRoomList.vue'
 import ChatRoom from '../components/ChatRoom.vue'
 // import CreateChatTest from '../components/CreateChatTest.vue'
@@ -15,6 +17,7 @@ import FindId from '../components/FindId.vue'
 import PayPage from '../components/Pay.vue'
 import CompletePage from '../components/Complete.vue'
 import QRcodeReader from '../components/Operator/QRcodeReader.vue'
+import UserPost from '../components/UserPost.vue'
 
 import AdminMain from "../components/Admin/AdminMain.vue"
 import AdminCScenter from "../components/Admin/AdminCScenter.vue"
@@ -22,30 +25,41 @@ import AdminManagement from "../components/Admin/AdminManagement.vue"
 import AdminCategory from "../components/Admin/AdminCategory.vue"
 import AdminUser from "../components/Admin/AdminUser.vue"
 import ServiceStatus from "../components/Admin/ServiceStatus.vue"
+import CouponLog from "../components/Admin/CouponLog.vue"
 
 import OperatorMain from "../components/Operator/OperatorMain.vue"
 import OperatorCScenter from "../components/Operator/OperatorCScenter.vue"
 import OperatorStatus from "../components/Operator/OperatorStatus.vue"
 
+import NotFound from "../components/NotFound.vue"
+
+// post
+import AdminPost from "../components/Admin/AdminPost.vue"
+
+
 import store from '../store/index.js';
 
-const NotFound = defineComponent({
-  template: '<div>Not Found</div>',
-})
-
 const routes = [
+
   {
     path: "/",
     name: "main",
-    component: MyPage,
+    component: MainPage,
     meta: {
-      authorization: ["ROLE_USER"]
     },
   },
   {
     path: "/user",
     name: "userPage",
     component: MyPage,
+    meta: {
+      authorization: ["ROLE_USER"]
+    },
+  },
+  {
+    path: "/user/qrcode/log",
+    name: "qrcodeLog",
+    component: QRcodeLog,
     meta: {
       authorization: ["ROLE_USER"]
     },
@@ -60,7 +74,7 @@ const routes = [
   },
   {
     path: "/chat",
-    name: "chatPage", // 여기 수정하면 고장나는데 이유를 모르겠음
+    name: "chatPage", 
     component: ChatRoomListPage,
     meta: {
       authorization: ["ROLE_USER"]
@@ -70,22 +84,13 @@ const routes = [
   
   {
     path: "/chat/:chatRoomId",
-    name: "ChatRoom", //"chatRoom",
+    name: "ChatRoom",
     component: ChatRoom,
     meta: {
       authorization: ["ROLE_USER"]
     },
-    mode: 'history' // URL에서 해시(#)를 사용하지 않고 깔끔한 URL을 사용하도록 지정
+    mode: 'history' 
   },
-  // {
-  //   path: "/chat/:chatRoomId",
-  //   name: "ChatRoom", //"chatRoom",
-  //   component: ChatRoom,
-  //   meta: {
-  //     authorization: ["ROLE_USER"]
-  //   },
-  //   mode: 'history' // URL에서 해시(#)를 사용하지 않고 깔끔한 URL을 사용하도록 지정
-  // },
 
 
 
@@ -101,8 +106,6 @@ const routes = [
     path:"/login",
     name:"UserLogin",
     component: UserLogin,
-    
-    
   },
   {
     path:"/join",
@@ -136,6 +139,14 @@ const routes = [
     },
   },
   {
+    path:"/userPost/:postSeq",
+    name:"userPost",
+    component: UserPost,
+    meta: {
+      authorization: ["ROLE_USER"]
+    },
+  },
+  {
     path: '/:catchAll(.*)+',
     name:'notFound',
     component: NotFound,
@@ -143,6 +154,7 @@ const routes = [
       authorization: ["ROLE_ADMIN",undefined,"ROLE_USER","ROLE_OPERATOR"]
     }
   },
+  
 
   // admin단
   {
@@ -202,7 +214,29 @@ const routes = [
       
     },
   },
-  
+
+  // post  
+  {
+    path:"/admin/post/:postSeq",
+    name:"AdminPost",
+    component: AdminPost,
+    meta: {
+      requiresAuth: true, 
+      authorization: ["ROLE_ADMIN"]
+      
+    },
+  },
+  // couponLog
+  {
+    path:"/admin/couponLog",
+    name:"couponLog",
+    component: CouponLog,
+    meta: {
+      requiresAuth: true, 
+      authorization: ["ROLE_ADMIN"]
+      
+    },
+  },
 
   //Operator단
   {
@@ -240,9 +274,14 @@ const routes = [
       authorization: ["ROLE_OPERATOR"]
     },
   },
+
+
+
+
 ];
 
 const router = createRouter({
+  mode: 'history',
   history: createWebHistory(),
   routes,
 });

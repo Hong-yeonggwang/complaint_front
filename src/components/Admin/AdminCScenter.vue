@@ -1,5 +1,4 @@
 <template>
-  <h1>AdminCScenter</h1>
   <NavigationBarAdmin class="float-left"></NavigationBarAdmin>
   <div class="ml-14 customWidth float-left">
   <!-- 메뉴바  -->
@@ -22,13 +21,58 @@
     </v-card-text>
   </v-card>
 
-  <div v-if="this.tab == 'myInfo'">
+  <div v-if="this.tab == 'new'">
     <svg-icon type="mdi" :path="face_path" class="m-auto" width="120" height="120"></svg-icon>
 
-    
+    <div class="mx-3">
+      <table class="m-auto w-fit text-center my-4">
+        <thead>
+            <tr>
+                <th>태그</th>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>확인여부</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr @click = "moveToPost(item.seq)" v-for="(item,index) in noPost" :key="index">
+              <th>{{ item.tag }}</th>
+              <th>{{ item.seq }}</th>
+              <th>{{ item.subject }}</th>
+              <th>{{ item.write }}</th>
+              <th>{{ item.status }}</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <div v-if="this.tab == 'QRwallet'" class="overflow-scroll">
+  <div v-if="this.tab == 'complete'" >
+
+    <div class="mx-3">
+      <table class="m-auto w-full text-center my-4">
+        <thead>
+            <tr>
+                <th>태그</th>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>확인여부</th>
+            </tr>
+        </thead>
+        <tbody>
+          
+          <tr @click = "moveToPost(item.seq)" v-for="(item,index) in yesPost" :key="index">
+              <th>{{ item.tag }}</th>
+              <th>{{ item.seq }}</th>
+              <th>{{ item.subject }}</th>
+              <th>{{ item.write }}</th>
+              <th>{{ item.status }}</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     
 
@@ -43,9 +87,9 @@
 
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiAccount,mdiBookshelf, mdiCake, mdiPhone } from '@mdi/js';
-import UserService from '../../Service/UserService';
+import { mdiAccount} from '@mdi/js';
 import NavigationBarAdmin from './NavigationBarAdmin.vue'
+import BoardService from '@/Service/BoardService';
 
 
 export default {
@@ -57,133 +101,42 @@ export default {
   data () {
     return {
       face_path: mdiAccount,
-      major_path: mdiBookshelf,
-      brith_path: mdiCake,
-      phone_path: mdiPhone,
       tab: null,
       couponSerial:'',
       myMenu:[
-        {title:'고객요청', value:'myInfo',info:'새로운 고객 요청을 확인합니다.', component:'myInfo'},
-        {title:'완료된 요청 ', value:'QRwallet',info:'이전 요청을 확인할 수 있습니다.', component:'QR'},
+        {title:'고객요청', value:'new',info:'새로운 고객 요청을 확인합니다.'},
+        {title:'완료된 요청 ', value:'complete',info:'이전 요청을 확인할 수 있습니다.'},
       ],
-      memberInfo:{
-        name:"",
-        nickName: '',
-        major:'',
-        birth:'',
-        phoneNumber:'',
-        role:''
-      },
 
-      updateUserInfo:{
-        nickName: '',
-        major:'',
-        birth:'',
-        phoneNumber:'',
-      },
-
-      //qrcode
-      qrcodeData:{
-        bus:[],
-        restaurant: []
-      }
+      noPost:[],
+      yesPost:[]
 
     }
   },
   created(){
-    UserService.getUserInfo().then(
+    BoardService.getAllPost().then(
       (res)=>{
-        this.memberInfo = res.data
-      },
-      (error)=>{
-        console.log(error);
-      }
-    )
-
-    UserService.getQRcodeList().then(
-      (res)=>{
-        console.log(res.data);
-        res.data.forEach((qrcode) => {
-          var pushData = {
-            content:qrcode.category.name,
-            vlaue:qrcode.qrCode,
-            display: false
-          };
-          if (qrcode.category.qrCodeCategory == "버스") {
-            this.qrcodeData.bus.push(pushData);
-          } else if (qrcode.category.qrCodeCategory == "식당") {
-            this.qrcodeData.restaurant.push(pushData);
-          }
-        }); 
-      },
-      (error)=>{
-        console.log(error);
+        this.noPost = res.data.no
+        this.yesPost = res.data.yes
       }
     )
   },
   methods:{
-    openQrcode(index , flag){
-      if(flag === "bus"){
-        this.qrcodeData.bus[index].display = true;
-      }
-      else{
-        this.qrcodeData.restaurant[index].display = true;
-      }
-    },
-    closeQrcode(index , flag){
-      if(flag === "bus"){
-        this.qrcodeData.bus[index].display = false;
-      }
-      else{
-        this.qrcodeData.restaurant[index].display = false;
-      }
-    },
-    useCoupon(){
-      UserService.useCoupon(this.couponSerial).then(
-      (res)=>{
-        alert(res.data.msg)
-        this.couponSerial = ''
-      },
-      (error)=>{
-        alert(error.msg);
-      }
-    )
-    },
-    updateUser(){
-      UserService.updateUserInfo(this.updateUserInfo).then(
-      (res)=>{
-        console.log(res.data)
-      },
-      (error)=>{
-        console.log(error);
-      }
-    )
+    moveToPost(seq){
+      this.$router.push({name:'AdminPost',params:{postSeq:seq}})
     }
-
   },
 }
 
 </script>
-<style>
-.qrbackground{
-  background-color : rgb(128,128,128,0.9);
-  display: none;
-}
-.qrbackground.active{
-  background-color : rgb(128,128,128,0.9);
-  display: block;
-}
-.qrcodeClose{
-  position: relative;
-  margin:auto;
-  top:15%;
-  width:300px;
-  height:25px;
-  text-align: center;
-  background-color: black;
-  color:white;
-}
-.customWidth{
-  width: calc(100% - 3.5rem);
-}
+<style scoped>
+table {
+    width: 100%;
+    border: 1px solid #bab6b6;
+    border-collapse: collapse;
+    color:#3b3939;
+  }
+  th, td {
+    border: 1px solid #bab6b6;
+  }
 </style>

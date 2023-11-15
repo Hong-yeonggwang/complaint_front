@@ -3,7 +3,7 @@
     로그인
   </div>
 
-  <form @submit.prevent="submitForm" class="w-fit m-auto"> 
+  <div class="w-fit m-auto"> 
     <div class="mb-2 m-auto flex items-center justify-center pb-2 border-b">
       <div class="w-fit float-left">
         <div class="mb-2">
@@ -16,13 +16,13 @@
         </div>
       </div>
       <div class="float-left">
-        <button type="submit">
+        <button @click="submitLogin()">
           <svg-icon type="mdi" :path="login_path" class="m-auto" width="70" height="70"></svg-icon>
         </button>
       </div>
       <div class="clear-both"></div>
     </div>
-  </form>
+  </div>
     
   <div class="text-sm w-fit m-auto">
     <div class="float-left mr-2" @click = "this.join">회원가입</div>
@@ -36,7 +36,6 @@
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiLogin } from '@mdi/js';
 import VueJwtDecode from 'vue-jwt-decode'
-// import UserService from '../Service/UserService';
 
 export default {
   name: 'UserLogin',
@@ -52,23 +51,24 @@ export default {
       },
     }
   },
+  created(){
+    
+  },
   methods:{
-    submitForm(){
+    submitLogin(){
       this.$store.dispatch("auth/login", this.formData).then(
         (res) => {
-          console.log(res);
           let level = this.decodeToken(res.token).roles;
-          console.log(level)
           if(level == "ROLE_ADMIN"){
             this.$router.push("/admin");
           }else if(level == "ROLE_USER"){
-            this.$router.push("/");
+            this.$router.push("/user");
           }else if(level == "ROLE_OPERATOR"){
             this.$router.push("/operator")
           }
         },
-        (error) => {
-          console.log(error)
+        () => {
+          alert("아이디와 비밀번호를 확인해주세요.");
         }
       );
     },

@@ -229,7 +229,7 @@ export default {
 
     },
     submitForm() {
-      console.log("submitForm");
+      // console.log("submitForm");
     },
     openMobileApp() {
                     // 'yourapp://'

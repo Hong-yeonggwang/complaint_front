@@ -1,7 +1,11 @@
 import axios from "axios";
 
 let config = {
-  OPTIONS : 'http://localhost:8080',
+  // OPTIONS : 'http://doyounglee.synology.me:8282',
+
+  // baseURL: process.env.NODE_ENV === 'production'
+  //   ? 'http://doyounglee.synology.me:8282'
+  //   : 'http://localhost:8080',
   headers: {
     post : {
       'Access-Control-Allow-Origin': '*',

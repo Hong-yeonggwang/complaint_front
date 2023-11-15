@@ -46,9 +46,9 @@
                         @click="this.getChatRoomList()"></v-btn> -->
 
                 </div>
-                <v-btn @click="toggleSlide()" class="float-right">
+                <!-- <v-btn @click="toggleSlide()" class="float-right">
                     <svg-icon type="mdi" :path="path"></svg-icon>
-                </v-btn>
+                </v-btn> -->
                 <div class="clear-both"></div>
                 <div class="mt-2 float-left">인원 수 : {{ this.chatRoomInfo.currentNumberOfPeople }} / {{
                     this.chatRoomInfo.chatRoomLimited }}
@@ -78,16 +78,20 @@
                                 <div v-else>
                                     <div class="others my-2">
                                         <div class="flex items-center">
-                                            <img :src="require(`@/assets/logo.png`)" class="float-left w-6 ml-1">
+                                            <img :src="require(`@/assets/complaint.png`)" class="float-left w-6 ml-1">
                                             <div class="float-left ml-1">{{ chat.nickName }}</div>
                                             <div class="clear-both"></div>
                                         </div>
-                                        <div class="px-1 py-3 border rounded-lg w-2/3 float-left">
-                                            {{ chat.msg }}
+                                        <div class="flex justify-center">
+                                            <div class="px-1 py-3 border rounded-lg w-2/3 float-left">
+                                                {{ chat.msg }}
+                                            </div>
+                                            <div class="text-sm float-left">
+                                                {{ chat.chatHistoryTime }}
+                                            </div>
+                                            <div class="clear-both"></div>
                                         </div>
-                                        <div class="text-sm float-left">
-                                            {{ chat.chatHistoryTime }}
-                                        </div>
+                                        
                                         <div class="clear-both"></div>
                                     </div>
                                 </div>
@@ -97,10 +101,10 @@
                 </div>
             </div>
         </div>
-        <div class="my-2 mx-4">
+        <div class="my-2 mx-4 flex items-center px-2">
             <input id="msg" class="border rounded-2xl w-11/12 h-fit py-1 px-2" v-model="this.msg"
                 placeholder="보내실 메시지를 입력하세요.">
-            <v-btn @click="send(1)" id="sendBtn" class="ml-1 bg-yellow" density="comfortable" icon="mdi-send"></v-btn>
+            <v-btn @click="send(1)" id="sendBtn" class="ml-3 bg-yellow" density="comfortable" icon="mdi-send"></v-btn>
         </div>
         <div>
             <v-btn id="exitChatRoom" class="border" @click="this.exitChatRoom()">방 나가기</v-btn>
@@ -115,14 +119,14 @@ import NavigationBar2 from './NavigationBar2.vue';
 import ChatRoomService from '../Service/ChatRoomService';
 import ChatHistoryService from '../Service/ChatHistoryService'
 
-import SvgIcon from '@jamescoyle/vue-icon';
+// import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiFormatListBulleted } from '@mdi/js';
 
 export default {
     name: 'ChatRoom',
     components: {
         NavigationBar2,
-        SvgIcon
+        // SvgIcon
     },
     data() {
         return {
@@ -149,10 +153,7 @@ export default {
     methods: {
         wsOpen() {
             // 웹소켓 주소 기준은 백엔드 서버
-            // const Token = TokenService.getLocalAccessToken();
-            // this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId, Token);
-
-            this.ws = new WebSocket("ws://localhost:8080/chat/" + this.$route.params.chatRoomId);
+            this.ws = new WebSocket("wss://bck.twoleebubu.com/chat/" + this.$route.params.chatRoomId);
             this.wsEvt();
         },
 
@@ -416,7 +417,7 @@ export default {
 }
 
 .chatting .others {
-    color: blue;
+    color: #465ccc;
     text-align: left;
 }
 
